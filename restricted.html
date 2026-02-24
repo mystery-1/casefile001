@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Restricted Archive – CAM-17B</title>
 
@@ -103,7 +104,7 @@ button{
     <button onclick="unlock()">SUBMIT CODE</button>
 
     <div class="syslog" id="syslog">
-      SYSLOG: archive locked…<br>
+      SYSLOG: archive locked...<br>
       NODE: CAM-17B • STATUS: RESTRICTED
     </div>
   </div>
@@ -115,7 +116,7 @@ function unlock(){
   var code = document.getElementById("code").value.trim();
   var sys = document.getElementById("syslog");
 
-  sys.innerHTML = "SYSLOG: verifying code…<br>NODE: CAM-17B • STATUS: CHECKING";
+  sys.innerHTML = "SYSLOG: verifying code...<br>NODE: CAM-17B • STATUS: CHECKING";
 
   setTimeout(function(){
     if(code === "61793245"){
