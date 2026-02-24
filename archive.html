@@ -1,48 +1,123 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Camera Archive – CAM-17B</title>
-    <style>
-        body {
-            background-color: #0d0d0d;
-            color: #e0e0e0;
-            font-family: Arial, sans-serif;
-            padding: 60px;
-        }
-        .container {
-            max-width: 700px;
-            margin: auto;
-        }
-        .folder {
-            background-color: #1a1a1a;
-            padding: 25px;
-            border: 1px solid #333;
-        }
-        .file {
-            margin-top: 20px;
-            padding: 15px;
-            background-color: #111;
-            border: 1px solid #444;
-            cursor: pointer;
-        }
-        .file:hover {
-            background-color: #1f1f1f;
-        }
-    </style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Camera Archive – CAM-17B</title>
+
+<style>
+body{
+    margin:0;
+    background:#0b0b0b;
+    color:#e9e9e9;
+    font-family: Arial, sans-serif;
+    padding:30px 15px;
+}
+.container{
+    max-width:520px;
+    margin:auto;
+}
+.header{
+    border:1px solid #2a2a2a;
+    background:#111;
+    padding:15px;
+}
+.header-top{
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:1px;
+    color:#bdbdbd;
+}
+.header-main{
+    margin-top:6px;
+    font-size:18px;
+    font-weight:bold;
+}
+.header-sub{
+    margin-top:4px;
+    font-size:12px;
+    color:#bdbdbd;
+}
+.folder{
+    margin-top:15px;
+    border:1px solid #2a2a2a;
+    background:#101010;
+    padding:16px;
+}
+.meta{
+    font-size:13px;
+    color:#cfcfcf;
+    line-height:1.6;
+}
+.file{
+    margin-top:14px;
+    padding:14px;
+    background:#0c0c0c;
+    border:1px solid #333;
+    cursor:pointer;
+}
+.file:hover{
+    background:#151515;
+}
+.file-title{
+    font-weight:bold;
+    font-size:15px;
+}
+.file-sub{
+    margin-top:6px;
+    font-size:12px;
+    color:#bdbdbd;
+    font-family: monospace;
+}
+.stamp{
+    display:inline-block;
+    margin-top:10px;
+    padding:6px 10px;
+    border:1px solid #8b0000;
+    color:#ffb3b3;
+    font-size:11px;
+    letter-spacing:1px;
+    text-transform:uppercase;
+}
+.syslog{
+    margin-top:15px;
+    font-family:monospace;
+    font-size:11px;
+    background:#0c0c0c;
+    border:1px dashed #2b2b2b;
+    padding:10px;
+    color:#9b9b9b;
+}
+</style>
 </head>
+
 <body>
-
 <div class="container">
-    <h2>SECURITY CAMERA LOGS</h2>
-    <p>Archive Folder: CAM-17B</p>
-    <p>Date: October 14</p>
 
-    <div class="folder">
-        <div class="file" onclick="window.location.href='restricted.html'">
-            ▶ Footage File – 23:07:12.mp4
-        </div>
-    </div>
+<div class="header">
+  <div class="header-top">Major Crimes Division • Internal Network</div>
+  <div class="header-main">SECURITY CAMERA LOGS</div>
+  <div class="header-sub">Archive Folder: CAM-17B • Case File #001: What They Buried</div>
 </div>
 
+<div class="folder">
+  <div class="meta">
+    <b>Device:</b> Adjacent Property Security System<br>
+    <b>Date:</b> October 14<br>
+    <b>Status:</b> Partial corruption detected<br>
+    <span class="stamp">Restricted Archive</span>
+  </div>
+
+  <div class="file" onclick="window.location.href='restricted.html'">
+      <div class="file-title">▶ Footage File – 23:07:12.mp4</div>
+      <div class="file-sub">CAM-17B / Sector-2 / checksum: 9f2a… / click to open</div>
+  </div>
+
+  <div class="syslog">
+    SYSLOG: session active…<br>
+    NODE: CAM-17B • STATUS: BROWSE
+  </div>
+</div>
+
+</div>
 </body>
 </html>
