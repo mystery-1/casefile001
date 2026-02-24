@@ -1,127 +1,140 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Major Crimes Intranet – Secure Access</title>
-  <style>
-    body{
-      margin:0;
-      background:#0b0b0b;
-      color:#e9e9e9;
-      font-family: Arial, sans-serif;
-      padding:28px 16px;
-    }
-    .wrap{max-width:420px;margin:0 auto;}
-    .seal{
-      border:1px solid #2a2a2a;
-      background:#111;
-      padding:14px 16px;
-      text-align:left;
-    }
-    .seal .top{font-size:12px;letter-spacing:1.2px;text-transform:uppercase;color:#bdbdbd;}
-    .seal .mid{margin-top:6px;font-size:18px;font-weight:700;}
-    .seal .sub{margin-top:4px;font-size:12px;color:#bdbdbd;}
-    .warn{
-      margin-top:12px;
-      border-left:4px solid #8b0000;
-      background:#0f0f0f;
-      padding:10px 12px;
-      font-size:12px;
-      line-height:1.4;
-      color:#d7d7d7;
-    }
-    .box{
-      margin-top:14px;
-      border:1px solid #2a2a2a;
-      background:#101010;
-      padding:18px 16px;
-    }
-    .label{font-size:12px;color:#bdbdbd;text-transform:uppercase;letter-spacing:1px;}
-    .title{margin:6px 0 12px;font-size:20px;font-weight:800;}
-    input{
-      width:100%;
-      box-sizing:border-box;
-      margin:10px 0;
-      padding:14px 12px;
-      font-size:16px;
-      background:#0c0c0c;
-      border:1px solid #333;
-      color:#fff;
-      outline:none;
-    }
-    input:focus{border-color:#666;}
-    button{
-      width:100%;
-      padding:14px 12px;
-      font-size:16px;
-      font-weight:700;
-      background:#8b0000;
-      border:none;
-      color:#fff;
-      cursor:pointer;
-    }
-    button:active{transform:scale(0.99);}
-    .sys{
-      margin-top:12px;
-      font-family: "Courier New", monospace;
-      font-size:11px;
-      color:#9b9b9b;
-      line-height:1.35;
-      background:#0c0c0c;
-      border:1px dashed #2b2b2b;
-      padding:10px 12px;
-    }
-  </style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Major Crimes Division – Secure Access</title>
+
+<style>
+body{
+    margin:0;
+    background:#0b0b0b;
+    color:#e9e9e9;
+    font-family: Arial, sans-serif;
+    padding:30px 15px;
+}
+.container{
+    max-width:420px;
+    margin:auto;
+}
+.header{
+    border:1px solid #2a2a2a;
+    background:#111;
+    padding:15px;
+}
+.header-top{
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:1px;
+    color:#bdbdbd;
+}
+.header-main{
+    margin-top:6px;
+    font-size:20px;
+    font-weight:bold;
+}
+.header-sub{
+    margin-top:4px;
+    font-size:12px;
+    color:#bdbdbd;
+}
+.warning{
+    margin-top:12px;
+    border-left:4px solid #8b0000;
+    background:#0f0f0f;
+    padding:10px;
+    font-size:12px;
+}
+.login-box{
+    margin-top:15px;
+    border:1px solid #2a2a2a;
+    background:#101010;
+    padding:18px;
+}
+input{
+    width:100%;
+    padding:14px;
+    margin-top:10px;
+    font-size:16px;
+    background:#0c0c0c;
+    border:1px solid #333;
+    color:white;
+}
+button{
+    width:100%;
+    padding:14px;
+    margin-top:15px;
+    font-size:16px;
+    font-weight:bold;
+    background:#8b0000;
+    border:none;
+    color:white;
+}
+button:active{
+    transform:scale(0.98);
+}
+.syslog{
+    margin-top:15px;
+    font-family:monospace;
+    font-size:11px;
+    background:#0c0c0c;
+    border:1px dashed #2b2b2b;
+    padding:10px;
+    color:#9b9b9b;
+}
+</style>
 </head>
+
 <body>
-  <div class="wrap">
 
-    <div class="seal">
-      <div class="top">Major Crimes Division • Internal Network</div>
-      <div class="mid">SECURE CAMERA SERVER</div>
-      <div class="sub">Case File #001: What They Buried • Archive: CAM-17B</div>
-    </div>
+<div class="container">
 
-    <div class="warn">
-      <b>NOTICE:</b> Unauthorized access is prohibited. Session attempts are logged and monitored.
-      Proceed only if you are authorized personnel.
-    </div>
+<div class="header">
+<div class="header-top">Major Crimes Division • Internal Network</div>
+<div class="header-main">SECURE CAMERA SERVER</div>
+<div class="header-sub">Case File #001: What They Buried • Archive CAM-17B</div>
+</div>
 
-    <div class="box">
-      <div class="label">Authentication Required</div>
-      <div class="title">POLICE ACCESS LOGIN</div>
+<div class="warning">
+<b>NOTICE:</b> Unauthorized access is monitored. Proceed only if authorized personnel.
+</div>
 
-      <input type="text" id="username" placeholder="Username (e.g., MMDIV17)">
-      <input type="password" id="password" placeholder="Password (Temporary)">
+<div class="login-box">
 
-      <button onclick="login()">AUTHORIZE & ACCESS</button>
+<input type="text" id="username" placeholder="Username">
+<input type="password" id="password" placeholder="Password">
 
-      <div class="sys" id="syslog">
-        SYSLOG: awaiting credentials…<br>
-        NODE: MCD-INTRA • STATUS: LOCKED
-      </div>
-    </div>
+<button onclick="login()">AUTHORIZE & ACCESS</button>
 
-  </div>
+<div class="syslog" id="syslog">
+SYSLOG: awaiting credentials...<br>
+NODE: MCD-INTRA • STATUS: LOCKED
+</div>
+
+</div>
+
+</div>
 
 <script>
 function login(){
-  var user=document.getElementById("username").value.trim();
-  var pass=document.getElementById("password").value.trim();
-  var sys=document.getElementById("syslog");
+var user=document.getElementById("username").value;
+var pass=document.getElementById("password").value;
+var sys=document.getElementById("syslog");
 
-  sys.innerHTML = "SYSLOG: validating…<br>NODE: CAM-17B • STATUS: CHECKING";
+sys.innerHTML="SYSLOG: validating credentials...<br>NODE: CAM-17B • STATUS: CHECKING";
 
-  setTimeout(function(){
-    if(user==="MMDIV17" && pass==="TEMP-ACCESS"){
-      sys.innerHTML = "SYSLOG: access granted.<br>NODE: CAM-17B • STATUS: UNLOCKING";
-      setTimeout(function(){ window.location.href="archive.html"; }, 350);
-    } else {
-      sys.innerHTML = "SYSLOG: access denied.<br>NODE: CAM-17B • STATUS: LOCKED";
-      alert("ACCESS DENIED");
-    }
-  }, 350);
+setTimeout(function(){
+if(user==="MMDIV17" && pass==="TEMP-ACCESS"){
+sys.innerHTML="SYSLOG: access granted.<br>NODE: CAM-17B • STATUS: UNLOCKING";
+setTimeout(function(){
+window.location.href="archive.html";
+},400);
+}else{
+sys.innerHTML="SYSLOG: access denied.<br>NODE: CAM-17B • STATUS: LOCKED";
+alert("ACCESS DENIED");
+}
+},400);
 }
 </script>
+
 </body>
 </html>
