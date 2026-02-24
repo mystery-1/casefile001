@@ -1,1 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Secure Camera Server – Police Access</title>
+    <style>
+        body {
+            background-color: #111;
+            color: #e0e0e0;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding-top: 100px;
+        }
+        .box {
+            background-color: #1a1a1a;
+            padding: 40px;
+            display: inline-block;
+            border: 1px solid #333;
+        }
+        input {
+            display: block;
+            margin: 15px auto;
+            padding: 10px;
+            width: 250px;
+            background-color: #222;
+            border: 1px solid #444;
+            color: white;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #8b0000;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #a00000;
+        }
+    </style>
+</head>
+<body>
 
+<div class="box">
+    <h2>SECURE CAMERA SERVER</h2>
+    <p>Authorized Police Access Only</p>
+
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+    <button onclick="login()">LOGIN</button>
+</div>
+
+<script>
+function login() {
+    var user = document.getElementById("username").value;
+    var pass = document.getElementById("password").value;
+
+    if(user === "MMDIV17" && pass === "TEMP-ACCESS") {
+        window.location.href = "archive.html";
+    } else {
+        alert("ACCESS DENIED");
+    }
+}
+</script>
+
+</body>
+</html>
