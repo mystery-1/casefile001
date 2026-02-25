@@ -1,144 +1,142 @@
-<!DOCTYPE html>
-<html>
+<!-- footage.html -->
+<!doctype html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Footage File – CAM-17B</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Footage Archive</title>
+  <style>
+    body {
+      margin: 0;
+      background: #000;
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    }
+    .wrap {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 18px;
+    }
+    .label {
+      opacity: 0.85;
+      letter-spacing: 1px;
+      font-size: 12px;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+    video {
+      width: 100%;
+      height: auto;
+      border-radius: 10px;
+      background: #111;
+    }
 
-<style>
-body{
-  margin:0;
-  background:#0b0b0b;
-  color:#e9e9e9;
-  font-family: Arial, sans-serif;
-  padding:30px 15px;
-}
-.container{max-width:520px;margin:auto;}
-.header{
-  border:1px solid #2a2a2a;
-  background:#111;
-  padding:15px;
-}
-.header-top{
-  font-size:12px;
-  text-transform:uppercase;
-  letter-spacing:1px;
-  color:#bdbdbd;
-}
-.header-main{margin-top:6px;font-size:18px;font-weight:bold;}
-.header-sub{margin-top:4px;font-size:12px;color:#bdbdbd;}
-.video-box{
-  margin-top:15px;
-  border:1px solid #2a2a2a;
-  background:#101010;
-  padding:10px;
-}
-video{
-  width:100%;
-  border:1px solid #333;
-}
-.analysis{
-  margin-top:15px;
-  font-size:13px;
-  background:#0f0f0f;
-  padding:10px;
-  border-left:4px solid #8b0000;
-}
-.alert{
-  margin-top:20px;
-  padding:14px;
-  border:1px solid #8b0000;
-  background:#140000;
-  font-size:13px;
-}
-button{
-  width:100%;
-  padding:14px;
-  margin-top:15px;
-  font-size:16px;
-  font-weight:bold;
-  background:#8b0000;
-  border:none;
-  color:white;
-  cursor:pointer;
-}
-.syslog{
-  margin-top:15px;
-  font-family:monospace;
-  font-size:11px;
-  background:#0c0c0c;
-  border:1px dashed #2b2b2b;
-  padding:10px;
-  color:#9b9b9b;
-}
-</style>
+    /* CALL INCOMING overlay */
+    .call-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.88);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+    .hidden { display: none; }
+
+    .call-box {
+      width: min(420px, 88vw);
+      background: #0f0f0f;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 14px;
+      padding: 22px 18px;
+      text-align: center;
+      box-shadow: 0 18px 60px rgba(0,0,0,0.6);
+    }
+    .call-box h2 {
+      margin: 0 0 8px 0;
+      letter-spacing: 2px;
+      font-size: 18px;
+    }
+    .call-box p {
+      margin: 0 0 18px 0;
+      opacity: 0.9;
+      font-size: 14px;
+    }
+    .call-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+    .call-actions button {
+      border: 0;
+      border-radius: 10px;
+      padding: 12px 18px;
+      font-weight: 700;
+      cursor: pointer;
+      min-width: 120px;
+    }
+    .accept {
+      background: #1f7a3f;
+      color: #fff;
+    }
+    .decline {
+      background: #8b0000;
+      color: #fff;
+    }
+  </style>
 </head>
-
 <body>
-<div class="container">
+  <div class="wrap">
+    <div class="label">Major Crimes Division • Archive ID: CAM-17B</div>
 
-  <div class="header">
-    <div class="header-top">Major Crimes Division • Internal Network</div>
-    <div class="header-main">FOOTAGE FILE – CAM-17B</div>
-    <div class="header-sub">Timestamp: 23:07:12</div>
-  </div>
-
-  <div class="video-box">
-    <video id="crimeVideo" controls>
-      <source src="footage.mp4" type="video/mp4">
+    <!-- IMPORTANT: Put your real footage file path below -->
+    <video id="sceneVideo" controls playsinline>
+      <source src="footage.mp4" type="video/mp4" />
+      Your browser does not support the video tag.
     </video>
   </div>
 
-  <div class="analysis">
-    <b>Preliminary Analysis:</b><br>
-    • Single silhouette visible<br>
-    • Approximate height: short–medium range<br>
-    • Narrow footwear profile detected<br>
-    • No facial or identifying features
-  </div>
-
-  <div id="liveAlert" style="display:none;">
-    <div class="alert">
-      <b>SYSTEM ALERT:</b> New case activity detected.<br>
-      Live communication update available.
+  <!-- CALL INCOMING overlay -->
+  <div id="callOverlay" class="call-overlay hidden" aria-hidden="true">
+    <div class="call-box">
+      <h2>CALL INCOMING</h2>
+      <p>Building Security</p>
+      <div class="call-actions">
+        <button class="accept" type="button" onclick="acceptCall()">Accept</button>
+        <button class="decline" type="button" onclick="declineCall()">Decline</button>
+      </div>
     </div>
-
-    <button onclick="window.location.href='case-log.html'">
-      ACCESS LIVE CASE LOG
-    </button>
   </div>
 
-  <div class="syslog">
-    SYSLOG: playback idle...<br>
-    NODE: CAM-17B • STATUS: MONITORING
-  </div>
+  <script>
+    const video = document.getElementById("sceneVideo");
+    const overlay = document.getElementById("callOverlay");
 
-</div>
+    let callShown = false;
 
-<script>
+    video.addEventListener("timeupdate", () => {
+      if (!callShown && video.currentTime >= 9) {
+        callShown = true;
 
-// Prevent skipping ahead
-if(localStorage.getItem("camUnlocked") !== "true"){
-  window.location.href="index.html";
-}
+        // pause video + vibrate + show overlay
+        video.pause();
 
-var video = document.getElementById("crimeVideo");
-var alertShown = false;
+        if (navigator.vibrate) navigator.vibrate([120, 60, 120, 60, 200]);
 
-// Trigger alert ONLY after real playback
-video.addEventListener("play", function(){
-
-  if(alertShown) return;
-
-  setTimeout(function(){
-      if(!video.paused && !alertShown){
-          document.getElementById("liveAlert").style.display="block";
-          alertShown = true;
+        overlay.classList.remove("hidden");
+        overlay.setAttribute("aria-hidden", "false");
       }
-  }, 6000); // 6 seconds of actual watching
-});
+    });
 
-</script>
+    function acceptCall() {
+      window.location.href = "call-transcript.html";
+    }
 
+    function declineCall() {
+      overlay.classList.add("hidden");
+      overlay.setAttribute("aria-hidden", "true");
+      video.play();
+    }
+  </script>
 </body>
-</html>
+</html> 
