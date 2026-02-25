@@ -1,223 +1,136 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Major Crimes Division • Live Call</title>
-  <style>
-    :root{
-      --bg:#07090d;
-      --panel:#0d1118;
-      --text:#e9eef7;
-      --muted:rgba(255,255,255,.58);
-      --muted2:rgba(255,255,255,.42);
-      --border:rgba(255,255,255,.10);
-      --you:#7fb2ff;
-      --security:#ffffff;
-      --system:#a7b1bf;
-      --accent:#c61a1a;
-      --accentSoft:rgba(198,26,26,.12);
-    }
-    html,body{height:100%;margin:0;background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Inter,Roboto,Arial,sans-serif;color:var(--text);}
-    .wrap{max-width:860px;margin:0 auto;padding:22px 16px 28px;}
-    .hdr{
-      display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px;
-    }
-    .brand{letter-spacing:.18em;text-transform:uppercase;font-size:12px;color:rgba(255,255,255,.62);}
-    .title{font-size:26px;letter-spacing:.06em;text-transform:uppercase;margin:8px 0 0;font-weight:900;}
-    .metaRow{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:10px;color:var(--muted);font-size:12px;letter-spacing:.08em;text-transform:uppercase;}
-    .pill{border:1px solid var(--border);background:rgba(255,255,255,.04);padding:8px 10px;border-radius:999px;}
-    .stamp{
-      border:2px solid rgba(198,26,26,.70);
-      color:rgba(198,26,26,.90);
-      padding:8px 12px;border-radius:6px;
-      letter-spacing:.16em;text-transform:uppercase;
-      font-weight:900;font-size:12px;
-      transform:rotate(-2deg);
-      background:rgba(198,26,26,.06);
-      user-select:none;
-      white-space:nowrap;
-    }
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Live Call</title>
 
-    .card{
-      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
-      border:1px solid var(--border);
-      border-radius:18px;
-      padding:18px 16px 14px;
-      box-shadow:0 18px 70px rgba(0,0,0,.55);
-    }
-
-    .log{max-height:62vh;overflow:auto;padding-right:6px}
-    .line{font-size:18px;line-height:1.6;margin:10px 0}
-    .who{font-weight:800;margin-right:6px}
-    .you .who{color:var(--you)}
-    .security .who{color:var(--security)}
-    .system .who{color:var(--system)}
-    .system{opacity:.92}
-
-    .typing{
-      display:inline-flex;align-items:center;gap:8px;color:var(--muted);font-size:14px;margin-top:10px
-    }
-    .dots{display:inline-flex;gap:4px}
-    .dot{width:6px;height:6px;border-radius:999px;background:rgba(255,255,255,.35);animation:b 1.05s infinite}
-    .dot:nth-child(2){animation-delay:.18s}
-    .dot:nth-child(3){animation-delay:.36s}
-    @keyframes b{0%,100%{transform:translateY(0);opacity:.35}50%{transform:translateY(-3px);opacity:.85}}
-
-    .banner{
-      margin:18px 0 14px;
-      border:1px solid rgba(198,26,26,.55);
-      background:rgba(198,26,26,.10);
-      padding:14px 14px;
-      border-radius:12px;
-      color:rgba(255,255,255,.92);
-      font-size:14px;
-      letter-spacing:.02em;
-      display:none;
-    }
-
-    .btn{
-      user-select:none;
-      text-align:center;
-      font-weight:900;
-      letter-spacing:.08em;
-      text-transform:uppercase;
-      background:var(--accent);
-      color:white;
-      border-radius:14px;
-      padding:18px 14px;
-      border:1px solid rgba(255,255,255,.08);
-      box-shadow:0 18px 40px rgba(198,26,26,.25);
-      display:none;
-    }
-    .btn small{display:block;font-weight:700;letter-spacing:.04em;opacity:.92;margin-top:6px;text-transform:none}
-    .subnote{margin-top:10px;color:var(--muted2);font-size:12px;letter-spacing:.08em;text-transform:uppercase;text-align:center;display:none}
-  </style>
+<style>
+body{
+  margin:0;
+  background:#07090d;
+  font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Inter,Roboto,Arial,sans-serif;
+  color:#e9eef7;
+}
+.wrap{max-width:800px;margin:0 auto;padding:30px 16px;}
+.header{
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  font-size:12px;
+  color:rgba(255,255,255,.6);
+}
+.title{
+  font-size:30px;
+  font-weight:900;
+  margin:12px 0 24px;
+}
+.card{
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:20px;
+  padding:22px;
+}
+.line{margin:14px 0;font-size:18px;line-height:1.6;}
+.you b{color:#7fb2ff;}
+.security b{color:#fff;}
+.system b{color:#a7b1bf;}
+.typing{
+  color:rgba(255,255,255,.5);
+  font-size:14px;
+  margin-top:8px;
+}
+.banner{
+  margin-top:20px;
+  border:1px solid rgba(198,26,26,.6);
+  background:rgba(198,26,26,.1);
+  padding:14px;
+  border-radius:12px;
+}
+.btn{
+  margin-top:20px;
+  background:#c61a1a;
+  padding:18px;
+  border-radius:14px;
+  text-align:center;
+  font-weight:900;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+}
+</style>
 </head>
+
 <body>
-  <div class="wrap">
-    <div class="hdr">
-      <div>
-        <div class="brand">Major Crimes Division • Live Line</div>
-        <div class="title">Call Transcript (Live)</div>
-        <div class="metaRow">
-          <span class="pill">Case File #001</span>
-          <span class="pill">Source: Building Security</span>
-          <span class="pill">Status: Active</span>
-        </div>
-      </div>
-      <div class="stamp">CONFIDENTIAL</div>
+<div class="wrap">
+  <div class="header">Major Crimes Division • Secure Line</div>
+  <div class="title">Live Call Transcript</div>
+
+  <div class="card">
+    <div id="log"></div>
+    <div id="typing" class="typing" style="display:none;">Security is typing…</div>
+    <div id="banner" class="banner" style="display:none;">
+      Attachment Received • New Suspect: TOM WHITLOCK
     </div>
-
-    <div class="card">
-      <div class="log" id="log"></div>
-
-      <div class="typing" id="typing" style="display:none">
-        <span id="typingLabel">Security is typing</span>
-        <span class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></span>
-      </div>
-
-      <div class="banner" id="banner">
-        Incoming Attachment Received • Source: Building Security
-      </div>
-
-      <!-- NOT CLICKABLE (physical progression) -->
-      <div class="btn" id="physicalBtn">
-        OPEN ENVELOPE A — NEW LEAD
-        <small>Proceed physically. Do not close this case file.</small>
-      </div>
-
-      <div class="subnote" id="subnote">Follow the physical evidence chain.</div>
+    <div id="physicalBtn" class="btn" style="display:none;">
+      OPEN ENVELOPE A — NEW LEAD
     </div>
   </div>
+</div>
 
-  <script>
-    const log = document.getElementById('log');
-    const typing = document.getElementById('typing');
-    const typingLabel = document.getElementById('typingLabel');
-    const banner = document.getElementById('banner');
-    const physicalBtn = document.getElementById('physicalBtn');
-    const subnote = document.getElementById('subnote');
+<script>
+const log=document.getElementById('log');
+const typing=document.getElementById('typing');
+const banner=document.getElementById('banner');
+const btn=document.getElementById('physicalBtn');
 
-    // Slower pacing for intensity
-    const BASE_DELAY = 1100;        // between messages
-    const TYPE_MIN = 1400;          // typing effect minimum
-    const TYPE_MAX = 2400;          // typing effect maximum
-    const EXTRA_PAUSE_AFTER = 700;  // extra breath after some lines
+const script=[
+["you","Hello?"],
+["security","Detective… don’t hang up."],
+["you","Who is this?"],
+["security","Building security. I was on shift the night Olivia arrived."],
+["you","She wasn’t alone?"],
+["security","No."],
+["security","She met someone. A man."],
+["you","Who?"],
+["security","Tom Whitlock."],
+["security","Married."],
+["you","How do you know?"],
+["security","I saw the ring when he signed in."],
+["security","I looked him up later. I shouldn’t have."],
+["you","Why are you calling now?"],
+["security","Because she’s dead."],
+["security","And I don’t want to look like an accomplice."],
+["you","Do you have proof?"],
+["security","Yes."],
+["security","I took a hallway photo. It shows them entering together."],
+["you","Send it."],
+["system","Attachment Received."],
+["system","New suspect flagged: TOM WHITLOCK."]
+];
 
-    // Live script: introduces new suspect (Tom Whitlock) + attachment + physical step
-    const script = [
-      {who:'You', cls:'you', text:'Hello?', wait:BASE_DELAY},
-      {who:'Security', cls:'security', text:'Detective—listen. Please don’t hang up.', typing:true, wait:BASE_DELAY},
-      {who:'You', cls:'you', text:'Who is this?', wait:BASE_DELAY},
-      {who:'Security', cls:'security', text:'Building security. Near Garrison Woods.', typing:true, wait:BASE_DELAY},
-      {who:'You', cls:'you', text:'Why are you calling me directly?', wait:BASE_DELAY},
-      {who:'Security', cls:'security', text:'Because I already made one mistake… and I can’t make another.', typing:true, wait:BASE_DELAY + EXTRA_PAUSE_AFTER},
-      {who:'You', cls:'you', text:'Start over. What’s your name?', wait:BASE_DELAY},
-      {who:'Security', cls:'security', text:'I’m not giving my name on an open line.', typing:true, wait:BASE_DELAY},
-      {who:'Security', cls:'security', text:'But I was on shift the night Olivia came in.', typing:true, wait:BASE_DELAY},
-      {who:'You', cls:'you', text:'She wasn’t alone?', wait:BASE_DELAY},
-      {who:'Security', cls:'security', text:'No.', typing:true, wait:BASE_DELAY + 400},
-      {who:'Security', cls:'security', text:'She met someone. A man.', typing:true, wait:BASE_DELAY + EXTRA_PAUSE_AFTER},
-      {who:'You', cls:'you', text:'Describe him.', wait:BASE_DELAY},
-      {who:'Security', cls:'security', text:'Mid-30s to 40s. Well-dressed. Wedding ring.', typing:true, wait:BASE_DELAY},
-      {who:'You', cls:'you', text:'How do you know he’s married?', wait:BASE_DELAY},
-      {who:'Security', cls:'security', text:'I saw the ring when he signed in.', typing:true, wait:BASE_DELAY},
-      {who:'Security', cls:'security', text:'And… I looked him up later. I shouldn’t have.', typing:true, wait:BASE_DELAY + EXTRA_PAUSE_AFTER},
-      {who:'You', cls:'you', text:'Looked him up where?', wait:BASE_DELAY},
-      {who:'Security', cls:'security', text:'Tenant database. I accessed a restricted screen.', typing:true, wait:BASE_DELAY},
-      {who:'You', cls:'you', text:'Why didn’t you report this immediately?', wait:BASE_DELAY},
-      {who:'Security', cls:'security', text:'I thought it was personal. An affair. Not my business.', typing:true, wait:BASE_DELAY},
-      {who:'Security', cls:'security', text:'Then she turned up dead… and I panicked.', typing:true, wait:BASE_DELAY + EXTRA_PAUSE_AFTER},
-      {who:'You', cls:'you', text:'So who is he?', wait:BASE_DELAY},
-      {who:'Security', cls:'security', text:'Tom.', typing:true, wait:BASE_DELAY + 300},
-      {who:'Security', cls:'security', text:'Tom Whitlock.', typing:true, wait:BASE_DELAY + EXTRA_PAUSE_AFTER},
-      {who:'You', cls:'you', text:'Say that again.', wait:BASE_DELAY},
-      {who:'Security', cls:'security', text:'Tom Whitlock. Married. He came in with her.', typing:true, wait:BASE_DELAY},
-      {who:'You', cls:'you', text:'Do you have proof of the meeting?', wait:BASE_DELAY},
-      {who:'Security', cls:'security', text:'Yes.', typing:true, wait:BASE_DELAY},
-      {who:'Security', cls:'security', text:'A hallway photo. Timestamped.', typing:true, wait:BASE_DELAY},
-      {who:'Security', cls:'security', text:'I took it discreetly. It shows them entering together.', typing:true, wait:BASE_DELAY + EXTRA_PAUSE_AFTER},
-      {who:'You', cls:'you', text:'Send it. Now.', wait:BASE_DELAY},
+function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
 
-      {who:'SYSTEM', cls:'system', text:'Attachment Received.', wait:BASE_DELAY},
-      {who:'SYSTEM', cls:'system', text:'New suspect flagged: TOM WHITLOCK.', wait:BASE_DELAY},
-      {who:'SYSTEM', cls:'system', text:'To proceed further, open Envelope A (physical evidence).', wait:BASE_DELAY}
-    ];
-
-    function sleep(ms){ return new Promise(r=>setTimeout(r, ms)); }
-
-    function addLine(who, cls, text){
-      const div = document.createElement('div');
-      div.className = `line ${cls}`;
-      div.innerHTML = `<span class="who">${who}:</span> <span class="msg">${text}</span>`;
-      log.appendChild(div);
-      log.scrollTop = log.scrollHeight;
+async function run(){
+  for(let i=0;i<script.length;i++){
+    const [cls,text]=script[i];
+    if(cls==="security"){
+      typing.style.display="block";
+      await sleep(2000+Math.random()*1200);
+      typing.style.display="none";
+    }else{
+      await sleep(1400);
     }
+    const div=document.createElement("div");
+    div.className="line "+cls;
+    div.innerHTML="<b>"+cls.toUpperCase()+":</b> "+text;
+    log.appendChild(div);
+    log.scrollTop=log.scrollHeight;
+  }
+  banner.style.display="block";
+  await sleep(800);
+  btn.style.display="block";
+}
 
-    async function showTyping(speaker){
-      typingLabel.textContent = `${speaker} is typing`;
-      typing.style.display = 'inline-flex';
-      log.scrollTop = log.scrollHeight;
-      const t = Math.floor(TYPE_MIN + Math.random() * (TYPE_MAX - TYPE_MIN));
-      await sleep(t);
-      typing.style.display = 'none';
-    }
-
-    async function run(){
-      for (const m of script){
-        if(m.typing) await showTyping(m.who);
-        await sleep(m.wait);
-        addLine(m.who, m.cls, m.text);
-      }
-
-      banner.style.display = 'block';
-      await sleep(700);
-      physicalBtn.style.display = 'block';
-      subnote.style.display = 'block';
-    }
-
-    run();
-  </script>
+run();
+</script>
 </body>
 </html>
