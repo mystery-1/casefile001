@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Live Case Log – Internal Channel</title>
+
+<style>
+body{
+  margin:0;
+  background:#0b0b0b;
+  color:#e9e9e9;
+  font-family: Arial, sans-serif;
+  padding:30px 15px;
+}
+.container{max-width:520px;margin:auto;}
+.header{
+  border:1px solid #2a2a2a;
+  background:#111;
+  padding:15px;
+}
+.header-top{
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  color:#bdbdbd;
+}
+.header-main{margin-top:6px;font-size:18px;font-weight:bold;}
+.header-sub{margin-top:4px;font-size:12px;color:#bdbdbd;}
+
+.chat-box{
+  margin-top:15px;
+  border:1px solid #2a2a2a;
+  background:#101010;
+  padding:15px;
+  min-height:200px;
+}
+
+.message{
+  margin-bottom:12px;
+  font-size:14px;
+  line-height:1.5;
+}
+
+.mm{ color:#ffb3b3; }
+.player{ color:#9fd3ff; }
+.guard{ color:#e9e9e9; }
+
+.alert{
+  margin-top:20px;
+  padding:14px;
+  border:1px solid #8b0000;
+  background:#140000;
+  font-size:13px;
+}
+
+button{
+  width:100%;
+  padding:14px;
+  margin-top:15px;
+  font-size:16px;
+  font-weight:bold;
+  background:#8b0000;
+  border:none;
+  color:white;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+  <div class="header">
+    <div class="header-top">Major Crimes Division • Internal Channel</div>
+    <div class="header-main">LIVE CASE COMMUNICATION LOG</div>
+    <div class="header-sub">Case File #001: What They Buried</div>
+  </div>
+
+  <div class="chat-box" id="chat"></div>
+
+  <div id="photoSection" style="display:none;">
+    <div class="alert">
+      Incoming Attachment Received.
+    </div>
+    <button onclick="window.location.href='envelope-d.html'">
+      OPEN ENVELOPE D – NEW SUSPECT
+    </button>
+  </div>
+
+</div>
+
+<script>
+// Prevent skipping
+if(localStorage.getItem("camUnlocked") !== "true"){
+  window.location.href="index.html";
+}
+
+var chat = document.getElementById("chat");
+
+function addMessage(text, className){
+  var div = document.createElement("div");
+  div.className = "message " + className;
+  div.innerHTML = text;
+  chat.appendChild(div);
+}
+
+// Simulated live updates
+setTimeout(function(){
+  addMessage("<b>You:</b> I reviewed the footage. The figure is unclear. Dark. Glitching. No identifiable features. Only thing we have is footwear size.", "player");
+},1000);
+
+setTimeout(function(){
+  addMessage("<b>M.M:</b> Understood. I’ll check surrounding contacts and security personnel for anything additional.", "mm");
+},4000);
+
+setTimeout(function(){
+  addMessage("<b>INCOMING CALL – BUILDING SECURITY STAFF</b>", "guard");
+},8000);
+
+setTimeout(function(){
+  addMessage("<b>Security Staff:</b> I… I didn’t mean for anything to happen. I saw her with someone days before. A man. They met privately. I took a photo.", "guard");
+},11000);
+
+setTimeout(function(){
+  addMessage("<b>Security Staff:</b> I tried contacting him. He refused. I never wanted anyone dead.", "guard");
+},14000);
+
+setTimeout(function(){
+  addMessage("<b>M.M:</b> Send the image immediately.", "mm");
+},17000);
+
+setTimeout(function(){
+  document.getElementById("photoSection").style.display="block";
+},20000);
+
+</script>
+
+</body>
+</html>
