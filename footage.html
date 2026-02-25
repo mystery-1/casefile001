@@ -84,7 +84,7 @@ button{
   </div>
 
   <div class="video-box">
-    <video controls>
+    <video id="crimeVideo" controls>
       <source src="footage.mp4" type="video/mp4">
     </video>
   </div>
@@ -109,22 +109,35 @@ button{
   </div>
 
   <div class="syslog">
-    SYSLOG: playback complete...<br>
+    SYSLOG: playback idle...<br>
     NODE: CAM-17B • STATUS: MONITORING
   </div>
 
 </div>
 
 <script>
+
 // Prevent skipping ahead
 if(localStorage.getItem("camUnlocked") !== "true"){
   window.location.href="index.html";
 }
 
-// Show live alert after 5 seconds
-setTimeout(function(){
-  document.getElementById("liveAlert").style.display="block";
-}, 5000);
+var video = document.getElementById("crimeVideo");
+var alertShown = false;
+
+// Trigger alert ONLY after real playback
+video.addEventListener("play", function(){
+
+  if(alertShown) return;
+
+  setTimeout(function(){
+      if(!video.paused && !alertShown){
+          document.getElementById("liveAlert").style.display="block";
+          alertShown = true;
+      }
+  }, 6000); // 6 seconds of actual watching
+});
+
 </script>
 
 </body>
