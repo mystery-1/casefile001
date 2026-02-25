@@ -45,6 +45,7 @@ body{
 .mm{ color:#ffb3b3; }
 .player{ color:#9fd3ff; }
 .guard{ color:#e9e9e9; }
+.system{ color:#8b8b8b; font-style:italic; }
 
 .alert{
   margin-top:20px;
@@ -91,7 +92,8 @@ button{
 </div>
 
 <script>
-// Prevent skipping
+
+// Prevent skipping ahead
 if(localStorage.getItem("camUnlocked") !== "true"){
   window.location.href="index.html";
 }
@@ -103,36 +105,53 @@ function addMessage(text, className){
   div.className = "message " + className;
   div.innerHTML = text;
   chat.appendChild(div);
+  window.scrollTo(0,document.body.scrollHeight);
 }
 
-// Simulated live updates
-setTimeout(function(){
-  addMessage("<b>You:</b> I reviewed the footage. The figure is unclear. Dark. Glitching. No identifiable features. Only thing we have is footwear size.", "player");
-},1000);
+// Realistic pacing sequence
+function sequence(){
 
-setTimeout(function(){
-  addMessage("<b>M.M:</b> Understood. I’ll check surrounding contacts and security personnel for anything additional.", "mm");
-},4000);
+setTimeout(()=>addMessage("<b>You:</b> I watched it.", "player"),1000);
+setTimeout(()=>addMessage("<b>You:</b> There’s someone there.", "player"),3500);
+setTimeout(()=>addMessage("<b>You:</b> But I can’t make out anything.", "player"),6500);
+setTimeout(()=>addMessage("<b>You:</b> It’s dark. Grainy.", "player"),9500);
+setTimeout(()=>addMessage("<b>You:</b> Only thing clear is shoe profile.", "player"),12500);
 
-setTimeout(function(){
-  addMessage("<b>INCOMING CALL – BUILDING SECURITY STAFF</b>", "guard");
-},8000);
+setTimeout(()=>addMessage("<b>M.M:</b> Understood.", "mm"),16500);
+setTimeout(()=>addMessage("<b>M.M:</b> Stay with that detail.", "mm"),19500);
+setTimeout(()=>addMessage("<b>M.M:</b> I’m checking external contacts now.", "mm"),22500);
 
-setTimeout(function(){
-  addMessage("<b>Security Staff:</b> I… I didn’t mean for anything to happen. I saw her with someone days before. A man. They met privately. I took a photo.", "guard");
-},11000);
+setTimeout(()=>addMessage("<b>SYSTEM:</b> Incoming Call – Building Security", "system"),27000);
 
-setTimeout(function(){
-  addMessage("<b>Security Staff:</b> I tried contacting him. He refused. I never wanted anyone dead.", "guard");
-},14000);
+setTimeout(()=>addMessage("<b>Security:</b> I didn’t think this would happen.", "guard"),31000);
+setTimeout(()=>addMessage("<b>Security:</b> I swear.", "guard"),33500);
+setTimeout(()=>addMessage("<b>Security:</b> I just saw them meeting.", "guard"),36500);
+setTimeout(()=>addMessage("<b>Security:</b> Private conference room.", "guard"),39500);
+setTimeout(()=>addMessage("<b>Security:</b> It felt wrong.", "guard"),42500);
 
-setTimeout(function(){
-  addMessage("<b>M.M:</b> Send the image immediately.", "mm");
-},17000);
+setTimeout(()=>addMessage("<b>M.M:</b> Who was with her?", "mm"),47000);
 
-setTimeout(function(){
-  document.getElementById("photoSection").style.display="block";
-},20000);
+setTimeout(()=>addMessage("<b>Security:</b> A man.", "guard"),51000);
+setTimeout(()=>addMessage("<b>Security:</b> Married.", "guard"),53500);
+setTimeout(()=>addMessage("<b>Security:</b> I looked him up later.", "guard"),56500);
+
+setTimeout(()=>addMessage("<b>Security:</b> I tried messaging him.", "guard"),60500);
+setTimeout(()=>addMessage("<b>Security:</b> He told me to stop contacting him.", "guard"),64500);
+
+setTimeout(()=>addMessage("<b>M.M:</b> Do you have proof?", "mm"),69000);
+
+setTimeout(()=>addMessage("<b>Security:</b> I took a photo.", "guard"),73000);
+setTimeout(()=>addMessage("<b>Security:</b> I never meant for her to die.", "guard"),76000);
+
+setTimeout(()=>addMessage("<b>SYSTEM:</b> Attachment Received.", "system"),80000);
+
+setTimeout(()=>{
+document.getElementById("photoSection").style.display="block";
+},83000);
+
+}
+
+sequence();
 
 </script>
 
