@@ -33,13 +33,13 @@ body{
   border:1px solid #2a2a2a;
   background:#101010;
   padding:15px;
-  min-height:200px;
+  min-height:240px;
 }
 
 .message{
   margin-bottom:12px;
   font-size:14px;
-  line-height:1.5;
+  line-height:1.55;
 }
 
 .mm{ color:#ffb3b3; }
@@ -82,18 +82,17 @@ button{
 
   <div id="photoSection" style="display:none;">
     <div class="alert">
-      Incoming Attachment Received.
+      Incoming Attachment Received • Source: Building Security
     </div>
     <button onclick="window.location.href='envelope-d.html'">
-      OPEN ENVELOPE D – NEW SUSPECT
+      OPEN ENVELOPE D – NEW LEAD
     </button>
   </div>
 
 </div>
 
 <script>
-
-// Prevent skipping ahead
+// Prevent skipping
 if(localStorage.getItem("camUnlocked") !== "true"){
   window.location.href="index.html";
 }
@@ -108,51 +107,88 @@ function addMessage(text, className){
   window.scrollTo(0,document.body.scrollHeight);
 }
 
-// Realistic pacing sequence
 function sequence(){
 
-setTimeout(()=>addMessage("<b>You:</b> I watched it.", "player"),1000);
-setTimeout(()=>addMessage("<b>You:</b> There’s someone there.", "player"),3500);
-setTimeout(()=>addMessage("<b>You:</b> But I can’t make out anything.", "player"),6500);
-setTimeout(()=>addMessage("<b>You:</b> It’s dark. Grainy.", "player"),9500);
-setTimeout(()=>addMessage("<b>You:</b> Only thing clear is shoe profile.", "player"),12500);
+/* -------------------------
+   Pre-call: You + M.M.
+--------------------------*/
+setTimeout(()=>addMessage("<b>You:</b> Reviewed CAM-17B.", "player"),1000);
+setTimeout(()=>addMessage("<b>You:</b> There’s a figure on the driveway.", "player"),4500);
+setTimeout(()=>addMessage("<b>You:</b> No face. No identifiers.", "player"),8500);
+setTimeout(()=>addMessage("<b>You:</b> Only usable detail is the shoe profile.", "player"),12500);
 
-setTimeout(()=>addMessage("<b>M.M:</b> Understood.", "mm"),16500);
-setTimeout(()=>addMessage("<b>M.M:</b> Stay with that detail.", "mm"),19500);
-setTimeout(()=>addMessage("<b>M.M:</b> I’m checking external contacts now.", "mm"),22500);
+setTimeout(()=>addMessage("<b>M.M:</b> That’s enough to start narrowing.", "mm"),17500);
+setTimeout(()=>addMessage("<b>M.M:</b> Log it. I’m checking external contacts now.", "mm"),21500);
 
-setTimeout(()=>addMessage("<b>SYSTEM:</b> Incoming Call – Building Security", "system"),27000);
+/* -------------------------
+   Incoming call
+--------------------------*/
+setTimeout(()=>addMessage("<b>SYSTEM:</b> Incoming Call – Building Security", "system"),28500);
 
-setTimeout(()=>addMessage("<b>Security:</b> I didn’t think this would happen.", "guard"),31000);
-setTimeout(()=>addMessage("<b>Security:</b> I swear.", "guard"),33500);
-setTimeout(()=>addMessage("<b>Security:</b> I just saw them meeting.", "guard"),36500);
-setTimeout(()=>addMessage("<b>Security:</b> Private conference room.", "guard"),39500);
-setTimeout(()=>addMessage("<b>Security:</b> It felt wrong.", "guard"),42500);
+/* -------------------------
+   Call transcript: Security + YOU (not M.M.)
+--------------------------*/
+setTimeout(()=>addMessage("<b>Security:</b> Detective… I didn’t think this would happen.", "guard"),34500);
+setTimeout(()=>addMessage("<b>Security:</b> I swear… I didn’t mean for anyone to get hurt.", "guard"),39000);
 
-setTimeout(()=>addMessage("<b>M.M:</b> Who was with her?", "mm"),47000);
+setTimeout(()=>addMessage("<b>You:</b> Stop. Identify yourself.", "player"),44500);
+setTimeout(()=>addMessage("<b>You:</b> Name. Job. Location.", "player"),48500);
 
-setTimeout(()=>addMessage("<b>Security:</b> A man.", "guard"),51000);
-setTimeout(()=>addMessage("<b>Security:</b> Married.", "guard"),53500);
-setTimeout(()=>addMessage("<b>Security:</b> I looked him up later.", "guard"),56500);
+setTimeout(()=>addMessage("<b>Security:</b> I’m building security.", "guard"),54000);
+setTimeout(()=>addMessage("<b>Security:</b> Night shift. Downtown offices on Garrison.", "guard"),58500);
 
-setTimeout(()=>addMessage("<b>Security:</b> I tried messaging him.", "guard"),60500);
-setTimeout(()=>addMessage("<b>Security:</b> He told me to stop contacting him.", "guard"),64500);
+setTimeout(()=>addMessage("<b>You:</b> Why are you calling Major Crimes?", "player"),64000);
 
-setTimeout(()=>addMessage("<b>M.M:</b> Do you have proof?", "mm"),69000);
+setTimeout(()=>addMessage("<b>Security:</b> Because the victim… I saw her before.", "guard"),70000);
+setTimeout(()=>addMessage("<b>Security:</b> A few days before she died.", "guard"),74500);
 
-setTimeout(()=>addMessage("<b>Security:</b> I took a photo.", "guard"),73000);
-setTimeout(()=>addMessage("<b>Security:</b> I never meant for her to die.", "guard"),76000);
+setTimeout(()=>addMessage("<b>You:</b> Saw her where?", "player"),80000);
 
-setTimeout(()=>addMessage("<b>SYSTEM:</b> Attachment Received.", "system"),80000);
+setTimeout(()=>addMessage("<b>Security:</b> In our building.", "guard"),85500);
+setTimeout(()=>addMessage("<b>Security:</b> After hours.", "guard"),89500);
+
+setTimeout(()=>addMessage("<b>You:</b> Was she alone?", "player"),95000);
+
+setTimeout(()=>addMessage("<b>Security:</b> No.", "guard"),100500);
+setTimeout(()=>addMessage("<b>Security:</b> She met someone.", "guard"),104500);
+
+setTimeout(()=>addMessage("<b>You:</b> Who?", "player"),109500);
+
+setTimeout(()=>addMessage("<b>Security:</b> A man.", "guard"),115000);
+setTimeout(()=>addMessage("<b>Security:</b> Married.", "guard"),118500);
+
+setTimeout(()=>addMessage("<b>You:</b> How do you know he’s married?", "player"),124000);
+
+setTimeout(()=>addMessage("<b>Security:</b> I looked him up later.", "guard"),130000);
+setTimeout(()=>addMessage("<b>Security:</b> I shouldn’t have.", "guard"),134500);
+
+setTimeout(()=>addMessage("<b>You:</b> Why didn’t you report this immediately?", "player"),140000);
+
+setTimeout(()=>addMessage("<b>Security:</b> Because I thought it was just… personal.", "guard"),147000);
+setTimeout(()=>addMessage("<b>Security:</b> Then she turned up dead.", "guard"),152500);
+setTimeout(()=>addMessage("<b>Security:</b> And I realized I might look involved.", "guard"),158500);
+
+setTimeout(()=>addMessage("<b>You:</b> Do you have proof of the meeting?", "player"),165000);
+
+setTimeout(()=>addMessage("<b>Security:</b> I have a hallway photo.", "guard"),172000);
+setTimeout(()=>addMessage("<b>Security:</b> I took it discreetly.", "guard"),176500);
+setTimeout(()=>addMessage("<b>Security:</b> It shows them entering together.", "guard"),181000);
+
+setTimeout(()=>addMessage("<b>You:</b> Send it. Now.", "player"),186500);
+
+setTimeout(()=>addMessage("<b>SYSTEM:</b> Attachment Received.", "system"),191500);
 
 setTimeout(()=>{
-document.getElementById("photoSection").style.display="block";
-},83000);
+  document.getElementById("photoSection").style.display="block";
+},196500);
+
+/* Optional: M.M. reacts AFTER attachment arrives (but call is still YOU)
+setTimeout(()=>addMessage("<b>M.M:</b> Good. Preserve source. We move on this.", "mm"),205000);
+*/
 
 }
 
 sequence();
-
 </script>
 
 </body>
