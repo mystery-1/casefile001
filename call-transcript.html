@@ -1,0 +1,100 @@
+<!-- call-transcript.html -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Call Transcript</title>
+  <style>
+    body {
+      margin: 0;
+      background: #000;
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    }
+    .wrap {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 18px;
+    }
+    .chat {
+      background: #0b0b0b;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      padding: 18px;
+      line-height: 1.6;
+      font-size: 16px;
+    }
+    .you { color: #6fb4ff; font-weight: 700; }
+    .sec { color: #ffffff; font-weight: 700; }
+    .sys { color: #bdbdbd; font-weight: 700; opacity: 0.85; }
+
+    .line { margin: 8px 0; }
+    .muted { opacity: 0.92; font-weight: 400; }
+
+    .attachment {
+      margin: 18px 0 14px;
+      padding: 14px;
+      border: 1px solid rgba(255,0,0,0.35);
+      border-radius: 10px;
+      background: rgba(139,0,0,0.15);
+      font-size: 14px;
+      letter-spacing: 0.6px;
+    }
+
+    /* NOT CLICKABLE - just a physical instruction */
+    .instruction-bar {
+      margin-top: 14px;
+      padding: 18px;
+      background-color: #8b0000;
+      color: white;
+      text-align: center;
+      font-weight: 800;
+      letter-spacing: 2px;
+      border-radius: 10px;
+      user-select: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="chat">
+      <div class="line"><span class="you">You:</span> <span class="muted">Was she alone?</span></div>
+
+      <div class="line"><span class="sec">Security:</span> <span class="muted">No.</span></div>
+      <div class="line"><span class="sec">Security:</span> <span class="muted">She met someone.</span></div>
+
+      <div class="line"><span class="you">You:</span> <span class="muted">Who?</span></div>
+
+      <div class="line"><span class="sec">Security:</span> <span class="muted">A man.</span></div>
+      <div class="line"><span class="sec">Security:</span> <span class="muted">Married.</span></div>
+
+      <div class="line"><span class="you">You:</span> <span class="muted">How do you know he’s married?</span></div>
+
+      <div class="line"><span class="sec">Security:</span> <span class="muted">I looked him up later.</span></div>
+      <div class="line"><span class="sec">Security:</span> <span class="muted">I shouldn’t have.</span></div>
+
+      <div class="line"><span class="you">You:</span> <span class="muted">Why didn’t you report this immediately?</span></div>
+
+      <div class="line"><span class="sec">Security:</span> <span class="muted">Because I thought it was just… personal.</span></div>
+      <div class="line"><span class="sec">Security:</span> <span class="muted">Then she turned up dead.</span></div>
+      <div class="line"><span class="sec">Security:</span> <span class="muted">And I realized I might look involved.</span></div>
+
+      <div class="line"><span class="you">You:</span> <span class="muted">Do you have proof of the meeting?</span></div>
+
+      <div class="line"><span class="sec">Security:</span> <span class="muted">I have a hallway photo.</span></div>
+      <div class="line"><span class="sec">Security:</span> <span class="muted">I took it discreetly.</span></div>
+      <div class="line"><span class="sec">Security:</span> <span class="muted">It shows them entering together.</span></div>
+
+      <div class="line"><span class="you">You:</span> <span class="muted">Send it. Now.</span></div>
+
+      <div class="line" style="margin-top:14px;"><span class="sys">SYSTEM:</span> <span class="muted">Attachment Received.</span></div>
+
+      <div class="attachment">Incoming Attachment Received • Source: Building Security</div>
+
+      <!-- IMPORTANT: This is NOT a link -->
+      <div class="instruction-bar">OPEN ENVELOPE A — NEW LEADS</div>
+    </div>
+  </div>
+</body>
+</html>
