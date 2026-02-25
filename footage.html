@@ -1,145 +1,305 @@
-<!doctype html>
+ <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Footage Archive</title>
+  <title>Major Crimes Division • Footage Archive</title>
   <style>
     :root{
-      --bg:#05070b;
+      --bg:#07090d;
+      --panel:#0d1118;
+      --paper:#0b0f15;
       --text:#e9eef7;
-      --muted:rgba(255,255,255,.55);
-      --border:rgba(255,255,255,.12);
-      --panel:rgba(255,255,255,.06);
+      --muted:rgba(255,255,255,.58);
+      --muted2:rgba(255,255,255,.42);
+      --border:rgba(255,255,255,.10);
       --accent:#c61a1a;
+      --accentSoft:rgba(198,26,26,.12);
+      --ok:#33d17a;
+      --warn:#ffcc00;
     }
-    html,body{height:100%;margin:0;background:radial-gradient(1200px 700px at 50% 0%, rgba(255,255,255,.06), transparent), var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Inter,Roboto,Arial,sans-serif;}
-    .wrap{max-width:880px;margin:0 auto;padding:20px 16px 40px;}
-    .topline{letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-size:12px;margin:8px 0 18px;text-align:center}
-    .videoShell{
-      margin:0 auto;
-      width:min(820px,100%);
-      background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+    html,body{height:100%;margin:0;background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Inter,Roboto,Arial,sans-serif;color:var(--text);}
+    .wrap{max-width:900px;margin:0 auto;padding:22px 16px 34px;}
+    .hdr{
+      display:flex;align-items:flex-start;justify-content:space-between;gap:12px;
+      margin-bottom:14px;
+    }
+    .brand{
+      letter-spacing:.18em;text-transform:uppercase;
+      font-size:12px;color:rgba(255,255,255,.62);
+    }
+    .title{
+      font-size:28px;letter-spacing:.06em;text-transform:uppercase;
+      margin:8px 0 0;
+      font-weight:900;
+    }
+    .metaRow{
+      display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:10px;color:var(--muted);
+      font-size:12px;letter-spacing:.08em;text-transform:uppercase;
+    }
+    .pill{
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.04);
+      padding:8px 10px;border-radius:999px;
+    }
+    .stamp{
+      border:2px solid rgba(198,26,26,.70);
+      color:rgba(198,26,26,.90);
+      padding:8px 12px;border-radius:6px;
+      letter-spacing:.16em;text-transform:uppercase;
+      font-weight:900;font-size:12px;
+      transform:rotate(-2deg);
+      background:rgba(198,26,26,.06);
+      user-select:none;
+      white-space:nowrap;
+    }
+
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
       border:1px solid var(--border);
       border-radius:18px;
-      padding:14px;
-      box-shadow:0 18px 70px rgba(0,0,0,.6);
+      box-shadow:0 18px 70px rgba(0,0,0,.55);
+      overflow:hidden;
     }
-    video{width:100%;border-radius:12px;display:block;background:black}
-    .hint{margin-top:14px;color:rgba(255,255,255,.40);text-align:center;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
-    /* Incoming call toast + modal */
-    .toast{
-      position:fixed;left:50%;transform:translateX(-50%);
-      top:18px;z-index:50;
-      background:rgba(0,0,0,.72);
+
+    .section{
+      padding:16px 16px 0;
+    }
+
+    .divider{
+      height:1px;background:rgba(255,255,255,.08);margin:14px 0 0;
+    }
+
+    .notice{
+      display:flex;gap:10px;align-items:flex-start;
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:14px;
+      padding:12px 12px;
+      margin:14px 16px 0;
+    }
+    .dot{
+      width:10px;height:10px;border-radius:999px;background:var(--warn);
+      margin-top:4px;flex:0 0 auto;
+      box-shadow:0 0 0 3px rgba(255,204,0,.12);
+    }
+    .notice b{display:block;letter-spacing:.08em;text-transform:uppercase;font-size:12px}
+    .notice span{color:var(--muted);font-size:14px;line-height:1.4}
+
+    /* video */
+    .videoWrap{
+      margin:14px 16px 18px;
+      border-radius:18px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.10);
+      background:#000;
+      position:relative;
+    }
+    video{width:100%;display:block;background:#000}
+    .overlayTop{
+      position:absolute;left:0;right:0;top:0;
+      display:flex;justify-content:space-between;align-items:center;
+      padding:10px 12px;
+      background:linear-gradient(180deg, rgba(0,0,0,.65), rgba(0,0,0,0));
+      pointer-events:none;
+      gap:10px;
+    }
+    .overlayTop .left{
+      display:flex;gap:10px;align-items:center;min-width:0;
+      color:rgba(255,255,255,.80);font-size:12px;letter-spacing:.08em;text-transform:uppercase;
+    }
+    .tag{
+      padding:6px 10px;border-radius:999px;
       border:1px solid rgba(255,255,255,.14);
-      padding:12px 14px;border-radius:12px;
-      display:none;gap:10px;align-items:center;
-      box-shadow:0 18px 60px rgba(0,0,0,.65);
-      backdrop-filter: blur(10px);
+      background:rgba(0,0,0,.25);
+      white-space:nowrap;
     }
-    .toast strong{font-size:13px;letter-spacing:.04em}
-    .buzz{width:8px;height:8px;border-radius:999px;background:var(--accent);box-shadow:0 0 0 0 rgba(198,26,26,.55);animation:p 1.2s infinite}
-    @keyframes p{0%{box-shadow:0 0 0 0 rgba(198,26,26,.55)}70%{box-shadow:0 0 0 14px rgba(198,26,26,0)}100%{box-shadow:0 0 0 0 rgba(198,26,26,0)}}
-    .modalBack{
-      position:fixed;inset:0;background:rgba(0,0,0,.62);
-      display:none;z-index:60;align-items:center;justify-content:center;
+    .status{
+      padding:6px 10px;border-radius:999px;
+      border:1px solid rgba(51,209,122,.35);
+      background:rgba(51,209,122,.08);
+      color:rgba(51,209,122,.95);
+      font-weight:700;
+      white-space:nowrap;
+    }
+
+    /* Call incoming toast + fake vibration */
+    .toast{
+      position:fixed;left:50%;top:18px;transform:translateX(-50%);
+      width:min(520px, calc(100% - 24px));
+      background:rgba(8,10,14,.92);
+      border:1px solid rgba(255,255,255,.14);
+      border-radius:16px;
+      box-shadow:0 20px 90px rgba(0,0,0,.6);
+      padding:12px 12px;
+      display:none;
+      z-index:9999;
       backdrop-filter: blur(8px);
     }
-    .modal{
-      width:min(420px,92vw);
-      background:rgba(10,12,16,.92);
+    .toastRow{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+    .toastTitle{font-weight:900;letter-spacing:.08em;text-transform:uppercase;font-size:12px}
+    .toastSub{color:var(--muted);font-size:13px;margin-top:4px;line-height:1.25}
+    .toastBtns{display:flex;gap:10px;align-items:center}
+    .tbtn{
+      border-radius:12px;
+      padding:10px 12px;
+      font-weight:800;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      font-size:12px;
       border:1px solid rgba(255,255,255,.14);
-      border-radius:18px;
-      padding:18px 16px 16px;
-      box-shadow:0 24px 80px rgba(0,0,0,.7);
+      background:rgba(255,255,255,.05);
+      color:rgba(255,255,255,.88);
+      user-select:none;
     }
-    .modal h3{margin:0 0 6px;font-size:16px;letter-spacing:.06em;text-transform:uppercase}
-    .modal p{margin:0 0 14px;color:rgba(255,255,255,.62);font-size:13px;line-height:1.4}
-    .row{display:flex;gap:10px}
-    .btn{flex:1;border:none;border-radius:14px;padding:14px 12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
-    .accept{background:var(--accent);color:#fff}
-    .decline{background:rgba(255,255,255,.08);color:rgba(255,255,255,.85);border:1px solid rgba(255,255,255,.12)}
+    .tbtn.accept{border-color:rgba(51,209,122,.35);background:rgba(51,209,122,.10);color:rgba(51,209,122,.95)}
+    .tbtn.decline{border-color:rgba(198,26,26,.35);background:rgba(198,26,26,.10);color:rgba(255,255,255,.92)}
+    .shake{animation:shake .35s linear 2}
+    @keyframes shake{
+      0%,100%{transform:translateX(-50%)}
+      20%{transform:translateX(calc(-50% - 6px))}
+      40%{transform:translateX(calc(-50% + 6px))}
+      60%{transform:translateX(calc(-50% - 5px))}
+      80%{transform:translateX(calc(-50% + 5px))}
+    }
+
+    .foot{
+      padding:0 16px 18px;color:var(--muted2);font-size:12px;letter-spacing:.08em;text-transform:uppercase;
+    }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <div class="topline">MAJOR CRIMES DIVISION • ARCHIVE ID: CAM-17B</div>
+    <div class="hdr">
+      <div>
+        <div class="brand">Major Crimes Division • Secure Internal Server</div>
+        <div class="title">Footage Archive</div>
+        <div class="metaRow">
+          <span class="pill">Case File #001</span>
+          <span class="pill">Archive ID: CAM-17B</span>
+          <span class="pill">Source: Perimeter Camera</span>
+        </div>
+      </div>
+      <div class="stamp">CONFIDENTIAL</div>
+    </div>
 
-    <div class="videoShell">
-      <video id="vid" controls playsinline preload="metadata">
-        <source src="footage.mp4" type="video/mp4" />
-      </video>
-      <div class="hint">Play footage to review archive</div>
+    <div class="card">
+      <div class="notice">
+        <div class="dot"></div>
+        <div>
+          <b>Instruction</b>
+          <span>Play the footage. A live call will trigger automatically mid-play. If you miss it, it will reconnect.</span>
+        </div>
+      </div>
+
+      <div class="videoWrap" id="videoWrap">
+        <div class="overlayTop">
+          <div class="left">
+            <span class="tag">CAM-17B</span>
+            <span class="tag">Night Capture</span>
+          </div>
+          <div class="status" id="statusPill">READY</div>
+        </div>
+
+        <video id="footage" controls playsinline preload="metadata">
+          <source src="footage.mp4" type="video/mp4" />
+        </video>
+      </div>
+
+      <div class="foot">Authorized personnel only • Do not share outside Major Crimes Division</div>
     </div>
   </div>
 
-  <div class="toast" id="toast">
-    <span class="buzz"></span>
-    <div><strong>CALL INCOMING</strong><div style="font-size:12px;color:rgba(255,255,255,.55);margin-top:2px">Source: Building Security</div></div>
-  </div>
-
-  <div class="modalBack" id="modalBack">
-    <div class="modal">
-      <h3>Incoming Call</h3>
-      <p>Building Security is requesting an immediate connection.</p>
-      <div class="row">
-        <button class="btn decline" id="decline">Decline</button>
-        <button class="btn accept" id="accept">Accept</button>
+  <!-- Call Incoming Toast -->
+  <div class="toast" id="toast" role="dialog" aria-live="assertive">
+    <div class="toastRow">
+      <div style="min-width:0">
+        <div class="toastTitle">CALL INCOMING</div>
+        <div class="toastSub">Source: Building Security • Tap Accept to connect.</div>
+      </div>
+      <div class="toastBtns">
+        <div class="tbtn decline" id="declineBtn">Decline</div>
+        <div class="tbtn accept" id="acceptBtn">Accept</div>
       </div>
     </div>
   </div>
 
   <script>
-    const vid = document.getElementById('vid');
+    const video = document.getElementById('footage');
     const toast = document.getElementById('toast');
-    const modalBack = document.getElementById('modalBack');
-    const accept = document.getElementById('accept');
-    const decline = document.getElementById('decline');
+    const acceptBtn = document.getElementById('acceptBtn');
+    const declineBtn = document.getElementById('declineBtn');
+    const statusPill = document.getElementById('statusPill');
 
+    const CALL_AT_SECONDS = 9;       // when to trigger during playback
+    const DECLINE_RECALL_MS = 2000;  // forced progression
     let callTriggered = false;
+    let recallTimer = null;
 
-    function vibrateBuzz(){
-      // iPhone Safari may ignore vibration; harmless if unsupported
-      if (navigator.vibrate) navigator.vibrate([120, 80, 120]);
+    function showToast(){
+      toast.style.display = 'block';
+      toast.classList.remove('shake');
+      void toast.offsetWidth; // reflow
+      toast.classList.add('shake');
+      statusPill.textContent = 'INCOMING CALL';
+      statusPill.style.borderColor = 'rgba(255,204,0,.35)';
+      statusPill.style.background = 'rgba(255,204,0,.10)';
+      statusPill.style.color = 'rgba(255,204,0,.95)';
     }
 
-    function showCallUI(){
-      toast.style.display = 'flex';
-      vibrateBuzz();
-      setTimeout(()=>{ modalBack.style.display = 'flex'; }, 700);
-    }
-
-    // Trigger at 9 seconds
-    vid.addEventListener('timeupdate', () => {
-      if (!callTriggered && vid.currentTime >= 9) {
-        callTriggered = true;
-        showCallUI();
-      }
-    });
-
-    // Accept -> open live transcript
-    accept.addEventListener('click', () => {
-      window.location.href = 'call-transcript.html';
-    });
-
-    // Decline -> forced progression: call back in 2 seconds
-    decline.addEventListener('click', () => {
-      modalBack.style.display = 'none';
+    function hideToast(){
       toast.style.display = 'none';
-      setTimeout(() => {
-        toast.style.display = 'flex';
-        vibrateBuzz();
-        setTimeout(()=>{ modalBack.style.display = 'flex'; }, 700);
-      }, 2000);
+      statusPill.textContent = 'READY';
+      statusPill.style.borderColor = 'rgba(51,209,122,.35)';
+      statusPill.style.background = 'rgba(51,209,122,.08)';
+      statusPill.style.color = 'rgba(51,209,122,.95)';
+    }
+
+    function goToLiveCall(){
+      // opens the live call page
+      window.location.href = 'call-transcript.html';
+    }
+
+    function scheduleRecall(){
+      clearTimeout(recallTimer);
+      recallTimer = setTimeout(() => {
+        showToast();
+      }, DECLINE_RECALL_MS);
+    }
+
+    video.addEventListener('play', () => {
+      statusPill.textContent = 'PLAYING';
+      statusPill.style.borderColor = 'rgba(51,209,122,.35)';
+      statusPill.style.background = 'rgba(51,209,122,.08)';
+      statusPill.style.color = 'rgba(51,209,122,.95)';
     });
 
-    // Optional: close if user taps outside (still forces call back via decline logic if you want)
-    modalBack.addEventListener('click', (e) => {
-      if (e.target === modalBack) {
-        // treat as decline
-        decline.click();
+    video.addEventListener('pause', () => {
+      if(!toast.style.display || toast.style.display === 'none'){
+        statusPill.textContent = 'PAUSED';
+        statusPill.style.borderColor = 'rgba(255,255,255,.16)';
+        statusPill.style.background = 'rgba(255,255,255,.05)';
+        statusPill.style.color = 'rgba(255,255,255,.82)';
       }
+    });
+
+    video.addEventListener('timeupdate', () => {
+      if (callTriggered) return;
+      if (video.currentTime >= CALL_AT_SECONDS) {
+        callTriggered = true;
+        showToast();
+      }
+    });
+
+    acceptBtn.addEventListener('click', () => {
+      clearTimeout(recallTimer);
+      hideToast();
+      goToLiveCall();
+    });
+
+    declineBtn.addEventListener('click', () => {
+      hideToast();
+      scheduleRecall(); // force progression: call back in 2 seconds
     });
   </script>
 </body>
