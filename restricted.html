@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Restricted Archive – CAM-17B</title>
 
@@ -68,6 +69,7 @@ button{
   background:#8b0000;
   border:none;
   color:white;
+  cursor:pointer;
 }
 .syslog{
   margin-top:15px;
@@ -103,7 +105,7 @@ button{
     <button onclick="unlock()">SUBMIT CODE</button>
 
     <div class="syslog" id="syslog">
-      SYSLOG: archive locked…<br>
+      SYSLOG: archive locked...<br>
       NODE: CAM-17B • STATUS: RESTRICTED
     </div>
   </div>
@@ -115,11 +117,15 @@ function unlock(){
   var code = document.getElementById("code").value.trim();
   var sys = document.getElementById("syslog");
 
-  sys.innerHTML = "SYSLOG: verifying code…<br>NODE: CAM-17B • STATUS: CHECKING";
+  sys.innerHTML = "SYSLOG: verifying code...<br>NODE: CAM-17B • STATUS: CHECKING";
 
   setTimeout(function(){
     if(code === "37161182"){
       sys.innerHTML = "SYSLOG: authorization accepted.<br>NODE: CAM-17B • STATUS: UNLOCKING";
+
+      // IMPORTANT: unlock live case log access for this device/session
+      localStorage.setItem("camUnlocked", "true");
+
       setTimeout(function(){ window.location.href="footage.html"; }, 500);
     } else {
       sys.innerHTML = "SYSLOG: authorization rejected.<br>NODE: CAM-17B • STATUS: RESTRICTED";
