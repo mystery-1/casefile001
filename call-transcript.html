@@ -5,109 +5,185 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Call Transcript</title>
   <style>
-    body {
-      margin: 0;
-      background: #000;
-      color: #fff;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    :root{
+      --bg:#07090d;
+      --panel:#0d1118;
+      --text:#e9eef7;
+      --muted:#8a95a6;
+      --you:#7fb2ff;
+      --security:#ffffff;
+      --system:#9aa6b2;
+      --accent:#c61a1a;
+      --border:rgba(255,255,255,.10);
     }
-
-    .wrap {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 18px;
+    html,body{height:100%;margin:0;background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Inter,Roboto,Arial,sans-serif;color:var(--text);}
+    .wrap{max-width:780px;margin:0 auto;padding:22px 16px 28px;}
+    .topline{letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.55);font-size:12px;margin-bottom:14px}
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:18px 16px 14px;
+      box-shadow:0 16px 60px rgba(0,0,0,.55);
     }
-
-    .chat {
-      background: #0b0b0b;
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 14px;
-      padding: 18px;
-      line-height: 1.6;
-      font-size: 16px;
+    .log{max-height:62vh;overflow:auto;padding-right:6px}
+    .line{font-size:18px;line-height:1.55;margin:10px 0}
+    .who{font-weight:700;margin-right:6px}
+    .you .who{color:var(--you)}
+    .security .who{color:var(--security)}
+    .system .who{color:var(--system)}
+    .system{opacity:.9}
+    .typing{
+      display:inline-flex;align-items:center;gap:6px;color:var(--muted);font-size:14px;margin-top:10px
     }
-
-    .you { color: #6fb4ff; font-weight: 700; }
-    .sec { color: #ffffff; font-weight: 700; }
-    .sys { color: #bdbdbd; font-weight: 700; opacity: 0.85; }
-
-    .line { margin: 8px 0; }
-    .muted { opacity: 0.92; font-weight: 400; }
-
-    .attachment {
-      margin: 20px 0 16px;
-      padding: 16px;
-      border: 1px solid rgba(255,0,0,0.35);
-      border-radius: 10px;
-      background: rgba(139,0,0,0.15);
-      font-size: 14px;
-      letter-spacing: 0.6px;
+    .dots{display:inline-flex;gap:4px}
+    .dot{width:6px;height:6px;border-radius:999px;background:rgba(255,255,255,.35);animation:b 1s infinite}
+    .dot:nth-child(2){animation-delay:.15s}
+    .dot:nth-child(3){animation-delay:.3s}
+    @keyframes b{0%,100%{transform:translateY(0);opacity:.35}50%{transform:translateY(-3px);opacity:.8}}
+    .divider{height:14px}
+    .banner{
+      margin:18px 0 14px;
+      border:1px solid rgba(198,26,26,.55);
+      background:rgba(198,26,26,.10);
+      padding:14px 14px;
+      border-radius:12px;
+      color:rgba(255,255,255,.92);
+      font-size:14px;
+      letter-spacing:.02em;
     }
-
-    /* NOT CLICKABLE */
-    .instruction-bar {
-      margin-top: 12px;
-      padding: 18px;
-      background-color: #8b0000;
-      color: white;
-      text-align: center;
-      font-weight: 800;
-      letter-spacing: 2px;
-      border-radius: 10px;
-      user-select: none;
+    .btn{
+      user-select:none;
+      text-align:center;
+      font-weight:800;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      background:var(--accent);
+      color:white;
+      border-radius:14px;
+      padding:18px 14px;
+      border:1px solid rgba(255,255,255,.08);
+      box-shadow:0 18px 40px rgba(198,26,26,.25);
     }
+    .btn small{display:block;font-weight:600;letter-spacing:.04em;opacity:.92;margin-top:6px;text-transform:none}
+    .subnote{margin-top:10px;color:rgba(255,255,255,.45);font-size:12px;letter-spacing:.08em;text-transform:uppercase;text-align:center}
   </style>
 </head>
-
 <body>
   <div class="wrap">
-    <div class="chat">
+    <div class="topline">MAJOR CRIMES DIVISION • LIVE CALL • SOURCE: BUILDING SECURITY</div>
 
-      <div class="line"><span class="you">You:</span> <span class="muted">Was she alone?</span></div>
+    <div class="card">
+      <div class="log" id="log"></div>
 
-      <div class="line"><span class="sec">Security:</span> <span class="muted">No.</span></div>
-      <div class="line"><span class="sec">Security:</span> <span class="muted">She met someone.</span></div>
-
-      <div class="line"><span class="you">You:</span> <span class="muted">Who?</span></div>
-
-      <div class="line"><span class="sec">Security:</span> <span class="muted">A man.</span></div>
-      <div class="line"><span class="sec">Security:</span> <span class="muted">Married.</span></div>
-
-      <div class="line"><span class="you">You:</span> <span class="muted">How do you know he’s married?</span></div>
-
-      <div class="line"><span class="sec">Security:</span> <span class="muted">I looked him up later.</span></div>
-      <div class="line"><span class="sec">Security:</span> <span class="muted">I shouldn’t have.</span></div>
-
-      <div class="line"><span class="you">You:</span> <span class="muted">Why didn’t you report this immediately?</span></div>
-
-      <div class="line"><span class="sec">Security:</span> <span class="muted">Because I thought it was just… personal.</span></div>
-      <div class="line"><span class="sec">Security:</span> <span class="muted">Then she turned up dead.</span></div>
-      <div class="line"><span class="sec">Security:</span> <span class="muted">And I realized I might look involved.</span></div>
-
-      <div class="line"><span class="you">You:</span> <span class="muted">Do you have proof of the meeting?</span></div>
-
-      <div class="line"><span class="sec">Security:</span> <span class="muted">I have a hallway photo.</span></div>
-      <div class="line"><span class="sec">Security:</span> <span class="muted">I took it discreetly.</span></div>
-      <div class="line"><span class="sec">Security:</span> <span class="muted">It shows them entering together.</span></div>
-
-      <div class="line"><span class="you">You:</span> <span class="muted">Send it. Now.</span></div>
-
-      <div class="line" style="margin-top:16px;">
-        <span class="sys">SYSTEM:</span>
-        <span class="muted">Attachment Received.</span>
+      <div class="typing" id="typing" style="display:none">
+        <span id="typingLabel">Security is typing</span>
+        <span class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></span>
       </div>
 
-      <div class="attachment">
-        Evidence secured and logged into case file #001.
-        <br><br>
-        Further review requires access to the corresponding physical file.
+      <div class="divider"></div>
+
+      <div class="banner" id="banner" style="display:none">
+        Incoming Attachment Received • Source: Building Security
       </div>
 
-      <div class="instruction-bar">
-        OPEN ENVELOPE A — NEW LEADS
+      <!-- NOT CLICKABLE (physical progression) -->
+      <div class="btn" id="physicalBtn" style="display:none">
+        OPEN ENVELOPE A — NEW LEAD
+        <small>Proceed physically. Do not close this case file.</small>
       </div>
 
+      <div class="subnote" id="subnote" style="display:none">
+        Follow the physical evidence chain.
+      </div>
     </div>
   </div>
+
+  <script>
+    const log = document.getElementById('log');
+    const typing = document.getElementById('typing');
+    const typingLabel = document.getElementById('typingLabel');
+    const banner = document.getElementById('banner');
+    const physicalBtn = document.getElementById('physicalBtn');
+    const subnote = document.getElementById('subnote');
+
+    // Live, one-message-at-a-time. Purpose: introduce a NEW SUSPECT (Tom).
+    const script = [
+      {who:'You', cls:'you', text:'Hello?', delay:650},
+      {who:'Security', cls:'security', text:'Detective—listen. Please don’t hang up.', delay:950, typing:true},
+      {who:'You', cls:'you', text:'Who is this?', delay:650},
+      {who:'Security', cls:'security', text:'Building security. From the complex near Garrison Woods.', delay:1050, typing:true},
+      {who:'You', cls:'you', text:'Why are you calling me directly?', delay:650},
+      {who:'Security', cls:'security', text:'Because I already made one mistake… and I can’t make another.', delay:1100, typing:true},
+      {who:'You', cls:'you', text:'Start over. What’s your name?', delay:650},
+      {who:'Security', cls:'security', text:'I’m not giving my name on an open line.', delay:950, typing:true},
+      {who:'Security', cls:'security', text:'But I’m the guard who was on shift the night Olivia came in.', delay:1050, typing:true},
+      {who:'You', cls:'you', text:'You said “came in.” She wasn’t alone?', delay:650},
+      {who:'Security', cls:'security', text:'No.', delay:850, typing:true},
+      {who:'Security', cls:'security', text:'She met someone. A man.', delay:950, typing:true},
+      {who:'You', cls:'you', text:'Describe him.', delay:650},
+      {who:'Security', cls:'security', text:'Mid-30s to 40s. Well-dressed. Wedding ring.', delay:1050, typing:true},
+      {who:'You', cls:'you', text:'How do you know he’s married?', delay:650},
+      {who:'Security', cls:'security', text:'Because I saw the ring up close when he signed in.', delay:1050, typing:true},
+      {who:'Security', cls:'security', text:'And… I looked him up later. I shouldn’t have.', delay:1150, typing:true},
+      {who:'You', cls:'you', text:'Looked him up where?', delay:650},
+      {who:'Security', cls:'security', text:'Tenant database. Emergency contacts. The wrong screen.', delay:1050, typing:true},
+      {who:'You', cls:'you', text:'You’re saying you accessed restricted info.', delay:650},
+      {who:'Security', cls:'security', text:'Yes—and that’s exactly why I’m calling.', delay:1050, typing:true},
+      {who:'Security', cls:'security', text:'If Olivia is dead, I look like I’m hiding something.', delay:1100, typing:true},
+      {who:'You', cls:'you', text:'Why didn’t you report the meeting immediately?', delay:650},
+      {who:'Security', cls:'security', text:'Because I thought it was personal. An affair. Not my business.', delay:1150, typing:true},
+      {who:'Security', cls:'security', text:'Then she turned up dead… and I panicked.', delay:1150, typing:true},
+      {who:'You', cls:'you', text:'So who is he?', delay:650},
+      {who:'Security', cls:'security', text:'Tom.', delay:850, typing:true},
+      {who:'Security', cls:'security', text:'Tom Whitlock.', delay:950, typing:true},
+      {who:'You', cls:'you', text:'Say that again.', delay:650},
+      {who:'Security', cls:'security', text:'Tom Whitlock. Married. And he came in with her.', delay:1150, typing:true},
+      {who:'You', cls:'you', text:'Do you have proof of this meeting?', delay:650},
+      {who:'Security', cls:'security', text:'Yes.', delay:850, typing:true},
+      {who:'Security', cls:'security', text:'A hallway photo. Timestamped.', delay:1000, typing:true},
+      {who:'Security', cls:'security', text:'I took it discreetly. It shows them entering together.', delay:1200, typing:true},
+      {who:'You', cls:'you', text:'Send it. Now.', delay:650},
+
+      {who:'SYSTEM', cls:'system', text:'Attachment Received.', delay:900},
+      {who:'SYSTEM', cls:'system', text:'New suspect flagged: TOM WHITLOCK.', delay:950},
+      {who:'SYSTEM', cls:'system', text:'To proceed further, open Envelope A (physical evidence).', delay:950}
+    ];
+
+    function addLine(who, cls, text){
+      const div = document.createElement('div');
+      div.className = `line ${cls}`;
+      div.innerHTML = `<span class="who">${who}:</span> <span class="msg">${text}</span>`;
+      log.appendChild(div);
+      log.scrollTop = log.scrollHeight;
+    }
+
+    function showTyping(on, speaker){
+      if(!on){ typing.style.display='none'; return; }
+      typingLabel.textContent = `${speaker} is typing`;
+      typing.style.display='inline-flex';
+      log.scrollTop = log.scrollHeight;
+    }
+
+    async function run(){
+      for (const m of script){
+        if(m.typing){
+          showTyping(true, m.who);
+          await new Promise(r=>setTimeout(r, 650));
+          showTyping(false);
+        } else {
+          showTyping(false);
+        }
+        await new Promise(r=>setTimeout(r, m.delay));
+        addLine(m.who, m.cls, m.text);
+      }
+
+      // show attachment banner + physical instruction button (non-clickable)
+      banner.style.display = 'block';
+      setTimeout(()=>{ physicalBtn.style.display = 'block'; subnote.style.display='block'; }, 600);
+    }
+
+    run();
+  </script>
 </body>
 </html>
