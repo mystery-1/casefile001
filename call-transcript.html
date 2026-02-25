@@ -139,6 +139,7 @@
     }
     .speaker.you{color:var(--accent)}
     .speaker.security{color:rgba(233,238,247,.92)}
+    .speaker.system{color:rgba(233,238,247,.72)}
     .msg{
       flex:1;
       font-size:18px;
@@ -199,7 +200,6 @@
       text-transform:uppercase;
     }
 
-    /* subtle scrollbar */
     .log::-webkit-scrollbar{width:10px}
     .log::-webkit-scrollbar-thumb{background:rgba(255,255,255,.10);border-radius:999px}
     .log::-webkit-scrollbar-track{background:transparent}
@@ -244,7 +244,6 @@
 
   <script>
     // ===== LIVE "MESSAGE BY MESSAGE" SCRIPT =====
-    // speaker values: "you" | "security" | "system"
     const script = [
       { speaker:"you",     text:"Hello…?" },
       { speaker:"security",text:"Detective—listen. Please don’t hang up." },
@@ -278,11 +277,14 @@
       { speaker:"system",  text:"Next step: To proceed further, go to Envelope A (New Lead)." }
     ];
 
-    // ===== TUNING (slower + more intense) =====
-    const BASE_DELAY_MS = 900;            // pause between lines
-    const PER_CHAR_MS   = 28;             // typing speed
-    const THINK_EXTRA_MS = 700;           // extra hesitation for security lines
-    const SYSTEM_DELAY_MS = 650;
+    // ===== ONLY CHANGE: SLOWER PACE + RANDOM PAUSES =====
+    // Slower typing + longer baseline pauses + jitter for natural breaks.
+    const BASE_DELAY_MS   = 1600;  // was 900
+    const PER_CHAR_MS     = 62;    // was 28
+    const THINK_EXTRA_MS  = 1400;  // was 700 (security hesitations)
+    const SYSTEM_DELAY_MS = 1200;  // was 650
+    const JITTER_MS       = 1200;  // adds random pauses for realism
+    const PUNCT_MS        = 600;   // extra pause for .,!?…— etc
 
     const log = document.getElementById("log");
     const typing = document.getElementById("typing");
@@ -331,31 +333,49 @@
       typing.style.display = "none";
     }
 
+    function countPunctuationPauses(text){
+      // count heavy pauses: period, comma, ellipsis, dash, question/exclamation
+      const matches = text.match(/[.,!?…—]/g);
+      return matches ? matches.length : 0;
+    }
+
+    function randInt(min, max){
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
     async function play(){
       for(let i=0;i<script.length;i++){
         const line = script[i];
         const speaker = line.speaker;
 
-        // typing indicator
         showTyping(speaker);
 
-        // delay to simulate speaking/typing
+        // base + "typing" duration
         let delay = BASE_DELAY_MS + (line.text.length * PER_CHAR_MS);
+
+        // punctuation pauses (adds readability + intensity)
+        delay += countPunctuationPauses(line.text) * PUNCT_MS;
+
+        // security hesitates more
         if(speaker === "security") delay += THINK_EXTRA_MS;
-        if(speaker === "system") delay = SYSTEM_DELAY_MS;
+
+        // system lines remain slower than before
+        if(speaker === "system") delay = SYSTEM_DELAY_MS + randInt(300, 900);
+
+        // random human pauses (0..JITTER_MS)
+        delay += randInt(0, JITTER_MS);
 
         await new Promise(r => setTimeout(r, delay));
+
         hideTyping();
         addRow(speaker, line.text);
 
-        // after final system guidance, reveal the "Envelope A" box
         if(i === script.length - 1){
           nextBox.style.display = "block";
         }
       }
     }
 
-    // Start playback immediately on page load
     play();
   </script>
 </body>
