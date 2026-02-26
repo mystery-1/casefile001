@@ -1,392 +1,558 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>Secure Line • Call Transcript</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Secure Line • Audio Call</title>
+
   <style>
     :root{
-      --bg:#05070b;
-      --panel:#0f131b;
-      --text:#e9eefb;
-      --muted:#9aa7bf;
-      --line:rgba(255,255,255,.08);
-      --accent:#d22b2b;
-      --good:#2bd27b;
-      --shadow: 0 20px 60px rgba(0,0,0,.55);
-      --radius:22px;
-      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-      --sans: -apple-system, BlinkMacSystemFont, "SF Pro Display","SF Pro Text", Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      --bg:#07090c;
+      --panel:#0c0f14;
+      --stroke:rgba(255,255,255,.10);
+      --stroke2:rgba(255,255,255,.06);
+      --text:rgba(255,255,255,.92);
+      --muted:rgba(255,255,255,.58);
+      --muted2:rgba(255,255,255,.38);
+      --red:#d12b2b;
+      --red2:#ff3b3b;
+      --green:#27d17d;
+      --shadow: 0 24px 70px rgba(0,0,0,.65);
+      --shadow2: 0 12px 40px rgba(0,0,0,.55);
+      --radius2: 26px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
     }
+
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
       margin:0;
       font-family:var(--sans);
-      background:
-        radial-gradient(1200px 700px at 20% -10%, rgba(210,43,43,.16), transparent 55%),
-        radial-gradient(900px 500px at 90% 10%, rgba(95,164,255,.10), transparent 60%),
-        linear-gradient(180deg, #05070b 0%, #07090b 50%, #05070b 100%);
       color:var(--text);
-      padding: max(18px, env(safe-area-inset-top)) 18px max(18px, env(safe-area-inset-bottom));
-      -webkit-font-smoothing: antialiased;
+      background:
+        radial-gradient(1200px 600px at 20% -10%, rgba(209,43,43,.16), transparent 55%),
+        radial-gradient(900px 500px at 90% 0%, rgba(39,209,125,.10), transparent 55%),
+        radial-gradient(1200px 900px at 50% 120%, rgba(255,255,255,.06), transparent 60%),
+        linear-gradient(180deg, #05070a, #05070a 30%, #040507);
+      overflow:hidden;
     }
-    .wrap{max-width:560px;margin:0 auto}
-    .top{
-      display:flex;align-items:flex-start;justify-content:space-between;
-      gap:14px;
-      padding:6px 2px 14px;
+
+    /* scanlines + grain */
+    body::before{
+      content:"";
+      position:fixed; inset:0;
+      background:
+        repeating-linear-gradient(
+          to bottom,
+          rgba(255,255,255,.025),
+          rgba(255,255,255,.025) 1px,
+          transparent 1px,
+          transparent 4px
+        );
+      opacity:.10;
+      pointer-events:none;
+      mix-blend-mode:overlay;
     }
-    .kicker{
-      letter-spacing:.22em;
-      text-transform:uppercase;
-      font-size:12px;
-      color:rgba(233,238,251,.72);
+    body::after{
+      content:"";
+      position:fixed; inset:0;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E");
+      opacity:.06;
+      pointer-events:none;
     }
-    .title{
-      margin:8px 0 0;
-      font-size:40px;
-      line-height:1.05;
-      letter-spacing:.01em;
-    }
-    .stamp{
-      border:1px solid rgba(210,43,43,.55);
-      color:rgba(210,43,43,.95);
-      padding:8px 12px;
-      border-radius:12px;
-      font-weight:800;
-      letter-spacing:.18em;
-      text-transform:uppercase;
-      font-size:12px;
-      box-shadow:0 0 0 2px rgba(210,43,43,.06) inset;
-      white-space:nowrap;
-      margin-top:2px;
+
+    .wrap{
+      height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding: 18px 16px calc(20px + env(safe-area-inset-bottom));
     }
 
     .card{
-      margin-top:14px;
-      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
+      width:min(820px, 96vw);
+      border-radius: 30px;
+      border:1px solid rgba(255,255,255,.14);
+      background: linear-gradient(180deg, rgba(16,20,28,.92), rgba(6,8,12,.92));
+      box-shadow: 0 40px 120px rgba(0,0,0,.80);
       overflow:hidden;
+      position:relative;
     }
-    .cardhead{
-      padding:14px 16px;
+
+    .card::before{
+      content:"";
+      position:absolute; inset:0;
+      background:
+        radial-gradient(900px 360px at 20% 0%, rgba(255,255,255,.08), transparent 55%),
+        radial-gradient(680px 420px at 90% 40%, rgba(209,43,43,.16), transparent 60%);
+      pointer-events:none;
+    }
+
+    .head{
+      position:relative;
+      padding: 18px 18px 14px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+    }
+
+    .dept{
+      font-size:12px;
+      letter-spacing:.28em;
+      text-transform:uppercase;
+      color:rgba(255,255,255,.70);
+      line-height:1.45;
+      font-family: var(--mono);
+    }
+
+    .badge{
+      border:1px solid rgba(39,209,125,.40);
+      color: rgba(170,255,220,.95);
+      padding: 10px 14px;
+      border-radius: 14px;
+      letter-spacing:.20em;
+      text-transform:uppercase;
+      font-weight:900;
+      background: rgba(39,209,125,.10);
+      box-shadow: 0 8px 28px rgba(39,209,125,.10);
+      white-space:nowrap;
+      margin-top:2px;
+      font-family: var(--mono);
+    }
+
+    .body{
+      position:relative;
+      padding: 22px 18px 18px;
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap:18px;
+    }
+
+    @media (max-width:720px){
+      .body{ grid-template-columns: 1fr; }
+    }
+
+    .left{
+      border:1px solid rgba(255,255,255,.10);
+      border-radius: var(--radius2);
+      background: rgba(0,0,0,.30);
+      box-shadow: var(--shadow2);
+      padding: 18px;
+      min-height: 280px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      gap:14px;
+    }
+
+    .title{
+      font-size: 40px;
+      line-height: 1.03;
+      font-weight: 1000;
+      letter-spacing: .02em;
+      margin: 0 0 8px;
+    }
+
+    .sub{
+      margin: 0;
+      color: rgba(255,255,255,.70);
+      font-size: 13px;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      font-family: var(--mono);
+    }
+
+    .meta{
+      margin-top: 12px;
+      display:grid;
+      gap:10px;
+    }
+
+    .row{
       display:flex;
       align-items:center;
       justify-content:space-between;
-      background:rgba(0,0,0,.25);
-      border-bottom:1px solid rgba(255,255,255,.06);
-    }
-    .left{
-      display:flex;gap:10px;align-items:center;
-      color:rgba(233,238,251,.80);
-      font-family:var(--mono);
-      font-size:12px;
-      letter-spacing:.14em;
-      text-transform:uppercase;
-    }
-    .dot{
-      width:10px;height:10px;border-radius:50%;
-      background:var(--good);
-      box-shadow:0 0 0 6px rgba(43,210,123,.12);
-    }
-    .right{
-      color:rgba(233,238,251,.70);
-      font-family:var(--mono);
-      font-size:12px;
-      letter-spacing:.14em;
-      text-transform:uppercase;
-    }
-    .right b{color:rgba(233,238,251,.95)}
-
-    .body{
-      padding:14px 16px 16px;
-    }
-    .wave{
-      height:26px;
-      display:flex;align-items:flex-end;gap:4px;
-      opacity:.85;
-      margin-bottom:12px;
-    }
-    .bar{
-      width:4px;border-radius:6px;
-      background:rgba(233,238,251,.7);
-      animation: bounce 1.15s infinite ease-in-out;
-    }
-    .bar:nth-child(2){animation-delay:.08s}
-    .bar:nth-child(3){animation-delay:.16s}
-    .bar:nth-child(4){animation-delay:.24s}
-    .bar:nth-child(5){animation-delay:.32s}
-    .bar:nth-child(6){animation-delay:.40s}
-    .bar:nth-child(7){animation-delay:.48s}
-    @keyframes bounce{
-      0%,100%{height:6px; opacity:.35}
-      50%{height:24px; opacity:.95}
-    }
-
-    .chat{
-      display:flex;flex-direction:column;gap:12px;
-      padding-top:6px;
-      min-height:240px;
-    }
-    .msg{
-      display:grid;
-      grid-template-columns:auto 1fr;
       gap:10px;
-      align-items:flex-start;
-      opacity:0;
-      transform: translateY(6px);
-      transition: opacity .25s ease, transform .25s ease;
-    }
-    .msg.show{opacity:1; transform: translateY(0)}
-    .tag{
-      font-weight:900;
-      letter-spacing:.04em;
-      text-transform:uppercase;
-      font-size:14px;
-      white-space:nowrap;
-    }
-    .tag.you{color:#7fb2ff}
-    .tag.sec{color:#ffffff}
-    .txt{
-      font-size:18px;
-      line-height:1.45;
-      color:rgba(233,238,251,.92);
-    }
-    .txt.dim{color:rgba(233,238,251,.72)}
-    .divider{
-      height:1px;background:rgba(255,255,255,.07);
-      margin:14px 0 10px;
-    }
-
-    .tap{
-      margin-top:12px;
-      display:none;
-      border-radius:18px;
+      padding: 12px 12px;
+      border-radius: 16px;
       border:1px solid rgba(255,255,255,.10);
-      background:rgba(255,255,255,.06);
-      padding:14px;
-      text-align:center;
-      font-weight:900;
+      background: rgba(255,255,255,.04);
+      font-family: var(--mono);
+      font-size: 12px;
       letter-spacing:.12em;
       text-transform:uppercase;
+      color: rgba(255,255,255,.72);
+    }
+
+    .val{
+      color: rgba(255,255,255,.90);
+      letter-spacing:.08em;
+      font-weight: 900;
+      text-transform:none;
+      font-family: var(--sans);
+      font-size: 14px;
+    }
+
+    .right{
+      border:1px solid rgba(255,255,255,.10);
+      border-radius: var(--radius2);
+      background: rgba(0,0,0,.30);
+      box-shadow: var(--shadow2);
+      padding: 18px;
+      min-height: 280px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      gap:14px;
+    }
+
+    .callBox{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+
+    .callTitle{
+      font-family: var(--mono);
+      letter-spacing:.20em;
+      text-transform:uppercase;
+      font-size: 12px;
+      color: rgba(255,255,255,.70);
+    }
+
+    .caller{
+      font-size: 22px;
+      font-weight: 1000;
+      letter-spacing:.02em;
+      margin:0;
+    }
+
+    .callerSub{
+      margin: 2px 0 0;
+      color: rgba(255,255,255,.65);
+      font-size: 14px;
+      letter-spacing:.04em;
+    }
+
+    .statusPill{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding: 10px 12px;
+      border-radius: 999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color: rgba(255,255,255,.80);
+      font-weight:900;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      font-size: 12px;
+      font-family: var(--mono);
+      width: fit-content;
+    }
+
+    .dot{
+      width:10px;height:10px;border-radius:50%;
+      background: var(--green);
+      box-shadow: 0 0 14px rgba(39,209,125,.55);
+      animation: pulse 1.0s infinite;
+    }
+    @keyframes pulse{
+      0%{transform:scale(.95); opacity:.65}
+      50%{transform:scale(1.25); opacity:1}
+      100%{transform:scale(.95); opacity:.65}
+    }
+
+    .btnRow{
+      display:flex;
+      gap:10px;
+      margin-top: 8px;
+    }
+
+    .btn{
+      flex:1;
+      border-radius: 16px;
+      padding: 14px 12px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color: rgba(255,255,255,.92);
+      font-weight:1000;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      font-size: 12px;
+      font-family: var(--mono);
       cursor:pointer;
     }
 
-    /* Attachment received screen */
-    .attach{
-      display:none;
-      text-align:center;
-      padding:34px 16px 30px;
-    }
-    .attach h2{
-      margin:0 0 10px;
-      font-size:28px;
-      letter-spacing:.10em;
-      text-transform:uppercase;
-    }
-    .attach p{
-      margin:0;
-      color:rgba(233,238,251,.78);
-      font-size:16px;
-      letter-spacing:.02em;
-    }
-    .badge2{
-      display:inline-block;
-      margin-top:16px;
-      border-radius:999px;
-      border:1px solid rgba(210,43,43,.45);
-      background:rgba(210,43,43,.10);
-      padding:10px 14px;
-      font-family:var(--mono);
-      letter-spacing:.14em;
-      text-transform:uppercase;
-      font-size:12px;
-      color:rgba(233,238,251,.9);
+    .btn.primary{
+      border:1px solid rgba(39,209,125,.45);
+      background: rgba(39,209,125,.12);
+      box-shadow: 0 8px 28px rgba(39,209,125,.10);
     }
 
-    audio{display:none}
+    .btn.danger{
+      border:1px solid rgba(209,43,43,.55);
+      background: rgba(209,43,43,.10);
+      box-shadow: 0 8px 28px rgba(209,43,43,.08);
+    }
+
+    .hint{
+      color: rgba(255,255,255,.58);
+      font-size: 12px;
+      letter-spacing:.04em;
+      line-height:1.5;
+      margin:0;
+    }
+
+    /* End overlay */
+    .endOverlay{
+      position:fixed; inset:0;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      background: rgba(0,0,0,.88);
+      backdrop-filter: blur(10px);
+      z-index:9999;
+      padding: 18px 16px;
+    }
+    .endOverlay.show{display:flex;}
+
+    .endCard{
+      width:min(720px, 92vw);
+      border-radius: 30px;
+      border:1px solid rgba(255,255,255,.14);
+      background: linear-gradient(180deg, rgba(16,20,28,.92), rgba(6,8,12,.92));
+      box-shadow: 0 40px 120px rgba(0,0,0,.80);
+      overflow:hidden;
+      position:relative;
+      padding: 26px 22px;
+      text-align:center;
+    }
+    .endCard::before{
+      content:"";
+      position:absolute; inset:0;
+      background:
+        radial-gradient(900px 360px at 20% 0%, rgba(255,255,255,.08), transparent 55%),
+        radial-gradient(680px 420px at 90% 40%, rgba(209,43,43,.16), transparent 60%);
+      pointer-events:none;
+    }
+
+    .endSys{
+      position:relative;
+      font-family:var(--mono);
+      font-size: 12px;
+      letter-spacing:.26em;
+      text-transform:uppercase;
+      color: rgba(255,255,255,.68);
+    }
+
+    .endBig{
+      position:relative;
+      margin: 16px 0 10px;
+      font-size: 42px;
+      font-weight: 1000;
+      letter-spacing:.04em;
+      text-transform:uppercase;
+    }
+
+    .endSmall{
+      position:relative;
+      margin: 0;
+      font-size: 18px;
+      color: rgba(255,255,255,.82);
+      letter-spacing:.04em;
+    }
+
+    .glitch{
+      position:relative;
+      display:inline-block;
+    }
+    .glitch::before, .glitch::after{
+      content: attr(data-text);
+      position:absolute;
+      left:0; top:0;
+      width:100%;
+      overflow:hidden;
+      opacity:.35;
+    }
+    .glitch::before{
+      transform: translate(1px,-1px);
+      color: rgba(255,59,59,.85);
+      clip-path: inset(0 0 55% 0);
+      animation: g1 1.2s infinite linear;
+    }
+    .glitch::after{
+      transform: translate(-1px,1px);
+      color: rgba(120,170,255,.85);
+      clip-path: inset(45% 0 0 0);
+      animation: g2 1.05s infinite linear;
+    }
+    @keyframes g1{
+      0%{clip-path: inset(0 0 55% 0)}
+      25%{clip-path: inset(12% 0 35% 0)}
+      50%{clip-path: inset(0 0 62% 0)}
+      75%{clip-path: inset(18% 0 28% 0)}
+      100%{clip-path: inset(0 0 55% 0)}
+    }
+    @keyframes g2{
+      0%{clip-path: inset(45% 0 0 0)}
+      25%{clip-path: inset(52% 0 0 0)}
+      50%{clip-path: inset(38% 0 0 0)}
+      75%{clip-path: inset(58% 0 0 0)}
+      100%{clip-path: inset(45% 0 0 0)}
+    }
+
+    @media (max-width:420px){
+      .title{font-size: 34px;}
+      .endBig{font-size: 34px;}
+    }
   </style>
 </head>
+
 <body>
   <div class="wrap">
-    <div class="top">
-      <div>
-        <div class="kicker">MAJOR CRIMES DIVISION • SECURE LINE</div>
-        <h1 class="title">Live Call Transcript</h1>
-      </div>
-      <div class="stamp">CONFIDENTIAL</div>
-    </div>
-
-    <div class="card" id="callCard">
-      <div class="cardhead">
-        <div class="left"><span class="dot"></span><span>Channel: Encrypted Voice</span></div>
-        <div class="right">Status: <b id="status">CONNECTED</b></div>
+    <div class="card">
+      <div class="head">
+        <div class="dept">MAJOR CRIMES DIVISION • SECURE LINE</div>
+        <div class="badge">CONNECTED</div>
       </div>
 
       <div class="body">
-        <div class="wave" id="wave">
-          <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
-          <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+        <div class="left">
+          <div>
+            <h1 class="title">Audio Call</h1>
+            <p class="sub">Encrypted channel • Evidence logging enabled</p>
+
+            <div class="meta">
+              <div class="row">
+                <div>Caller</div>
+                <div class="val">Building Security</div>
+              </div>
+              <div class="row">
+                <div>Case</div>
+                <div class="val">File #001 • What They Buried</div>
+              </div>
+              <div class="row">
+                <div>Recording</div>
+                <div class="val" id="recState">Standby</div>
+              </div>
+            </div>
+          </div>
+
+          <p class="hint">
+            Tap <b>Play Call</b>. (iPhone may require a tap to start audio.)
+          </p>
         </div>
 
-        <div class="chat" id="chat"></div>
+        <div class="right">
+          <div class="callBox">
+            <div class="callTitle">Inbound audio</div>
+            <p class="caller">Unknown Security Officer</p>
+            <p class="callerSub">Night shift • East side</p>
 
-        <div class="tap" id="tapToStart">Tap to start audio</div>
+            <div class="statusPill" id="statusPill">
+              <span class="dot"></span>LIVE AUDIO
+            </div>
 
-        <div class="divider"></div>
+            <div class="btnRow">
+              <button class="btn primary" id="playBtn">Play Call</button>
+              <button class="btn danger" id="stopBtn">End</button>
+            </div>
 
-        <div class="attach" id="attach">
-          <h2>Attachment Received</h2>
-          <p>Proceed to <b>Envelope A</b>.</p>
-          <div class="badge2">SOURCE: BUILDING SECURITY</div>
+            <p class="hint" id="timer">00:00</p>
+          </div>
+
+          <p class="hint">
+            This channel will auto-close after the call ends.
+          </p>
         </div>
       </div>
     </div>
+  </div>
 
-    <audio id="callAudio" preload="auto"></audio>
+  <!-- Your uploaded audio filename (keep exact) -->
+  <audio id="callAudio" preload="auto">
+    <source src="security-call.mp3.mp3" type="audio/mpeg" />
+  </audio>
+
+  <div class="endOverlay" id="endOverlay" aria-hidden="true">
+    <div class="endCard" role="dialog" aria-modal="true" aria-label="Attachment Received">
+      <div class="endSys">SYSTEM EVENT</div>
+      <div class="endBig glitch" data-text="ATTACHMENT RECEIVED">ATTACHMENT RECEIVED</div>
+      <p class="endSmall">Proceed to <strong>Envelope A</strong>.</p>
+    </div>
   </div>
 
   <script>
-    // Uses the filename saved by footage.html; fallback if opened directly.
-    const audioFile = sessionStorage.getItem('mcd_call_audio') || "security-call.mp3.mp3";
-    const shouldAutoplay = (sessionStorage.getItem('mcd_call_autoplay') || "0") === "1";
+    const audio = document.getElementById('callAudio');
+    const playBtn = document.getElementById('playBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    const timer = document.getElementById('timer');
+    const recState = document.getElementById('recState');
+    const endOverlay = document.getElementById('endOverlay');
 
-    const callAudio = document.getElementById('callAudio');
-    const tapToStart = document.getElementById('tapToStart');
-    const statusEl = document.getElementById('status');
-    const chat = document.getElementById('chat');
-    const attach = document.getElementById('attach');
-    const wave = document.getElementById('wave');
+    let tInt = null;
 
-    callAudio.src = audioFile;
-
-    // Slower pacing with random pauses (edit only these numbers if you ever want slower/faster)
-    function rand(min, max){ return Math.floor(Math.random()*(max-min+1))+min; }
-    const BASE_DELAY_MS = 1300;     // overall slower baseline
-    const JITTER_MS = 1400;         // random extra pause
-    const HEAVY_PAUSE_MS = 2200;    // occasional longer pause
-
-    const script = [
-      { who:"you", text:"Hello—who is this?" },
-      { who:"sec", text:"Detective… listen. Don’t hang up." },
-      { who:"you", text:"Identify yourself. Name and role." },
-      { who:"sec", text:"Security. Building security. Night shift." },
-      { who:"you", text:"Which building? Start from the beginning." },
-      { who:"sec", text:"The office building… the one tied to your case. I saw her." },
-      { who:"you", text:"You saw Olivia Bennett? When?" },
-      { who:"sec", text:"That night. Late. She came in after hours." },
-      { who:"you", text:"After hours means what time. Be specific." },
-      { who:"sec", text:"Around eleven-forty. I shouldn’t have been looking." },
-      { who:"you", text:"Was she alone?" },
-      { who:"sec", text:"No." },
-      { who:"you", text:"Who was with her?" },
-      { who:"sec", text:"A man." },
-      { who:"you", text:"Describe him." },
-      { who:"sec", text:"Suit. Confident. Like he owned the place." },
-      { who:"you", text:"You’re calling me now—why didn’t you report this immediately?" },
-      { who:"sec", text:"Because I thought it was… personal. And then she turned up dead." },
-      { who:"sec", text:"And I realized I might look involved." },
-      { who:"you", text:"You might look involved because you hid it." },
-      { who:"you", text:"How do you know that man matters to this case?" },
-      { who:"sec", text:"I looked him up later. I shouldn’t have." },
-      { who:"you", text:"And?" },
-      { who:"sec", text:"Married. Connected." },
-      { who:"you", text:"Connected to who? Say the name." },
-      { who:"sec", text:"Elena Whitlock." },
-      { who:"you", text:"Her husband." },
-      { who:"sec", text:"Tom Whitlock." },
-      { who:"you", text:"Do you have proof of the meeting?" },
-      { who:"sec", text:"I have a hallway photo." },
-      { who:"sec", text:"I took it discreetly." },
-      { who:"sec", text:"It shows them entering together." },
-      { who:"you", text:"Send it. Now." },
-      { who:"sys", text:"Attachment received.", dim:true }
-    ];
-
-    function makeMsg(who, text, dim){
-      const wrap = document.createElement('div');
-      wrap.className = 'msg';
-      const tag = document.createElement('div');
-      const txt = document.createElement('div');
-
-      if (who === 'you'){
-        tag.className = 'tag you';
-        tag.textContent = 'YOU:';
-      } else if (who === 'sec'){
-        tag.className = 'tag sec';
-        tag.textContent = 'SECURITY:';
-      } else {
-        tag.className = 'tag sec';
-        tag.textContent = 'SYSTEM:';
-      }
-
-      txt.className = 'txt' + (dim ? ' dim' : '');
-      txt.textContent = text;
-
-      wrap.appendChild(tag);
-      wrap.appendChild(txt);
-      return wrap;
+    function fmt(s){
+      s = Math.max(0, Math.floor(s));
+      const m = String(Math.floor(s/60)).padStart(2,'0');
+      const ss = String(s%60).padStart(2,'0');
+      return `${m}:${ss}`;
     }
 
-    async function playTranscript(){
-      chat.innerHTML = '';
-      attach.style.display = 'none';
-      statusEl.textContent = 'CONNECTED';
-      wave.style.opacity = '0.9';
-
-      for (let i=0;i<script.length;i++){
-        const line = script[i];
-
-        // random pacing:
-        let delay = BASE_DELAY_MS + rand(250, JITTER_MS);
-        // add heavier pauses on tense beats
-        if ([1,5,10,16,20,24].includes(i)) delay += HEAVY_PAUSE_MS;
-
-        await new Promise(r=>setTimeout(r, delay));
-
-        const node = makeMsg(line.who, line.text, !!line.dim);
-        chat.appendChild(node);
-        requestAnimationFrame(()=>node.classList.add('show'));
-        chat.scrollTop = chat.scrollHeight;
-      }
-
-      // After transcript completes, show the better "Attachment Received" block
-      statusEl.textContent = 'ENDED';
-      wave.style.opacity = '0.25';
-      attach.style.display = 'block';
+    function startTimer(){
+      clearInterval(tInt);
+      tInt = setInterval(() => {
+        timer.textContent = fmt(audio.currentTime);
+      }, 250);
     }
 
-    // Try autoplay (may be blocked on iPhone when navigating)
-    async function startAudio(){
+    function stopTimer(){
+      clearInterval(tInt);
+      tInt = null;
+    }
+
+    async function play(){
       try{
-        await callAudio.play();
-        tapToStart.style.display = 'none';
-      } catch(e){
-        tapToStart.style.display = 'block';
+        await audio.play();
+        recState.textContent = "Recording";
+        playBtn.textContent = "Playing…";
+        playBtn.disabled = true;
+        startTimer();
+      }catch(e){
+        // iOS needs a user gesture; button tap should handle it
       }
     }
 
-    tapToStart.addEventListener('click', async ()=>{
-      await startAudio();
+    function end(){
+      audio.pause();
+      audio.currentTime = 0;
+      stopTimer();
+      timer.textContent = "00:00";
+      recState.textContent = "Ended";
+      playBtn.disabled = false;
+      playBtn.textContent = "Play Call";
+    }
+
+    playBtn.addEventListener('click', play);
+    stopBtn.addEventListener('click', end);
+
+    audio.addEventListener('ended', () => {
+      stopTimer();
+      recState.textContent = "Completed";
+      setTimeout(() => {
+        endOverlay.classList.add('show');
+        endOverlay.setAttribute('aria-hidden','false');
+      }, 650);
     });
 
-    // When audio finishes, we still keep transcript pacing; but if your audio ends earlier/later,
-    // the transcript continues with the slow pacing (reads better).
-    callAudio.addEventListener('ended', ()=>{
-      // no-op; transcript controls the flow
+    // optional: attempt autoplay on load (will fail on iOS until tap)
+    window.addEventListener('load', () => {
+      // no autoplay by default; cleaner / more reliable
     });
-
-    // Start
-    (async ()=>{
-      if (shouldAutoplay) await startAudio();
-      // Always run transcript (this is what makes it “live”)
-      playTranscript();
-      // Clear autoplay flag so refresh doesn't auto-trigger unexpectedly
-      sessionStorage.setItem('mcd_call_autoplay','0');
-    })();
   </script>
 </body>
 </html>
