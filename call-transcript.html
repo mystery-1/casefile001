@@ -1,408 +1,448 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>Secure Line • Audio Call</title>
-
   <style>
     :root{
-      --bg:#07090c;
-      --panel:#0c0f14;
-      --stroke:rgba(255,255,255,.10);
-      --stroke2:rgba(255,255,255,.06);
+      --bg:#050608;
+      --panel:rgba(255,255,255,.06);
+      --panel2:rgba(255,255,255,.04);
+      --border:rgba(255,255,255,.10);
       --text:rgba(255,255,255,.92);
-      --muted:rgba(255,255,255,.62);
-      --muted2:rgba(255,255,255,.38);
-      --red:#d12b2b;
-      --green:#27d17d;
-      --shadow: 0 30px 100px rgba(0,0,0,.75);
-      --shadow2: 0 12px 40px rgba(0,0,0,.55);
-      --radius: 30px;
-      --radius2: 26px;
-      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      --muted:rgba(255,255,255,.65);
+      --dim:rgba(255,255,255,.42);
+      --green:#37d67a;
+      --red:#d93b3b;
     }
     *{box-sizing:border-box}
-    html,body{height:100%}
     body{
       margin:0;
-      font-family:var(--sans);
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,Arial,sans-serif;
+      background:
+        radial-gradient(1100px 700px at 25% -10%, rgba(255,255,255,.10), transparent 55%),
+        radial-gradient(900px 600px at 70% 15%, rgba(255,60,60,.10), transparent 60%),
+        radial-gradient(900px 700px at 50% 110%, rgba(0,255,140,.08), transparent 55%),
+        linear-gradient(#050608,#050608);
       color:var(--text);
-      background:
-        radial-gradient(1200px 600px at 18% -10%, rgba(209,43,43,.18), transparent 55%),
-        radial-gradient(900px 520px at 92% 0%, rgba(39,209,125,.12), transparent 60%),
-        radial-gradient(1200px 900px at 50% 120%, rgba(255,255,255,.06), transparent 60%),
-        linear-gradient(180deg, #05070a, #040507);
-      overflow-x:hidden;
+      min-height:100vh;
     }
-    body::before{
-      content:"";
-      position:fixed; inset:0;
-      background:
-        repeating-linear-gradient(
-          to bottom,
-          rgba(255,255,255,.025),
-          rgba(255,255,255,.025) 1px,
-          transparent 1px,
-          transparent 4px
-        );
-      opacity:.10;
-      pointer-events:none;
-      mix-blend-mode:overlay;
-    }
-    body::after{
-      content:"";
-      position:fixed; inset:0;
-      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E");
-      opacity:.06;
-      pointer-events:none;
-    }
-
     .wrap{
-      min-height:100%;
+      max-width:520px;
+      margin:0 auto;
+      padding:18px 16px 28px;
+    }
+
+    .topline{
       display:flex;
       align-items:center;
-      justify-content:center;
-      padding: 18px 16px calc(22px + env(safe-area-inset-bottom));
-    }
-
-    .card{
-      width:min(820px, 96vw);
-      border-radius: var(--radius);
-      border:1px solid rgba(255,255,255,.14);
-      background: linear-gradient(180deg, rgba(16,20,28,.92), rgba(6,8,12,.92));
-      box-shadow: var(--shadow);
-      overflow:hidden;
-      position:relative;
-    }
-    .card::before{
-      content:"";
-      position:absolute; inset:0;
-      background:
-        radial-gradient(900px 360px at 20% 0%, rgba(255,255,255,.08), transparent 55%),
-        radial-gradient(680px 420px at 90% 40%, rgba(209,43,43,.16), transparent 60%);
-      pointer-events:none;
-    }
-
-    .head{
-      position:relative;
-      padding: 18px 18px 14px;
-      border-bottom:1px solid rgba(255,255,255,.08);
-      display:flex;
       justify-content:space-between;
-      align-items:flex-start;
       gap:12px;
+      padding:10px 12px;
+      border:1px solid var(--border);
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border-radius:18px;
+      backdrop-filter: blur(10px);
     }
-    .dept{
-      font-family:var(--mono);
+    .topline .left{
       font-size:12px;
-      letter-spacing:.28em;
+      letter-spacing:.32em;
       text-transform:uppercase;
-      color:rgba(255,255,255,.72);
-      line-height:1.5;
+      color:var(--muted);
+      line-height:1.2;
     }
-    .status{
-      border:1px solid rgba(39,209,125,.40);
-      color: rgba(170,255,220,.95);
-      padding: 10px 14px;
-      border-radius: 14px;
-      letter-spacing:.20em;
-      text-transform:uppercase;
-      font-weight:1000;
-      background: rgba(39,209,125,.10);
-      box-shadow: 0 8px 28px rgba(39,209,125,.10);
-      white-space:nowrap;
-      font-family: var(--mono);
-      display:flex;
-      gap:10px;
+    .pill{
+      display:inline-flex;
       align-items:center;
+      gap:10px;
+      padding:10px 14px;
+      border-radius:14px;
+      border:1px solid rgba(55,214,122,.35);
+      background:rgba(55,214,122,.10);
+      color:rgba(150,255,200,.95);
+      font-weight:700;
+      letter-spacing:.18em;
+      text-transform:uppercase;
+      font-size:12px;
+      white-space:nowrap;
     }
     .dot{
       width:10px;height:10px;border-radius:50%;
-      background: var(--green);
-      box-shadow: 0 0 14px rgba(39,209,125,.55);
-      animation: pulse 1.0s infinite;
-    }
-    @keyframes pulse{
-      0%{transform:scale(.95); opacity:.65}
-      50%{transform:scale(1.25); opacity:1}
-      100%{transform:scale(.95); opacity:.65}
+      background:var(--green);
+      box-shadow:0 0 18px rgba(55,214,122,.8);
     }
 
-    .body{
-      position:relative;
-      padding: 20px 18px 18px;
-      display:grid;
-      gap:14px;
+    .card{
+      margin-top:14px;
+      border:1px solid var(--border);
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border-radius:26px;
+      padding:18px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 18px 45px rgba(0,0,0,.45);
     }
 
     h1{
-      margin:0;
-      font-size: 52px;
-      line-height:.95;
-      font-weight: 1000;
-      letter-spacing:.02em;
-    }
-    @media (max-width:520px){
-      h1{font-size:42px;}
+      margin:8px 0 6px;
+      font-size:46px;
+      letter-spacing:-.02em;
+      line-height:1;
     }
     .sub{
-      margin: 6px 0 0;
-      color: rgba(255,255,255,.65);
-      font-family: var(--mono);
-      font-size: 12px;
-      letter-spacing:.22em;
+      margin:0 0 16px;
+      color:var(--muted);
+      letter-spacing:.32em;
       text-transform:uppercase;
-    }
-
-    .grid{
-      display:grid;
-      gap:12px;
+      font-size:12px;
     }
 
     .row{
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.04);
-      border-radius: 18px;
-      padding: 12px 12px;
       display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:10px;
-      box-shadow: var(--shadow2);
+      gap:12px;
+      margin:10px 0;
+      align-items:stretch;
     }
     .k{
-      font-family: var(--mono);
-      font-size: 12px;
-      letter-spacing:.18em;
-      text-transform:uppercase;
-      color: rgba(255,255,255,.55);
-    }
-    .v{
-      font-weight: 1000;
-      font-size: 16px;
-      letter-spacing:.02em;
-      color: rgba(255,255,255,.92);
-      text-align:right;
-    }
-
-    .callBox{
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(0,0,0,.28);
-      border-radius: var(--radius2);
-      padding: 16px 14px;
-      box-shadow: var(--shadow2);
-    }
-    .label{
-      font-family: var(--mono);
-      font-size: 12px;
+      flex:0 0 120px;
+      border:1px solid var(--border);
+      background:var(--panel2);
+      border-radius:18px;
+      padding:14px 14px;
+      color:var(--dim);
       letter-spacing:.22em;
       text-transform:uppercase;
-      color: rgba(255,255,255,.55);
-      margin:0 0 6px;
+      font-size:12px;
+      display:flex;align-items:center;
+    }
+    .v{
+      flex:1;
+      border:1px solid var(--border);
+      background:rgba(0,0,0,.25);
+      border-radius:18px;
+      padding:14px 14px;
+      font-weight:700;
+      font-size:18px;
+      display:flex;align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .v small{
+      font-weight:700;
+      color:var(--muted);
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      font-size:12px;
+    }
+
+    .big{
+      margin-top:16px;
+      border:1px solid var(--border);
+      background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      border-radius:28px;
+      padding:18px;
+      position:relative;
+      overflow:hidden;
+    }
+    .big:before{
+      content:"";
+      position:absolute;inset:-2px;
+      background:radial-gradient(700px 250px at 20% 20%, rgba(255,255,255,.08), transparent 60%),
+                 radial-gradient(700px 250px at 70% 40%, rgba(255,0,0,.08), transparent 60%),
+                 radial-gradient(700px 250px at 30% 100%, rgba(0,255,140,.07), transparent 60%);
+      filter: blur(14px);
+      opacity:.8;
+      pointer-events:none;
+    }
+    .big > *{position:relative; z-index:1;}
+
+    .label{
+      color:var(--dim);
+      letter-spacing:.28em;
+      text-transform:uppercase;
+      font-size:12px;
+      margin-bottom:6px;
     }
     .who{
+      font-size:44px;
+      font-weight:900;
+      letter-spacing:-.02em;
+      line-height:1.02;
       margin:0;
-      font-size: 38px;
-      font-weight: 1000;
-      line-height:1.05;
     }
     .meta{
-      margin: 6px 0 0;
-      color: rgba(255,255,255,.70);
-      font-family: var(--mono);
-      font-size: 12px;
-      letter-spacing:.16em;
+      margin-top:8px;
+      color:var(--muted);
+      letter-spacing:.22em;
       text-transform:uppercase;
+      font-size:12px;
     }
 
-    .pillRow{
-      margin-top: 12px;
+    .chips{
       display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      align-items:center;
-    }
-    .pill{
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.04);
-      border-radius: 999px;
-      padding: 10px 14px;
-      font-family: var(--mono);
-      font-size: 12px;
-      letter-spacing:.16em;
-      text-transform:uppercase;
-      color: rgba(255,255,255,.78);
-    }
-    .live{
-      border:1px solid rgba(39,209,125,.40);
-      background: rgba(39,209,125,.10);
-      color: rgba(170,255,220,.95);
-      font-weight:1000;
-      display:flex;
-      gap:10px;
-      align-items:center;
-    }
-
-    .lockNotice{
-      margin-top: 12px;
-      border:1px solid rgba(209,43,43,.32);
-      background: rgba(209,43,43,.08);
-      border-radius: 18px;
-      padding: 14px 14px;
-      display:flex;
-      align-items:flex-start;
       gap:12px;
-      box-shadow: 0 10px 30px rgba(209,43,43,.08);
+      align-items:center;
+      margin-top:14px;
+      flex-wrap:wrap;
     }
-    .bar{
-      width:6px; border-radius: 6px;
-      background: rgba(209,43,43,.80);
-      box-shadow: 0 0 18px rgba(209,43,43,.25);
-      flex:0 0 auto;
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 14px;
+      border-radius:18px;
+      border:1px solid var(--border);
+      background:rgba(0,0,0,.22);
+      color:var(--muted);
+      font-weight:800;
+      letter-spacing:.18em;
+      text-transform:uppercase;
+      font-size:12px;
     }
-    .lockText{
-      margin:0;
-      color: rgba(255,255,255,.80);
-      font-size: 14px;
-      line-height:1.5;
-    }
-    .lockText strong{
-      color: rgba(255,255,255,.94);
-      font-weight: 1000;
+    .chip .dot{width:9px;height:9px}
+    .duration{
+      padding:10px 14px;
+      border-radius:18px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.04);
+      color:rgba(255,255,255,.75);
+      font-weight:800;
+      letter-spacing:.14em;
+      font-size:13px;
+      font-variant-numeric: tabular-nums;
     }
 
-    .tiny{
-      margin: 12px 0 0;
-      text-align:center;
-      color: rgba(255,255,255,.40);
-      font-family: var(--mono);
-      font-size: 12px;
-      letter-spacing:.14em;
+    .notice{
+      margin-top:14px;
+      border-radius:22px;
+      border:1px solid rgba(217,59,59,.25);
+      background:rgba(217,59,59,.08);
+      padding:14px 14px;
+      color:rgba(255,255,255,.80);
+      line-height:1.35;
+    }
+    .notice b{
+      letter-spacing:.18em;
       text-transform:uppercase;
     }
+    .footer{
+      margin-top:12px;
+      text-align:center;
+      color:rgba(255,255,255,.30);
+      letter-spacing:.32em;
+      text-transform:uppercase;
+      font-size:11px;
+    }
 
-    audio{display:none;}
+    /* End message overlay */
+    .overlay{
+      position:fixed; inset:0;
+      display:none;
+      align-items:center; justify-content:center;
+      background:rgba(0,0,0,.78);
+      backdrop-filter: blur(8px);
+      z-index:999;
+      padding:18px;
+    }
+    .overlay.show{display:flex;}
+    .endbox{
+      width:min(560px, 100%);
+      border-radius:26px;
+      border:1px solid rgba(255,255,255,.16);
+      background:
+        radial-gradient(900px 300px at 20% 0%, rgba(255,255,255,.10), transparent 60%),
+        radial-gradient(900px 300px at 70% 40%, rgba(255,0,0,.10), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+      padding:22px 18px;
+      box-shadow: 0 30px 70px rgba(0,0,0,.55);
+      position:relative;
+      overflow:hidden;
+    }
+    .endbox:before{
+      content:"";
+      position:absolute; inset:-2px;
+      background: repeating-linear-gradient(
+        180deg,
+        rgba(255,255,255,.06) 0px,
+        rgba(255,255,255,.06) 1px,
+        transparent 1px,
+        transparent 6px
+      );
+      opacity:.18;
+      pointer-events:none;
+      animation:scan 2.2s linear infinite;
+    }
+    @keyframes scan{
+      from{transform:translateY(-12px)}
+      to{transform:translateY(12px)}
+    }
+    .endtitle{
+      text-align:center;
+      font-weight:900;
+      font-size:28px;
+      letter-spacing:.18em;
+      text-transform:uppercase;
+      margin:8px 0 10px;
+    }
+    .endsub{
+      text-align:center;
+      color:rgba(255,255,255,.78);
+      font-size:18px;
+      margin:0 0 12px;
+    }
+    .endhr{
+      height:1px; background:rgba(255,255,255,.14);
+      margin:14px 0;
+    }
+    .endtag{
+      display:flex; justify-content:center; gap:10px; align-items:center;
+      color:rgba(150,255,200,.95);
+      letter-spacing:.22em;
+      text-transform:uppercase;
+      font-weight:800;
+      font-size:12px;
+    }
+    .endtag .dot{width:9px;height:9px}
+    .hint{
+      text-align:center;
+      color:rgba(255,255,255,.65);
+      margin-top:12px;
+      font-size:14px;
+    }
+
+    /* Tap-to-start helper (in case iOS blocks autoplay) */
+    .tap{
+      display:none;
+      margin-top:14px;
+      border:1px solid rgba(55,214,122,.28);
+      background:rgba(55,214,122,.10);
+      color:rgba(180,255,220,.95);
+      padding:12px 14px;
+      border-radius:18px;
+      font-weight:800;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      text-align:center;
+      cursor:pointer;
+      user-select:none;
+    }
+    .tap.show{display:block;}
   </style>
 </head>
 
 <body>
   <div class="wrap">
+    <div class="topline">
+      <div class="left">Major Crimes Division • Secure Line</div>
+      <div class="pill"><span class="dot"></span> Connected</div>
+    </div>
+
     <div class="card">
-      <div class="head">
-        <div class="dept">MAJOR CRIMES DIVISION • SECURE LINE</div>
-        <div class="status"><span class="dot"></span>CONNECTED</div>
+      <h1>Audio Call</h1>
+      <div class="sub">Encrypted Channel • Evidence Logging Enabled</div>
+
+      <div class="row">
+        <div class="k">Caller</div>
+        <div class="v">
+          <span>Building Security</span>
+        </div>
       </div>
 
-      <div class="body">
-        <div>
-          <h1>Audio Call</h1>
-          <p class="sub">ENCRYPTED CHANNEL • EVIDENCE LOGGING ENABLED</p>
+      <div class="row">
+        <div class="k">Case</div>
+        <div class="v">
+          <span>File #001 • What They Buried</span>
         </div>
-
-        <div class="grid">
-          <div class="row">
-            <div class="k">CALLER</div>
-            <div class="v">Building Security</div>
-          </div>
-          <div class="row">
-            <div class="k">CASE</div>
-            <div class="v">File #001 • What They Buried</div>
-          </div>
-          <div class="row">
-            <div class="k">RECORDING</div>
-            <div class="v" id="recState">Connecting…</div>
-          </div>
-        </div>
-
-        <div class="callBox">
-          <p class="label">INBOUND AUDIO</p>
-          <p class="who">Unknown Security Officer</p>
-          <p class="meta">Night shift • East side</p>
-
-          <div class="pillRow">
-            <span class="pill live"><span class="dot" style="width:10px;height:10px;"></span>LIVE AUDIO</span>
-            <span class="pill" id="timer">00:00</span>
-          </div>
-
-          <div class="lockNotice">
-            <div class="bar"></div>
-            <p class="lockText">
-              <strong>SECURE HOLD ENABLED.</strong> This call cannot be cut from your device.
-              Line will close automatically when the recording ends.
-            </p>
-          </div>
-
-          <p class="tiny">Do not refresh this page during playback.</p>
-        </div>
-
-        <!-- Auto-play audio -->
-        <audio id="callAudio" playsinline preload="auto" src="security-call.mp3.mp3"></audio>
       </div>
+
+      <div class="row">
+        <div class="k">Recording</div>
+        <div class="v">
+          <span id="recState">Live</span>
+          <small id="recSmall">in progress</small>
+        </div>
+      </div>
+
+      <div class="big">
+        <div class="label">Inbound Audio</div>
+        <p class="who">Unknown<br/>Security Officer</p>
+        <div class="meta">Night Shift • East Side</div>
+
+        <div class="chips">
+          <div class="chip"><span class="dot"></span> Live Audio</div>
+          <div class="duration" id="dur">02:23</div>
+        </div>
+
+        <div class="notice">
+          <b>Secure Hold Enabled.</b> This call cannot be cut from your device. Line will close automatically when the recording ends.
+        </div>
+
+        <div id="tapToStart" class="tap">Tap to Start Audio</div>
+
+        <div class="footer">Do Not Refresh This Page During Playback</div>
+      </div>
+
+      <!-- AUDIO: updated to your uploaded filename -->
+      <audio id="callAudio" preload="auto" playsinline>
+        <source src="security-call.mp3.mp3" type="audio/mpeg" />
+      </audio>
+    </div>
+  </div>
+
+  <!-- END-OF-CALL MESSAGE -->
+  <div id="overlay" class="overlay" aria-hidden="true">
+    <div class="endbox">
+      <div class="endtag"><span class="dot"></span> System Event Logged</div>
+      <div class="endhr"></div>
+      <div class="endtitle">Attachment Received</div>
+      <div class="endsub">Proceed to <b>Envelope A</b>.</div>
+      <div class="endhr"></div>
+      <div class="hint">Physical evidence required to continue.</div>
     </div>
   </div>
 
   <script>
     const audio = document.getElementById('callAudio');
+    const overlay = document.getElementById('overlay');
     const recState = document.getElementById('recState');
-    const timerEl = document.getElementById('timer');
+    const recSmall = document.getElementById('recSmall');
+    const tap = document.getElementById('tapToStart');
 
-    let t0 = 0;
-    let raf = null;
-
-    function fmt(sec){
-      sec = Math.max(0, Math.floor(sec));
-      const m = String(Math.floor(sec/60)).padStart(2,'0');
-      const s = String(sec%60).padStart(2,'0');
-      return `${m}:${s}`;
-    }
-
-    function tick(){
-      if (!audio.paused && !audio.ended) {
-        timerEl.textContent = fmt(audio.currentTime);
-      }
-      raf = requestAnimationFrame(tick);
-    }
-
-    function setState(text){
-      recState.textContent = text;
-    }
-
-    async function tryAutoplay(){
-      setState("Live…");
-      try{
+    // Attempt autoplay immediately on page load (often allowed because user just tapped “Accept”)
+    async function startAudio() {
+      try {
         await audio.play();
-        setState("Recording");
-      }catch(e){
-        // iOS may block autoplay; show minimal instruction via state only
-        setState("Tap screen to begin");
+        tap.classList.remove('show');
+        recState.textContent = 'Live';
+        recSmall.textContent = 'in progress';
+      } catch (e) {
+        // iOS may block autoplay; show a single tap button
+        tap.classList.add('show');
+        recState.textContent = 'Waiting';
+        recSmall.textContent = 'tap to begin';
       }
     }
 
-    // Tap anywhere to start if autoplay is blocked
-    document.addEventListener('click', () => {
-      if (audio.paused && !audio.ended) {
-        audio.play().then(()=>setState("Recording")).catch(()=>{});
-      }
+    tap.addEventListener('click', async () => {
+      try {
+        await audio.play();
+        tap.classList.remove('show');
+        recState.textContent = 'Live';
+        recSmall.textContent = 'in progress';
+      } catch (e) {}
     });
 
-    audio.addEventListener('playing', () => setState("Recording"));
+    // When call ends -> show the “Attachment Received / Proceed to Envelope A” message
     audio.addEventListener('ended', () => {
-      setState("Ended");
-      timerEl.textContent = fmt(audio.duration || audio.currentTime || 0);
+      recState.textContent = 'Ended';
+      recSmall.textContent = 'logged';
 
-      // After a short beat, jump to the “Attachment Received / Proceed to Envelope A” moment
-      // (Keep your existing behavior if you already redirect elsewhere.)
-      setTimeout(() => {
-        // If you already have a dedicated end screen, change this to that page.
-        window.location.href = "call-transcript.html#complete";
-      }, 900);
+      overlay.classList.add('show');
+      overlay.setAttribute('aria-hidden', 'false');
     });
 
-    // Start
-    tryAutoplay();
-    tick();
+    // Start on load
+    window.addEventListener('load', startAudio);
   </script>
 </body>
 </html>
