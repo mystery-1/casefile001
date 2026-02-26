@@ -2,381 +2,391 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Live Call Transcript</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Secure Line • Call Transcript</title>
   <style>
     :root{
-      --bg:#07080a;
-      --panel:#0f1116;
-      --panel2:#0b0d11;
-      --text:#e9eef7;
-      --muted:#9aa6b2;
-      --accent:#4aa3ff;
-      --danger:#ff3b30;
+      --bg:#05070b;
+      --panel:#0f131b;
+      --text:#e9eefb;
+      --muted:#9aa7bf;
       --line:rgba(255,255,255,.08);
-      --glow:rgba(255,59,48,.22);
+      --accent:#d22b2b;
+      --good:#2bd27b;
+      --shadow: 0 20px 60px rgba(0,0,0,.55);
+      --radius:22px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      --sans: -apple-system, BlinkMacSystemFont, "SF Pro Display","SF Pro Text", Segoe UI, Roboto, Helvetica, Arial, sans-serif;
     }
     *{box-sizing:border-box}
+    html,body{height:100%}
     body{
       margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-      background: radial-gradient(1200px 600px at 30% 0%, rgba(255,255,255,.06), transparent 55%),
-                  radial-gradient(1000px 500px at 90% 10%, rgba(255,59,48,.08), transparent 60%),
-                  var(--bg);
+      font-family:var(--sans);
+      background:
+        radial-gradient(1200px 700px at 20% -10%, rgba(210,43,43,.16), transparent 55%),
+        radial-gradient(900px 500px at 90% 10%, rgba(95,164,255,.10), transparent 60%),
+        linear-gradient(180deg, #05070b 0%, #07090b 50%, #05070b 100%);
       color:var(--text);
-      min-height:100vh;
-      display:flex;
-      align-items:flex-start;
-      justify-content:center;
-      padding:28px 16px 40px;
+      padding: max(18px, env(safe-area-inset-top)) 18px max(18px, env(safe-area-inset-bottom));
+      -webkit-font-smoothing: antialiased;
     }
-
-    .wrap{width:min(760px, 100%)}
-
-    .topline{
+    .wrap{max-width:560px;margin:0 auto}
+    .top{
+      display:flex;align-items:flex-start;justify-content:space-between;
+      gap:14px;
+      padding:6px 2px 14px;
+    }
+    .kicker{
       letter-spacing:.22em;
       text-transform:uppercase;
-      font-weight:650;
       font-size:12px;
-      color:rgba(233,238,247,.68);
-      display:flex;
-      gap:10px;
-      align-items:center;
-      justify-content:space-between;
-      margin-bottom:10px;
+      color:rgba(233,238,251,.72);
     }
-    .chip{
-      padding:8px 12px;
-      border:1px solid rgba(255,59,48,.45);
-      color:rgba(255,59,48,.9);
-      border-radius:14px;
-      box-shadow: 0 0 0 3px var(--glow);
-      font-weight:750;
-      letter-spacing:.18em;
-      font-size:11px;
-      text-transform:uppercase;
-      white-space:nowrap;
-    }
-
-    h1{
-      margin:0 0 14px 0;
-      font-size:44px;
-      letter-spacing:.02em;
+    .title{
+      margin:8px 0 0;
+      font-size:40px;
       line-height:1.05;
+      letter-spacing:.01em;
     }
-
-    .panel{
-      background: linear-gradient(180deg, rgba(255,255,255,.04), transparent 55%), var(--panel);
-      border:1px solid var(--line);
-      border-radius:22px;
-      padding:18px;
-      box-shadow: 0 18px 40px rgba(0,0,0,.55);
-      overflow:hidden;
-    }
-
-    .statusbar{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      padding:14px 14px;
-      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
-      border:1px solid var(--line);
-      border-radius:16px;
-      margin-bottom:14px;
-    }
-    .status-left{display:flex; align-items:center; gap:10px}
-    .dot{
-      width:10px;height:10px;border-radius:999px;
-      background: var(--danger);
-      box-shadow: 0 0 0 4px rgba(255,59,48,.16), 0 0 20px rgba(255,59,48,.35);
-      flex:none;
-    }
-    .status-title{
+    .stamp{
+      border:1px solid rgba(210,43,43,.55);
+      color:rgba(210,43,43,.95);
+      padding:8px 12px;
+      border-radius:12px;
       font-weight:800;
-      letter-spacing:.08em;
+      letter-spacing:.18em;
       text-transform:uppercase;
       font-size:12px;
-      color:rgba(233,238,247,.85);
-    }
-    .status-sub{
-      font-size:12px;
-      color:rgba(233,238,247,.55);
+      box-shadow:0 0 0 2px rgba(210,43,43,.06) inset;
+      white-space:nowrap;
       margin-top:2px;
     }
-    .status-right{
-      text-align:right;
-      font-size:12px;
-      color:rgba(233,238,247,.55);
-      letter-spacing:.08em;
-      text-transform:uppercase;
-      white-space:nowrap;
-    }
 
-    .log{
-      background: var(--panel2);
+    .card{
+      margin-top:14px;
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
       border:1px solid var(--line);
-      border-radius:18px;
-      padding:18px 16px;
-      max-height: 62vh;
-      overflow:auto;
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
     }
-
-    .row{
-      display:flex;
-      gap:10px;
-      padding:10px 6px;
-      border-bottom:1px dashed rgba(255,255,255,.06);
-    }
-    .row:last-child{border-bottom:none}
-
-    .speaker{
-      flex:none;
-      min-width:118px;
-      font-weight:900;
-      letter-spacing:.02em;
-      text-transform:uppercase;
-    }
-    .speaker.you{color:var(--accent)}
-    .speaker.security{color:rgba(233,238,247,.92)}
-    .speaker.system{color:rgba(233,238,247,.72)}
-    .msg{
-      flex:1;
-      font-size:18px;
-      line-height:1.45;
-      color:rgba(233,238,247,.92);
-      word-break:break-word;
-    }
-
-    .typing{
+    .cardhead{
+      padding:14px 16px;
       display:flex;
       align-items:center;
-      gap:10px;
-      padding:14px 6px 4px;
-      color:rgba(233,238,247,.62);
-      font-size:14px;
+      justify-content:space-between;
+      background:rgba(0,0,0,.25);
+      border-bottom:1px solid rgba(255,255,255,.06);
     }
-    .bubbles{
-      display:inline-flex;
-      gap:6px;
-    }
-    .bubbles span{
-      width:6px;height:6px;border-radius:999px;
-      background:rgba(233,238,247,.55);
-      animation: bounce 1.2s infinite ease-in-out;
-    }
-    .bubbles span:nth-child(2){animation-delay:.15s}
-    .bubbles span:nth-child(3){animation-delay:.3s}
-    @keyframes bounce{
-      0%,80%,100%{transform:translateY(0);opacity:.55}
-      40%{transform:translateY(-4px);opacity:1}
-    }
-
-    .footer{
-      margin-top:14px;
-      padding-top:14px;
-      border-top:1px solid rgba(255,255,255,.08);
-      color:rgba(233,238,247,.55);
-      letter-spacing:.16em;
-      text-transform:uppercase;
-      font-weight:700;
+    .left{
+      display:flex;gap:10px;align-items:center;
+      color:rgba(233,238,251,.80);
+      font-family:var(--mono);
       font-size:12px;
-      text-align:center;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+    }
+    .dot{
+      width:10px;height:10px;border-radius:50%;
+      background:var(--good);
+      box-shadow:0 0 0 6px rgba(43,210,123,.12);
+    }
+    .right{
+      color:rgba(233,238,251,.70);
+      font-family:var(--mono);
+      font-size:12px;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+    }
+    .right b{color:rgba(233,238,251,.95)}
+
+    .body{
+      padding:14px 16px 16px;
+    }
+    .wave{
+      height:26px;
+      display:flex;align-items:flex-end;gap:4px;
+      opacity:.85;
+      margin-bottom:12px;
+    }
+    .bar{
+      width:4px;border-radius:6px;
+      background:rgba(233,238,251,.7);
+      animation: bounce 1.15s infinite ease-in-out;
+    }
+    .bar:nth-child(2){animation-delay:.08s}
+    .bar:nth-child(3){animation-delay:.16s}
+    .bar:nth-child(4){animation-delay:.24s}
+    .bar:nth-child(5){animation-delay:.32s}
+    .bar:nth-child(6){animation-delay:.40s}
+    .bar:nth-child(7){animation-delay:.48s}
+    @keyframes bounce{
+      0%,100%{height:6px; opacity:.35}
+      50%{height:24px; opacity:.95}
     }
 
-    .next{
-      margin-top:12px;
-      padding:14px 16px;
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,.10);
-      background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
-      text-align:center;
-      font-weight:800;
-      color:rgba(233,238,247,.9);
+    .chat{
+      display:flex;flex-direction:column;gap:12px;
+      padding-top:6px;
+      min-height:240px;
     }
-    .next strong{
-      color:rgba(255,255,255,.95);
+    .msg{
+      display:grid;
+      grid-template-columns:auto 1fr;
+      gap:10px;
+      align-items:flex-start;
+      opacity:0;
+      transform: translateY(6px);
+      transition: opacity .25s ease, transform .25s ease;
+    }
+    .msg.show{opacity:1; transform: translateY(0)}
+    .tag{
+      font-weight:900;
+      letter-spacing:.04em;
+      text-transform:uppercase;
+      font-size:14px;
+      white-space:nowrap;
+    }
+    .tag.you{color:#7fb2ff}
+    .tag.sec{color:#ffffff}
+    .txt{
+      font-size:18px;
+      line-height:1.45;
+      color:rgba(233,238,251,.92);
+    }
+    .txt.dim{color:rgba(233,238,251,.72)}
+    .divider{
+      height:1px;background:rgba(255,255,255,.07);
+      margin:14px 0 10px;
+    }
+
+    .tap{
+      margin-top:12px;
+      display:none;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.06);
+      padding:14px;
+      text-align:center;
+      font-weight:900;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      cursor:pointer;
+    }
+
+    /* Attachment received screen */
+    .attach{
+      display:none;
+      text-align:center;
+      padding:34px 16px 30px;
+    }
+    .attach h2{
+      margin:0 0 10px;
+      font-size:28px;
       letter-spacing:.10em;
       text-transform:uppercase;
     }
+    .attach p{
+      margin:0;
+      color:rgba(233,238,251,.78);
+      font-size:16px;
+      letter-spacing:.02em;
+    }
+    .badge2{
+      display:inline-block;
+      margin-top:16px;
+      border-radius:999px;
+      border:1px solid rgba(210,43,43,.45);
+      background:rgba(210,43,43,.10);
+      padding:10px 14px;
+      font-family:var(--mono);
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      font-size:12px;
+      color:rgba(233,238,251,.9);
+    }
 
-    .log::-webkit-scrollbar{width:10px}
-    .log::-webkit-scrollbar-thumb{background:rgba(255,255,255,.10);border-radius:999px}
-    .log::-webkit-scrollbar-track{background:transparent}
+    audio{display:none}
   </style>
 </head>
 <body>
   <div class="wrap">
-    <div class="topline">
-      <div>MAJOR CRIMES DIVISION • SECURE LINE</div>
-      <div class="chip">CONFIDENTIAL</div>
+    <div class="top">
+      <div>
+        <div class="kicker">MAJOR CRIMES DIVISION • SECURE LINE</div>
+        <h1 class="title">Live Call Transcript</h1>
+      </div>
+      <div class="stamp">CONFIDENTIAL</div>
     </div>
 
-    <h1>Live Call Transcript</h1>
+    <div class="card" id="callCard">
+      <div class="cardhead">
+        <div class="left"><span class="dot"></span><span>Channel: Encrypted Voice</span></div>
+        <div class="right">Status: <b id="status">CONNECTED</b></div>
+      </div>
 
-    <div class="panel">
-      <div class="statusbar">
-        <div class="status-left">
-          <div class="dot"></div>
-          <div>
-            <div class="status-title">Incoming Call Connected</div>
-            <div class="status-sub" id="callMeta">Source: Building Security • Line: Unlisted</div>
-          </div>
+      <div class="body">
+        <div class="wave" id="wave">
+          <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+          <div class="bar"></div><div class="bar"></div><div class="bar"></div>
         </div>
-        <div class="status-right" id="timer">00:00</div>
+
+        <div class="chat" id="chat"></div>
+
+        <div class="tap" id="tapToStart">Tap to start audio</div>
+
+        <div class="divider"></div>
+
+        <div class="attach" id="attach">
+          <h2>Attachment Received</h2>
+          <p>Proceed to <b>Envelope A</b>.</p>
+          <div class="badge2">SOURCE: BUILDING SECURITY</div>
+        </div>
       </div>
-
-      <div class="log" id="log"></div>
-
-      <div class="typing" id="typing" style="display:none;">
-        <span id="typingWho">SECURITY</span>
-        <span>is speaking</span>
-        <span class="bubbles"><span></span><span></span><span></span></span>
-      </div>
-
-      <div class="next" id="nextBox" style="display:none;">
-        To proceed further, go to <strong>Envelope A</strong> (New Lead).
-      </div>
-
-      <div class="footer">AUTHORIZED PERSONNEL ONLY • DO NOT SHARE OUTSIDE MAJOR CRIMES DIVISION</div>
     </div>
+
+    <audio id="callAudio" preload="auto"></audio>
   </div>
 
   <script>
-    // ===== LIVE "MESSAGE BY MESSAGE" SCRIPT =====
+    // Uses the filename saved by footage.html; fallback if opened directly.
+    const audioFile = sessionStorage.getItem('mcd_call_audio') || "security-call.mp3.mp3";
+    const shouldAutoplay = (sessionStorage.getItem('mcd_call_autoplay') || "0") === "1";
+
+    const callAudio = document.getElementById('callAudio');
+    const tapToStart = document.getElementById('tapToStart');
+    const statusEl = document.getElementById('status');
+    const chat = document.getElementById('chat');
+    const attach = document.getElementById('attach');
+    const wave = document.getElementById('wave');
+
+    callAudio.src = audioFile;
+
+    // Slower pacing with random pauses (edit only these numbers if you ever want slower/faster)
+    function rand(min, max){ return Math.floor(Math.random()*(max-min+1))+min; }
+    const BASE_DELAY_MS = 1300;     // overall slower baseline
+    const JITTER_MS = 1400;         // random extra pause
+    const HEAVY_PAUSE_MS = 2200;    // occasional longer pause
+
     const script = [
-      { speaker:"you",     text:"Hello…?" },
-      { speaker:"security",text:"Detective—listen. Please don’t hang up." },
-      { speaker:"you",     text:"Who is this. Name." },
-      { speaker:"security",text:"I… I’m building security. Night shift. West entrance." },
-      { speaker:"you",     text:"Which building? Say it." },
-      { speaker:"security",text:"Garrison Woods perimeter—Elm Street side. I saw your name on the incident sheet." },
-      { speaker:"you",     text:"How did you get my number?" },
-      { speaker:"security",text:"I shouldn’t have it. I pulled it after they found her. I panicked." },
-      { speaker:"you",     text:"You’re calling from a blocked line." },
-      { speaker:"security",text:"Because if anyone traces this back to me, I look involved." },
-      { speaker:"you",     text:"Start over. What did you see? When?" },
-      { speaker:"security",text:"The night she arrived. Late—close to midnight. Rain starting, grounds empty." },
-      { speaker:"you",     text:"Olivia Bennett was there. Why would she be there?" },
-      { speaker:"security",text:"I don’t know. But she moved like she knew the place. Like she’d done it before." },
-      { speaker:"you",     text:"Was she alone?" },
-      { speaker:"security",text:"No." },
-      { speaker:"security",text:"She met someone. A man." },
-      { speaker:"you",     text:"Describe him." },
-      { speaker:"security",text:"Tall. Clean coat. Kept his face turned away from the camera angle." },
-      { speaker:"you",     text:"How close were you?" },
-      { speaker:"security",text:"Close enough to hear him say her name once. That’s what’s killing me." },
-      { speaker:"you",     text:"Why didn’t you report this immediately?" },
-      { speaker:"security",text:"Because I thought it was… personal. Something private. And I didn’t want my supervisor asking why I was watching." },
-      { speaker:"security",text:"Then she turned up dead." },
-      { speaker:"security",text:"And I realized I might look like an accomplice." },
-      { speaker:"you",     text:"You said you saw them together. Do you have proof?" },
-      { speaker:"security",text:"I took one photo. Hallway angle—quick, discreet. It shows them entering together." },
-      { speaker:"you",     text:"Send it. Now." },
-      { speaker:"system",  text:"Attachment Received." },
-      { speaker:"system",  text:"Next step: To proceed further, go to Envelope A (New Lead)." }
+      { who:"you", text:"Hello—who is this?" },
+      { who:"sec", text:"Detective… listen. Don’t hang up." },
+      { who:"you", text:"Identify yourself. Name and role." },
+      { who:"sec", text:"Security. Building security. Night shift." },
+      { who:"you", text:"Which building? Start from the beginning." },
+      { who:"sec", text:"The office building… the one tied to your case. I saw her." },
+      { who:"you", text:"You saw Olivia Bennett? When?" },
+      { who:"sec", text:"That night. Late. She came in after hours." },
+      { who:"you", text:"After hours means what time. Be specific." },
+      { who:"sec", text:"Around eleven-forty. I shouldn’t have been looking." },
+      { who:"you", text:"Was she alone?" },
+      { who:"sec", text:"No." },
+      { who:"you", text:"Who was with her?" },
+      { who:"sec", text:"A man." },
+      { who:"you", text:"Describe him." },
+      { who:"sec", text:"Suit. Confident. Like he owned the place." },
+      { who:"you", text:"You’re calling me now—why didn’t you report this immediately?" },
+      { who:"sec", text:"Because I thought it was… personal. And then she turned up dead." },
+      { who:"sec", text:"And I realized I might look involved." },
+      { who:"you", text:"You might look involved because you hid it." },
+      { who:"you", text:"How do you know that man matters to this case?" },
+      { who:"sec", text:"I looked him up later. I shouldn’t have." },
+      { who:"you", text:"And?" },
+      { who:"sec", text:"Married. Connected." },
+      { who:"you", text:"Connected to who? Say the name." },
+      { who:"sec", text:"Elena Whitlock." },
+      { who:"you", text:"Her husband." },
+      { who:"sec", text:"Tom Whitlock." },
+      { who:"you", text:"Do you have proof of the meeting?" },
+      { who:"sec", text:"I have a hallway photo." },
+      { who:"sec", text:"I took it discreetly." },
+      { who:"sec", text:"It shows them entering together." },
+      { who:"you", text:"Send it. Now." },
+      { who:"sys", text:"Attachment received.", dim:true }
     ];
 
-    // ===== ONLY CHANGE: SLOWER PACE + RANDOM PAUSES =====
-    // Slower typing + longer baseline pauses + jitter for natural breaks.
-    const BASE_DELAY_MS   = 1600;  // was 900
-    const PER_CHAR_MS     = 62;    // was 28
-    const THINK_EXTRA_MS  = 1400;  // was 700 (security hesitations)
-    const SYSTEM_DELAY_MS = 1200;  // was 650
-    const JITTER_MS       = 1200;  // adds random pauses for realism
-    const PUNCT_MS        = 600;   // extra pause for .,!?…— etc
+    function makeMsg(who, text, dim){
+      const wrap = document.createElement('div');
+      wrap.className = 'msg';
+      const tag = document.createElement('div');
+      const txt = document.createElement('div');
 
-    const log = document.getElementById("log");
-    const typing = document.getElementById("typing");
-    const typingWho = document.getElementById("typingWho");
-    const timerEl = document.getElementById("timer");
-    const nextBox = document.getElementById("nextBox");
-
-    // Timer
-    let startTime = Date.now();
-    setInterval(() => {
-      const s = Math.floor((Date.now() - startTime)/1000);
-      const mm = String(Math.floor(s/60)).padStart(2,"0");
-      const ss = String(s%60).padStart(2,"0");
-      timerEl.textContent = `${mm}:${ss}`;
-    }, 250);
-
-    function addRow(speaker, text){
-      const row = document.createElement("div");
-      row.className = "row";
-
-      const sp = document.createElement("div");
-      sp.className = `speaker ${speaker}`;
-      sp.textContent = speaker === "you" ? "YOU:" :
-                       speaker === "security" ? "SECURITY:" : "SYSTEM:";
-
-      const msg = document.createElement("div");
-      msg.className = "msg";
-      msg.textContent = text;
-
-      row.appendChild(sp);
-      row.appendChild(msg);
-      log.appendChild(row);
-      log.scrollTop = log.scrollHeight;
-    }
-
-    function showTyping(forSpeaker){
-      if(forSpeaker === "system"){
-        typing.style.display = "none";
-        return;
+      if (who === 'you'){
+        tag.className = 'tag you';
+        tag.textContent = 'YOU:';
+      } else if (who === 'sec'){
+        tag.className = 'tag sec';
+        tag.textContent = 'SECURITY:';
+      } else {
+        tag.className = 'tag sec';
+        tag.textContent = 'SYSTEM:';
       }
-      typingWho.textContent = (forSpeaker === "you") ? "YOU" : "SECURITY";
-      typing.style.display = "flex";
+
+      txt.className = 'txt' + (dim ? ' dim' : '');
+      txt.textContent = text;
+
+      wrap.appendChild(tag);
+      wrap.appendChild(txt);
+      return wrap;
     }
 
-    function hideTyping(){
-      typing.style.display = "none";
-    }
+    async function playTranscript(){
+      chat.innerHTML = '';
+      attach.style.display = 'none';
+      statusEl.textContent = 'CONNECTED';
+      wave.style.opacity = '0.9';
 
-    function countPunctuationPauses(text){
-      // count heavy pauses: period, comma, ellipsis, dash, question/exclamation
-      const matches = text.match(/[.,!?…—]/g);
-      return matches ? matches.length : 0;
-    }
-
-    function randInt(min, max){
-      return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-
-    async function play(){
-      for(let i=0;i<script.length;i++){
+      for (let i=0;i<script.length;i++){
         const line = script[i];
-        const speaker = line.speaker;
 
-        showTyping(speaker);
+        // random pacing:
+        let delay = BASE_DELAY_MS + rand(250, JITTER_MS);
+        // add heavier pauses on tense beats
+        if ([1,5,10,16,20,24].includes(i)) delay += HEAVY_PAUSE_MS;
 
-        // base + "typing" duration
-        let delay = BASE_DELAY_MS + (line.text.length * PER_CHAR_MS);
+        await new Promise(r=>setTimeout(r, delay));
 
-        // punctuation pauses (adds readability + intensity)
-        delay += countPunctuationPauses(line.text) * PUNCT_MS;
+        const node = makeMsg(line.who, line.text, !!line.dim);
+        chat.appendChild(node);
+        requestAnimationFrame(()=>node.classList.add('show'));
+        chat.scrollTop = chat.scrollHeight;
+      }
 
-        // security hesitates more
-        if(speaker === "security") delay += THINK_EXTRA_MS;
+      // After transcript completes, show the better "Attachment Received" block
+      statusEl.textContent = 'ENDED';
+      wave.style.opacity = '0.25';
+      attach.style.display = 'block';
+    }
 
-        // system lines remain slower than before
-        if(speaker === "system") delay = SYSTEM_DELAY_MS + randInt(300, 900);
-
-        // random human pauses (0..JITTER_MS)
-        delay += randInt(0, JITTER_MS);
-
-        await new Promise(r => setTimeout(r, delay));
-
-        hideTyping();
-        addRow(speaker, line.text);
-
-        if(i === script.length - 1){
-          nextBox.style.display = "block";
-        }
+    // Try autoplay (may be blocked on iPhone when navigating)
+    async function startAudio(){
+      try{
+        await callAudio.play();
+        tapToStart.style.display = 'none';
+      } catch(e){
+        tapToStart.style.display = 'block';
       }
     }
 
-    play();
+    tapToStart.addEventListener('click', async ()=>{
+      await startAudio();
+    });
+
+    // When audio finishes, we still keep transcript pacing; but if your audio ends earlier/later,
+    // the transcript continues with the slow pacing (reads better).
+    callAudio.addEventListener('ended', ()=>{
+      // no-op; transcript controls the flow
+    });
+
+    // Start
+    (async ()=>{
+      if (shouldAutoplay) await startAudio();
+      // Always run transcript (this is what makes it “live”)
+      playTranscript();
+      // Clear autoplay flag so refresh doesn't auto-trigger unexpectedly
+      sessionStorage.setItem('mcd_call_autoplay','0');
+    })();
   </script>
 </body>
 </html>
