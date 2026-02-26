@@ -1,164 +1,472 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Major Crimes Division – Footage Archive</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Footage Archive • CAM-17B</title>
+  <style>
+    :root{
+      --bg:#07090d;
+      --panel:#0f131b;
+      --panel2:#0b0f16;
+      --text:#e9eefb;
+      --muted:#9aa7bf;
+      --line:rgba(255,255,255,.08);
+      --accent:#d22b2b;
+      --good:#2bd27b;
+      --shadow: 0 20px 60px rgba(0,0,0,.55);
+      --radius:22px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      --sans: -apple-system, BlinkMacSystemFont, "SF Pro Display","SF Pro Text", Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:var(--sans);
+      background:
+        radial-gradient(1200px 700px at 20% -10%, rgba(210,43,43,.18), transparent 55%),
+        radial-gradient(900px 500px at 90% 10%, rgba(95,164,255,.12), transparent 60%),
+        linear-gradient(180deg, #05070b 0%, #07090d 40%, #05070b 100%);
+      color:var(--text);
+      -webkit-font-smoothing: antialiased;
+      padding: max(18px, env(safe-area-inset-top)) 18px max(18px, env(safe-area-inset-bottom));
+    }
+    .wrap{max-width:520px;margin:0 auto}
+    .topbar{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:10px 2px 18px;
+    }
+    .brand{
+      letter-spacing:.22em;
+      text-transform:uppercase;
+      font-size:12px;
+      color:rgba(233,238,251,.75);
+    }
+    .stamp{
+      border:1px solid rgba(210,43,43,.55);
+      color:rgba(210,43,43,.95);
+      padding:8px 12px;
+      border-radius:12px;
+      font-weight:700;
+      letter-spacing:.18em;
+      text-transform:uppercase;
+      font-size:12px;
+      box-shadow:0 0 0 2px rgba(210,43,43,.06) inset;
+    }
 
-<style>
-body{
-    margin:0;
-    background:#05070d;
-    color:white;
-    font-family:Arial, Helvetica, sans-serif;
-}
+    .hero{
+      display:grid;
+      gap:14px;
+      margin-top:2px;
+    }
+    .title{
+      font-size:44px;line-height:1.05;margin:0;
+      letter-spacing:.02em;
+    }
+    .subchips{display:flex;flex-wrap:wrap;gap:10px}
+    .chip{
+      background:rgba(255,255,255,.04);
+      border:1px solid var(--line);
+      border-radius:999px;
+      padding:10px 14px;
+      color:rgba(233,238,251,.85);
+      font-weight:600;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      font-size:12px;
+      box-shadow:0 8px 24px rgba(0,0,0,.25);
+    }
 
-.header{
-    padding:20px;
-    letter-spacing:2px;
-    font-size:14px;
-    opacity:0.7;
-}
+    .card{
+      margin-top:18px;
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+    .cardhead{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:14px 16px;
+      background:rgba(0,0,0,.25);
+      border-bottom:1px solid rgba(255,255,255,.06);
+    }
+    .leftmeta{display:flex;gap:10px;align-items:center}
+    .dot{width:10px;height:10px;border-radius:50%;background:var(--good); box-shadow:0 0 0 6px rgba(43,210,123,.12)}
+    .meta{
+      font-family:var(--mono);
+      font-size:12px;
+      color:rgba(233,238,251,.75);
+      letter-spacing:.12em;
+      text-transform:uppercase;
+    }
+    .status{
+      display:flex;align-items:center;gap:10px;
+      font-family:var(--mono);
+      font-size:12px;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      color:rgba(233,238,251,.75);
+    }
+    .status b{color:rgba(233,238,251,.95)}
+    .videowrap{
+      padding:16px;
+      background:linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,.15));
+    }
+    video{
+      width:100%;
+      border-radius:18px;
+      background:#000;
+      display:block;
+      border:1px solid rgba(255,255,255,.08);
+      box-shadow:0 18px 50px rgba(0,0,0,.55);
+    }
+    .footerline{
+      padding:14px 16px 16px;
+      border-top:1px solid rgba(255,255,255,.06);
+      color:rgba(233,238,251,.45);
+      letter-spacing:.18em;
+      text-transform:uppercase;
+      font-size:11px;
+      text-align:center;
+    }
 
-.video-container{
-    padding:20px;
-}
+    /* ACCESS GATE */
+    .gate{
+      margin-top:14px;
+      background:rgba(255,255,255,.035);
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:14px;
+      box-shadow:0 14px 40px rgba(0,0,0,.35);
+    }
+    .gate label{
+      display:block;
+      font-size:12px;
+      color:rgba(233,238,251,.65);
+      letter-spacing:.18em;
+      text-transform:uppercase;
+      margin-bottom:10px;
+    }
+    .row{display:flex;gap:10px}
+    input{
+      flex:1;
+      padding:14px 14px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.10);
+      outline:none;
+      background:rgba(0,0,0,.25);
+      color:var(--text);
+      font-size:16px;
+      font-family:var(--mono);
+      letter-spacing:.10em;
+    }
+    button{
+      padding:14px 14px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(210,43,43,.12);
+      color:rgba(233,238,251,.95);
+      font-weight:800;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      cursor:pointer;
+    }
+    button:active{transform:translateY(1px)}
+    .hint{
+      margin-top:10px;
+      font-size:12px;
+      color:rgba(233,238,251,.55);
+      line-height:1.35;
+    }
 
-video{
-    width:100%;
-    border-radius:12px;
-}
+    /* INCOMING CALL OVERLAY */
+    .overlay{
+      position:fixed;inset:0;
+      background:rgba(0,0,0,.72);
+      backdrop-filter: blur(10px);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:22px;
+      z-index:50;
+    }
+    .overlay.show{display:flex}
+    .callbox{
+      width:min(520px, 100%);
+      border-radius:28px;
+      border:1px solid rgba(255,255,255,.10);
+      background:linear-gradient(180deg, rgba(18,22,32,.92), rgba(10,12,18,.92));
+      box-shadow:0 30px 90px rgba(0,0,0,.7);
+      overflow:hidden;
+    }
+    .calltop{
+      padding:18px 18px 10px;
+      display:flex;align-items:center;justify-content:space-between;
+    }
+    .badge{
+      font-size:12px;
+      letter-spacing:.18em;
+      text-transform:uppercase;
+      color:rgba(233,238,251,.7);
+      font-family:var(--mono);
+    }
+    .pulse{
+      width:10px;height:10px;border-radius:50%;
+      background:var(--accent);
+      box-shadow:0 0 0 0 rgba(210,43,43,.55);
+      animation:pulse 1.1s infinite;
+    }
+    @keyframes pulse{
+      0%{box-shadow:0 0 0 0 rgba(210,43,43,.55)}
+      70%{box-shadow:0 0 0 14px rgba(210,43,43,0)}
+      100%{box-shadow:0 0 0 0 rgba(210,43,43,0)}
+    }
+    .callmid{
+      padding:10px 18px 18px;
+      text-align:center;
+    }
+    .caller{
+      margin:6px 0 6px;
+      font-size:28px;
+      font-weight:900;
+      letter-spacing:.02em;
+    }
+    .sub{
+      margin:0;
+      color:rgba(233,238,251,.65);
+      font-size:14px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      font-family:var(--mono);
+    }
+    .actions{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+      padding:16px 18px 18px;
+      background:rgba(0,0,0,.25);
+      border-top:1px solid rgba(255,255,255,.08);
+    }
+    .btn{
+      border-radius:18px;
+      padding:16px 14px;
+      font-weight:900;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      border:1px solid rgba(255,255,255,.10);
+    }
+    .decline{background:rgba(255,255,255,.06); color:rgba(233,238,251,.85)}
+    .accept{background:rgba(43,210,123,.18); color:#eafff3; border-color:rgba(43,210,123,.35)}
+    .smallnote{
+      padding:0 18px 16px;
+      text-align:center;
+      color:rgba(233,238,251,.45);
+      font-size:12px;
+      letter-spacing:.06em;
+    }
 
-#incomingCall{
-    display:none;
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,0.92);
-    color:white;
-    text-align:center;
-    padding-top:30%;
-    z-index:999;
-}
-
-.callBox{
-    border:1px solid #333;
-    padding:25px;
-    width:85%;
-    margin:auto;
-    border-radius:14px;
-    background:#0d111c;
-}
-
-button{
-    padding:12px 20px;
-    margin:10px;
-    border:none;
-    border-radius:8px;
-    font-size:16px;
-}
-
-.accept{
-    background:#1db954;
-    color:white;
-}
-
-.decline{
-    background:#aa0000;
-    color:white;
-}
-
-#callScreen{
-    display:none;
-    position:fixed;
-    inset:0;
-    background:#000;
-    color:white;
-    z-index:998;
-    padding:20px;
-}
-
-#endMessage{
-    display:none;
-    position:fixed;
-    inset:0;
-    background:black;
-    color:white;
-    text-align:center;
-    padding-top:40%;
-    font-size:20px;
-}
-</style>
+    /* hidden until authorized */
+    #mainContent{display:none}
+    #locked{display:block}
+  </style>
 </head>
-
 <body>
-
-<div class="header">
-MAJOR CRIMES DIVISION • ARCHIVE ID: CAM-17B
-</div>
-
-<div class="video-container">
-<video id="footage" controls>
-<source src="footage.mp4" type="video/mp4">
-</video>
-</div>
-
-<!-- Incoming Call Screen -->
-<div id="incomingCall">
-    <div class="callBox">
-        <h2>INCOMING CALL</h2>
-        <p>Building Security</p>
-        <button class="accept" onclick="acceptCall()">Accept</button>
-        <button class="decline" onclick="declineCall()">Decline</button>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">MAJOR CRIMES DIVISION • SECURE INTERNAL SERVER</div>
+      <div class="stamp">CONFIDENTIAL</div>
     </div>
-</div>
 
-<!-- Call Screen -->
-<div id="callScreen">
-    <h2>Secure Line Connected</h2>
-    <p>Call in Progress...</p>
-</div>
+    <!-- LOCKED VIEW -->
+    <div id="locked">
+      <div class="hero">
+        <h1 class="title">FOOTAGE<br/>ARCHIVE</h1>
+        <div class="subchips">
+          <div class="chip">CASE FILE #001</div>
+          <div class="chip">ARCHIVE ID: CAM-17B</div>
+          <div class="chip">SOURCE: PERIMETER CAMERA</div>
+        </div>
+      </div>
 
-<!-- End Message -->
-<div id="endMessage">
-    ATTACHMENT RECEIVED<br><br>
-    Proceed to Envelope A.
-</div>
+      <div class="gate" aria-label="Authorization gate">
+        <label for="code">Authorization Code</label>
+        <div class="row">
+          <input id="code" inputmode="numeric" autocomplete="one-time-code" placeholder="ENTER CODE" />
+          <button id="unlockBtn">VERIFY</button>
+        </div>
+        <div class="hint">Access is logged. Enter the authorized numeric code to decrypt the archive.</div>
+      </div>
+    </div>
 
-<audio id="securityCall" src="security-call.mp3.mp3"></audio>
+    <!-- MAIN VIEW -->
+    <div id="mainContent">
+      <div class="hero">
+        <h1 class="title">FOOTAGE<br/>ARCHIVE</h1>
+        <div class="subchips">
+          <div class="chip">CASE FILE #001</div>
+          <div class="chip">ARCHIVE ID: CAM-17B</div>
+          <div class="chip">SOURCE: PERIMETER CAMERA</div>
+        </div>
+      </div>
 
-<script>
-let video = document.getElementById("footage");
-let incoming = document.getElementById("incomingCall");
-let callScreen = document.getElementById("callScreen");
-let audio = document.getElementById("securityCall");
-let endMessage = document.getElementById("endMessage");
+      <div class="card">
+        <div class="cardhead">
+          <div class="leftmeta">
+            <div class="dot"></div>
+            <div class="meta">STREAM: CAM-17B / NIGHT CAPTURE</div>
+          </div>
+          <div class="status"><span>STATUS</span> <b id="streamStatus">READY</b></div>
+        </div>
 
-let callTriggered = false;
+        <div class="videowrap">
+          <video id="vid" controls playsinline preload="metadata">
+            <source src="footage.mp4" type="video/mp4" />
+          </video>
+        </div>
 
-video.addEventListener("timeupdate", function() {
-    if(video.currentTime >= 9 && !callTriggered){
-        callTriggered = true;
-        incoming.style.display = "block";
+        <div class="footerline">AUTHORIZED PERSONNEL ONLY • DO NOT SHARE OUTSIDE MAJOR CRIMES DIVISION</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INCOMING CALL -->
+  <div class="overlay" id="incomingOverlay" role="dialog" aria-modal="true" aria-label="Incoming call">
+    <div class="callbox">
+      <div class="calltop">
+        <div class="badge">SECURE LINE • INCOMING</div>
+        <div class="pulse" aria-hidden="true"></div>
+      </div>
+      <div class="callmid">
+        <p class="sub">Caller ID</p>
+        <div class="caller">BUILDING SECURITY</div>
+        <p class="sub">Encrypted Voice Channel</p>
+      </div>
+      <div class="actions">
+        <button class="btn decline" id="declineBtn">DECLINE</button>
+        <button class="btn accept" id="acceptBtn">ACCEPT</button>
+      </div>
+      <div class="smallnote">If missed, the line will reconnect automatically.</div>
+    </div>
+  </div>
+
+  <script>
+    // ====== CONFIG ======
+    // Change this to your actual authorization code:
+    const AUTH_CODE = "1234";
+
+    // Call audio file (keep your uploaded filename exactly as-is):
+    const CALL_AUDIO_FILE = "security-call.mp3.mp3";
+
+    // ====== STATE ======
+    const locked = document.getElementById('locked');
+    const mainContent = document.getElementById('mainContent');
+    const codeInput = document.getElementById('code');
+    const unlockBtn = document.getElementById('unlockBtn');
+    const vid = document.getElementById('vid');
+    const streamStatus = document.getElementById('streamStatus');
+
+    const incomingOverlay = document.getElementById('incomingOverlay');
+    const acceptBtn = document.getElementById('acceptBtn');
+    const declineBtn = document.getElementById('declineBtn');
+
+    let callTriggered = false;
+
+    // ====== UNLOCK ======
+    function unlock(){
+      locked.style.display = "none";
+      mainContent.style.display = "block";
+      codeInput.blur();
+      setTimeout(()=>window.scrollTo({top:0,behavior:"smooth"}), 50);
     }
-});
+    unlockBtn.addEventListener('click', ()=>{
+      if (String(codeInput.value).trim() === AUTH_CODE){
+        unlock();
+      } else {
+        codeInput.value = "";
+        codeInput.placeholder = "INVALID";
+        codeInput.style.borderColor = "rgba(210,43,43,.6)";
+        setTimeout(()=>{
+          codeInput.placeholder = "ENTER CODE";
+          codeInput.style.borderColor = "rgba(255,255,255,.10)";
+        }, 900);
+      }
+    });
+    codeInput.addEventListener('keydown', (e)=>{
+      if (e.key === 'Enter') unlockBtn.click();
+    });
 
-function acceptCall(){
-    incoming.style.display = "none";
-    callScreen.style.display = "block";
-    audio.play();
+    // ====== RINGTONE (no extra file needed) ======
+    let audioCtx, osc, gainNode, ringTimer;
+    function startRingtone(){
+      try{
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        osc = audioCtx.createOscillator();
+        gainNode = audioCtx.createGain();
+        osc.type = "sine";
+        osc.frequency.value = 880;
+        gainNode.gain.value = 0.0;
+        osc.connect(gainNode).connect(audioCtx.destination);
+        osc.start();
 
-    audio.onended = function(){
-        callScreen.style.display = "none";
-        endMessage.style.display = "block";
+        // iOS-like ring pattern
+        let on = false;
+        ringTimer = setInterval(()=>{
+          on = !on;
+          gainNode.gain.setTargetAtTime(on ? 0.18 : 0.0, audioCtx.currentTime, 0.02);
+          if (navigator.vibrate) navigator.vibrate(on ? [120] : [0]);
+        }, 420);
+      } catch(e){
+        // If WebAudio blocked, do nothing (call still works)
+      }
     }
-}
+    function stopRingtone(){
+      try{
+        if (ringTimer) clearInterval(ringTimer);
+        if (gainNode) gainNode.gain.setTargetAtTime(0.0, audioCtx.currentTime, 0.02);
+        if (osc) osc.stop();
+        if (audioCtx) audioCtx.close();
+      } catch(e){}
+      ringTimer = null; osc = null; gainNode = null; audioCtx = null;
+      if (navigator.vibrate) navigator.vibrate([0]);
+    }
 
-function declineCall(){
-    incoming.style.display = "none";
-    setTimeout(function(){
-        incoming.style.display = "block";
-    },2000);
-}
-</script>
+    // ====== INCOMING CALL FLOW (after video ENDS) ======
+    function showIncomingCall(){
+      incomingOverlay.classList.add('show');
+      startRingtone();
+    }
 
+    function hideIncomingCall(){
+      incomingOverlay.classList.remove('show');
+      stopRingtone();
+    }
+
+    // Trigger after video ends (per your request)
+    vid.addEventListener('ended', ()=>{
+      if (callTriggered) return;
+      callTriggered = true;
+      streamStatus.textContent = "ENDED";
+      setTimeout(showIncomingCall, 600);
+    });
+
+    vid.addEventListener('play', ()=>{ streamStatus.textContent = "PLAYING"; });
+    vid.addEventListener('pause', ()=>{ if (!vid.ended) streamStatus.textContent = "PAUSED"; });
+
+    // Accept -> go to call page; pass autoplay flag + audio file name
+    acceptBtn.addEventListener('click', ()=>{
+      hideIncomingCall();
+      sessionStorage.setItem('mcd_call_audio', CALL_AUDIO_FILE);
+      sessionStorage.setItem('mcd_call_autoplay', '1');
+      window.location.href = "call-transcript.html";
+    });
+
+    // Decline -> force progression: call back in 2 seconds
+    declineBtn.addEventListener('click', ()=>{
+      hideIncomingCall();
+      setTimeout(()=>showIncomingCall(), 2000);
+    });
+  </script>
 </body>
 </html>
