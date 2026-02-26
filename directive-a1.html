@@ -1,124 +1,279 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Directive A-1</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Directive A-1 • Encrypted File</title>
 
-<style>
-body{
-    margin:0;
-    background:#05070c;
-    font-family:Arial, sans-serif;
-    color:white;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    height:100vh;
-}
+  <style>
+    body{
+      margin:0;
+      background:#05070c;
+      font-family:Arial, sans-serif;
+      color:#ffffff;
+      min-height:100vh;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      padding:22px;
+    }
 
-.container{
-    width:90%;
-    max-width:420px;
-    background:rgba(255,255,255,0.05);
-    padding:30px;
-    border-radius:20px;
-    border:1px solid rgba(255,255,255,0.08);
-    text-align:center;
-    backdrop-filter:blur(10px);
-}
+    .wrap{
+      width:100%;
+      max-width:520px;
+    }
 
-h1{
-    margin-bottom:10px;
-    font-size:26px;
-    letter-spacing:2px;
-}
+    .top{
+      opacity:.75;
+      letter-spacing:3px;
+      font-size:12px;
+      text-transform:uppercase;
+      margin-bottom:12px;
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:center;
+    }
 
-.sub{
-    opacity:0.6;
-    font-size:13px;
-    margin-bottom:25px;
-}
+    .pill{
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.05);
+      padding:8px 12px;
+      border-radius:999px;
+      letter-spacing:2px;
+      font-weight:800;
+      white-space:nowrap;
+    }
 
-input{
-    width:100%;
-    padding:14px;
-    font-size:18px;
-    background:#0c111b;
-    border:1px solid rgba(255,255,255,0.1);
-    border-radius:10px;
-    color:white;
-    text-align:center;
-    letter-spacing:2px;
-}
+    .card{
+      background:rgba(255,255,255,0.05);
+      border:1px solid rgba(255,255,255,0.08);
+      border-radius:22px;
+      padding:22px;
+      backdrop-filter:blur(10px);
+      box-shadow: 0 20px 80px rgba(0,0,0,.55);
+    }
 
-button{
-    width:100%;
-    padding:14px;
-    margin-top:15px;
-    background:#b30000;
-    border:none;
-    border-radius:10px;
-    color:white;
-    font-weight:bold;
-    letter-spacing:2px;
-}
+    h1{
+      margin:0 0 6px 0;
+      font-size:40px;
+      letter-spacing:2px;
+      text-transform:uppercase;
+    }
 
-button:hover{
-    background:#e00000;
-}
+    .sub{
+      opacity:.7;
+      letter-spacing:3px;
+      text-transform:uppercase;
+      font-size:12px;
+      margin-bottom:18px;
+    }
 
-#error{
-    color:#ff4d4d;
-    margin-top:15px;
-    display:none;
-}
+    .box{
+      background:rgba(0,0,0,.20);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:18px;
+      padding:16px;
+    }
 
-#file{
-    display:none;
-    margin-top:20px;
-    text-align:left;
-    font-size:14px;
-    line-height:1.6;
-}
-.unlock{
-    margin-top:15px;
-    color:#00ff99;
-    font-weight:bold;
-}
-</style>
+    input{
+      width:100%;
+      padding:16px;
+      font-size:20px;
+      background:#0c111b;
+      border:1px solid rgba(255,255,255,0.12);
+      border-radius:12px;
+      color:white;
+      text-align:center;
+      letter-spacing:6px;
+      outline:none;
+    }
+
+    button{
+      width:100%;
+      padding:16px;
+      margin-top:14px;
+      background:#b30000;
+      border:none;
+      border-radius:12px;
+      color:white;
+      font-weight:900;
+      letter-spacing:3px;
+      text-transform:uppercase;
+      font-size:14px;
+    }
+
+    button:hover{
+      background:#e00000;
+    }
+
+    .error{
+      display:none;
+      margin-top:14px;
+      border:1px solid rgba(255,60,60,.25);
+      background:rgba(255,60,60,.06);
+      border-radius:14px;
+      padding:12px 14px;
+      color:#ffd5d5;
+      letter-spacing:2px;
+      text-transform:uppercase;
+      font-size:12px;
+    }
+
+    .file{
+      display:none;
+      margin-top:16px;
+      border:1px solid rgba(0,255,153,.22);
+      background:rgba(0,255,153,.06);
+      border-radius:16px;
+      padding:16px;
+      color:#dfffee;
+      line-height:1.55;
+      font-size:15px;
+    }
+
+    .granted{
+      color:#00ff99;
+      font-weight:900;
+      letter-spacing:2px;
+      text-transform:uppercase;
+      margin-bottom:10px;
+      font-size:13px;
+    }
+
+    .kv{
+      margin:10px 0;
+    }
+
+    .k{
+      opacity:.8;
+      letter-spacing:2px;
+      text-transform:uppercase;
+      font-size:12px;
+      margin-bottom:6px;
+    }
+
+    .v{
+      font-size:16px;
+      font-weight:700;
+      color:#ffffff;
+    }
+
+    .hint{
+      margin-top:14px;
+      opacity:.55;
+      letter-spacing:3px;
+      text-transform:uppercase;
+      font-size:11px;
+      text-align:center;
+    }
+
+    .continue{
+      display:none;
+      width:100%;
+      padding:14px;
+      margin-top:14px;
+      border-radius:12px;
+      border:1px solid rgba(0,255,153,.22);
+      background:rgba(0,255,153,.08);
+      color:#7dffcc;
+      font-weight:900;
+      letter-spacing:2px;
+      text-transform:uppercase;
+      text-align:center;
+      cursor:pointer;
+    }
+    .continue:hover{
+      background:rgba(0,255,153,.12);
+    }
+  </style>
 </head>
 
 <body>
-
-<div class="container">
-    <h1>ENCRYPTED FILE</h1>
-    <div class="sub">Directive A-1 • Secure Internal Archive</div>
-
-    <input type="password" id="code" placeholder="ENTER NUMERIC KEY">
-    <button onclick="unlock()">DECRYPT FILE</button>
-
-    <div id="error">ACCESS DENIED</div>
-
-    <div id="file">
-        <div class="unlock">ACCESS GRANTED</div>
-        <p><strong>FILE NAME:</strong> Internal Communication Log</p>
-        <p><strong>NOTE:</strong> Tom Whitlock entered the building at 11:42 PM. Entry badge not registered in official system.</p>
-        <p><strong>FLAG:</strong> Camera 3 temporarily disabled for 4 minutes.</p>
-        <p><strong>RECOMMENDATION:</strong> Cross-check maintenance override logs.</p>
+  <div class="wrap">
+    <div class="top">
+      <div>MAJOR CRIMES DIVISION • INTERNAL</div>
+      <div class="pill">DIRECTIVE A-1</div>
     </div>
-</div>
 
-<script>
-function unlock(){
-    var input = document.getElementById("code").value;
-    if(input === "11420817"){
-        document.getElementById("file").style.display = "block";
-        document.getElementById("error").style.display = "none";
-    } else {
-        document.getElementById("error").style.display = "block";
+    <div class="card">
+      <h1>Encrypted File</h1>
+      <div class="sub">Secure Internal Archive • Evidence Access</div>
+
+      <div class="box">
+        <input type="password" id="code" inputmode="numeric" placeholder="ENTER NUMERIC KEY">
+        <button id="btn">DECRYPT FILE</button>
+
+        <div class="error" id="error">ACCESS DENIED • INVALID KEY</div>
+
+        <div class="file" id="file">
+          <div class="granted">ACCESS GRANTED</div>
+
+          <div class="kv">
+            <div class="k">File Name</div>
+            <div class="v">Internal Communication Log</div>
+          </div>
+
+          <div class="kv">
+            <div class="k">Note</div>
+            <div class="v">Tom Whitlock entered the building at 11:42 PM. Entry badge not registered in official system.</div>
+          </div>
+
+          <div class="kv">
+            <div class="k">Flag</div>
+            <div class="v">Camera 3 temporarily disabled for 4 minutes.</div>
+          </div>
+
+          <div class="kv">
+            <div class="k">Recommendation</div>
+            <div class="v">Cross-check maintenance override logs.</div>
+          </div>
+
+          <div class="continue" id="continueBtn">INITIATE SECURE LINE</div>
+        </div>
+
+        <div class="hint">Do not refresh. Access attempts are logged.</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // KEY (locked)
+    const KEY = "11420817";
+
+    // Where to send players after decrypting
+    // Make sure this file exists in the same repo level:
+    // https://mystery-1.github.io/casefile001/mm-call.html
+    const NEXT_PAGE = "mm-call.html";
+
+    const input = document.getElementById("code");
+    const btn = document.getElementById("btn");
+    const err = document.getElementById("error");
+    const file = document.getElementById("file");
+    const continueBtn = document.getElementById("continueBtn");
+
+    function unlock(){
+      const val = (input.value || "").trim();
+      if(val === KEY){
+        file.style.display = "block";
+        err.style.display = "none";
+        continueBtn.style.display = "block";
+      }else{
+        err.style.display = "block";
+        file.style.display = "none";
+        continueBtn.style.display = "none";
+      }
     }
-}
-</script>
 
+    btn.addEventListener("click", unlock);
+
+    input.addEventListener("keydown", (e) => {
+      if(e.key === "Enter") unlock();
+    });
+
+    continueBtn.addEventListener("click", () => {
+      window.location.href = NEXT_PAGE;
+    });
+  </script>
 </body>
 </html>
