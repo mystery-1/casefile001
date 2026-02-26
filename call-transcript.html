@@ -12,11 +12,13 @@
       --stroke:rgba(255,255,255,.10);
       --stroke2:rgba(255,255,255,.06);
       --text:rgba(255,255,255,.92);
-      --muted:rgba(255,255,255,.58);
+      --muted:rgba(255,255,255,.62);
       --muted2:rgba(255,255,255,.38);
       --red:#d12b2b;
       --green:#27d17d;
+      --shadow: 0 30px 100px rgba(0,0,0,.75);
       --shadow2: 0 12px 40px rgba(0,0,0,.55);
+      --radius: 30px;
       --radius2: 26px;
       --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
       --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
@@ -28,11 +30,11 @@
       font-family:var(--sans);
       color:var(--text);
       background:
-        radial-gradient(1200px 600px at 20% -10%, rgba(209,43,43,.16), transparent 55%),
-        radial-gradient(900px 500px at 90% 0%, rgba(39,209,125,.10), transparent 55%),
+        radial-gradient(1200px 600px at 18% -10%, rgba(209,43,43,.18), transparent 55%),
+        radial-gradient(900px 520px at 92% 0%, rgba(39,209,125,.12), transparent 60%),
         radial-gradient(1200px 900px at 50% 120%, rgba(255,255,255,.06), transparent 60%),
-        linear-gradient(180deg, #05070a, #05070a 30%, #040507);
-      overflow:hidden;
+        linear-gradient(180deg, #05070a, #040507);
+      overflow-x:hidden;
     }
     body::before{
       content:"";
@@ -58,18 +60,19 @@
     }
 
     .wrap{
-      height:100%;
+      min-height:100%;
       display:flex;
       align-items:center;
       justify-content:center;
-      padding: 18px 16px calc(20px + env(safe-area-inset-bottom));
+      padding: 18px 16px calc(22px + env(safe-area-inset-bottom));
     }
+
     .card{
       width:min(820px, 96vw);
-      border-radius: 30px;
+      border-radius: var(--radius);
       border:1px solid rgba(255,255,255,.14);
       background: linear-gradient(180deg, rgba(16,20,28,.92), rgba(6,8,12,.92));
-      box-shadow: 0 40px 120px rgba(0,0,0,.80);
+      box-shadow: var(--shadow);
       overflow:hidden;
       position:relative;
     }
@@ -81,117 +84,39 @@
         radial-gradient(680px 420px at 90% 40%, rgba(209,43,43,.16), transparent 60%);
       pointer-events:none;
     }
+
     .head{
       position:relative;
       padding: 18px 18px 14px;
       border-bottom:1px solid rgba(255,255,255,.08);
       display:flex;
-      align-items:flex-start;
       justify-content:space-between;
-      gap:10px;
+      align-items:flex-start;
+      gap:12px;
     }
     .dept{
+      font-family:var(--mono);
       font-size:12px;
       letter-spacing:.28em;
       text-transform:uppercase;
-      color:rgba(255,255,255,.70);
-      line-height:1.45;
-      font-family: var(--mono);
+      color:rgba(255,255,255,.72);
+      line-height:1.5;
     }
-    .badge{
+    .status{
       border:1px solid rgba(39,209,125,.40);
       color: rgba(170,255,220,.95);
       padding: 10px 14px;
       border-radius: 14px;
       letter-spacing:.20em;
       text-transform:uppercase;
-      font-weight:900;
+      font-weight:1000;
       background: rgba(39,209,125,.10);
       box-shadow: 0 8px 28px rgba(39,209,125,.10);
       white-space:nowrap;
-      margin-top:2px;
       font-family: var(--mono);
-    }
-    .body{
-      position:relative;
-      padding: 22px 18px 18px;
-      display:grid;
-      grid-template-columns: 1.1fr .9fr;
-      gap:18px;
-    }
-    @media (max-width:720px){
-      .body{ grid-template-columns: 1fr; }
-    }
-    .left,.right{
-      border:1px solid rgba(255,255,255,.10);
-      border-radius: var(--radius2);
-      background: rgba(0,0,0,.30);
-      box-shadow: var(--shadow2);
-      padding: 18px;
-      min-height: 280px;
       display:flex;
-      flex-direction:column;
-      justify-content:space-between;
-      gap:14px;
-    }
-    .title{
-      font-size: 40px;
-      line-height: 1.03;
-      font-weight: 1000;
-      letter-spacing: .02em;
-      margin: 0 0 8px;
-    }
-    .sub{
-      margin: 0;
-      color: rgba(255,255,255,.70);
-      font-size: 13px;
-      letter-spacing:.12em;
-      text-transform:uppercase;
-      font-family: var(--mono);
-    }
-    .meta{ margin-top: 12px; display:grid; gap:10px; }
-    .row{
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-      padding: 12px 12px;
-      border-radius: 16px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.04);
-      font-family: var(--mono);
-      font-size: 12px;
-      letter-spacing:.12em;
-      text-transform:uppercase;
-      color: rgba(255,255,255,.72);
-    }
-    .val{
-      color: rgba(255,255,255,.90);
-      letter-spacing:.08em;
-      font-weight: 900;
-      text-transform:none;
-      font-family: var(--sans);
-      font-size: 14px;
-    }
-    .callTitle{
-      font-family: var(--mono);
-      letter-spacing:.20em;
-      text-transform:uppercase;
-      font-size: 12px;
-      color: rgba(255,255,255,.70);
-    }
-    .caller{ font-size: 22px; font-weight: 1000; letter-spacing:.02em; margin:0; }
-    .callerSub{ margin: 2px 0 0; color: rgba(255,255,255,.65); font-size: 14px; letter-spacing:.04em; }
-    .statusPill{
-      display:inline-flex; align-items:center; gap:10px;
-      padding: 10px 12px;
-      border-radius: 999px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
-      color: rgba(255,255,255,.80);
-      font-weight:900;
-      letter-spacing:.14em;
-      text-transform:uppercase;
-      font-size: 12px;
-      font-family: var(--mono);
-      width: fit-content;
+      gap:10px;
+      align-items:center;
     }
     .dot{
       width:10px;height:10px;border-radius:50%;
@@ -204,118 +129,161 @@
       50%{transform:scale(1.25); opacity:1}
       100%{transform:scale(.95); opacity:.65}
     }
-    .btnRow{ display:flex; gap:10px; margin-top: 8px; }
-    .btn{
-      flex:1;
-      border-radius: 16px;
-      padding: 14px 12px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
-      color: rgba(255,255,255,.92);
-      font-weight:1000;
-      letter-spacing:.12em;
-      text-transform:uppercase;
-      font-size: 12px;
-      font-family: var(--mono);
-      cursor:pointer;
-    }
-    .btn.danger{
-      border:1px solid rgba(209,43,43,.55);
-      background: rgba(209,43,43,.10);
-      box-shadow: 0 8px 28px rgba(209,43,43,.08);
-    }
-    .hint{ color: rgba(255,255,255,.58); font-size: 12px; letter-spacing:.04em; line-height:1.5; margin:0; }
 
-    /* End overlay */
-    .endOverlay{
-      position:fixed; inset:0;
-      display:none;
-      align-items:center;
-      justify-content:center;
-      background: rgba(0,0,0,.88);
-      backdrop-filter: blur(10px);
-      z-index:9999;
-      padding: 18px 16px;
-    }
-    .endOverlay.show{display:flex;}
-    .endCard{
-      width:min(720px, 92vw);
-      border-radius: 30px;
-      border:1px solid rgba(255,255,255,.14);
-      background: linear-gradient(180deg, rgba(16,20,28,.92), rgba(6,8,12,.92));
-      box-shadow: 0 40px 120px rgba(0,0,0,.80);
-      overflow:hidden;
+    .body{
       position:relative;
-      padding: 26px 22px;
-      text-align:center;
+      padding: 20px 18px 18px;
+      display:grid;
+      gap:14px;
     }
-    .endCard::before{
-      content:"";
-      position:absolute; inset:0;
-      background:
-        radial-gradient(900px 360px at 20% 0%, rgba(255,255,255,.08), transparent 55%),
-        radial-gradient(680px 420px at 90% 40%, rgba(209,43,43,.16), transparent 60%);
-      pointer-events:none;
-    }
-    .endSys{
-      position:relative;
-      font-family:var(--mono);
-      font-size: 12px;
-      letter-spacing:.26em;
-      text-transform:uppercase;
-      color: rgba(255,255,255,.68);
-    }
-    .endBig{
-      position:relative;
-      margin: 16px 0 10px;
-      font-size: 42px;
+
+    h1{
+      margin:0;
+      font-size: 52px;
+      line-height:.95;
       font-weight: 1000;
-      letter-spacing:.04em;
+      letter-spacing:.02em;
+    }
+    @media (max-width:520px){
+      h1{font-size:42px;}
+    }
+    .sub{
+      margin: 6px 0 0;
+      color: rgba(255,255,255,.65);
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing:.22em;
       text-transform:uppercase;
     }
-    .endSmall{
-      position:relative;
-      margin: 0;
-      font-size: 18px;
-      color: rgba(255,255,255,.82);
-      letter-spacing:.04em;
+
+    .grid{
+      display:grid;
+      gap:12px;
     }
-    .glitch{ position:relative; display:inline-block; }
-    .glitch::before, .glitch::after{
-      content: attr(data-text);
-      position:absolute; left:0; top:0; width:100%;
-      overflow:hidden; opacity:.35;
+
+    .row{
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+      border-radius: 18px;
+      padding: 12px 12px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      box-shadow: var(--shadow2);
     }
-    .glitch::before{
-      transform: translate(1px,-1px);
-      color: rgba(255,59,59,.85);
-      clip-path: inset(0 0 55% 0);
-      animation: g1 1.2s infinite linear;
+    .k{
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing:.18em;
+      text-transform:uppercase;
+      color: rgba(255,255,255,.55);
     }
-    .glitch::after{
-      transform: translate(-1px,1px);
-      color: rgba(120,170,255,.85);
-      clip-path: inset(45% 0 0 0);
-      animation: g2 1.05s infinite linear;
+    .v{
+      font-weight: 1000;
+      font-size: 16px;
+      letter-spacing:.02em;
+      color: rgba(255,255,255,.92);
+      text-align:right;
     }
-    @keyframes g1{
-      0%{clip-path: inset(0 0 55% 0)}
-      25%{clip-path: inset(12% 0 35% 0)}
-      50%{clip-path: inset(0 0 62% 0)}
-      75%{clip-path: inset(18% 0 28% 0)}
-      100%{clip-path: inset(0 0 55% 0)}
+
+    .callBox{
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.28);
+      border-radius: var(--radius2);
+      padding: 16px 14px;
+      box-shadow: var(--shadow2);
     }
-    @keyframes g2{
-      0%{clip-path: inset(45% 0 0 0)}
-      25%{clip-path: inset(52% 0 0 0)}
-      50%{clip-path: inset(38% 0 0 0)}
-      75%{clip-path: inset(58% 0 0 0)}
-      100%{clip-path: inset(45% 0 0 0)}
+    .label{
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing:.22em;
+      text-transform:uppercase;
+      color: rgba(255,255,255,.55);
+      margin:0 0 6px;
     }
-    @media (max-width:420px){
-      .title{font-size: 34px;}
-      .endBig{font-size: 34px;}
+    .who{
+      margin:0;
+      font-size: 38px;
+      font-weight: 1000;
+      line-height:1.05;
     }
+    .meta{
+      margin: 6px 0 0;
+      color: rgba(255,255,255,.70);
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing:.16em;
+      text-transform:uppercase;
+    }
+
+    .pillRow{
+      margin-top: 12px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .pill{
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing:.16em;
+      text-transform:uppercase;
+      color: rgba(255,255,255,.78);
+    }
+    .live{
+      border:1px solid rgba(39,209,125,.40);
+      background: rgba(39,209,125,.10);
+      color: rgba(170,255,220,.95);
+      font-weight:1000;
+      display:flex;
+      gap:10px;
+      align-items:center;
+    }
+
+    .lockNotice{
+      margin-top: 12px;
+      border:1px solid rgba(209,43,43,.32);
+      background: rgba(209,43,43,.08);
+      border-radius: 18px;
+      padding: 14px 14px;
+      display:flex;
+      align-items:flex-start;
+      gap:12px;
+      box-shadow: 0 10px 30px rgba(209,43,43,.08);
+    }
+    .bar{
+      width:6px; border-radius: 6px;
+      background: rgba(209,43,43,.80);
+      box-shadow: 0 0 18px rgba(209,43,43,.25);
+      flex:0 0 auto;
+    }
+    .lockText{
+      margin:0;
+      color: rgba(255,255,255,.80);
+      font-size: 14px;
+      line-height:1.5;
+    }
+    .lockText strong{
+      color: rgba(255,255,255,.94);
+      font-weight: 1000;
+    }
+
+    .tiny{
+      margin: 12px 0 0;
+      text-align:center;
+      color: rgba(255,255,255,.40);
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+    }
+
+    audio{display:none;}
   </style>
 </head>
 
@@ -324,133 +292,117 @@
     <div class="card">
       <div class="head">
         <div class="dept">MAJOR CRIMES DIVISION • SECURE LINE</div>
-        <div class="badge">CONNECTED</div>
+        <div class="status"><span class="dot"></span>CONNECTED</div>
       </div>
 
       <div class="body">
-        <div class="left">
-          <div>
-            <h1 class="title">Audio Call</h1>
-            <p class="sub">Encrypted channel • Evidence logging enabled</p>
-
-            <div class="meta">
-              <div class="row">
-                <div>Caller</div>
-                <div class="val">Building Security</div>
-              </div>
-              <div class="row">
-                <div>Case</div>
-                <div class="val">File #001 • What They Buried</div>
-              </div>
-              <div class="row">
-                <div>Recording</div>
-                <div class="val" id="recState">Connecting…</div>
-              </div>
-            </div>
-          </div>
-
-          <p class="hint" id="tapHint" style="display:none;">
-            Tap anywhere to start audio.
-          </p>
+        <div>
+          <h1>Audio Call</h1>
+          <p class="sub">ENCRYPTED CHANNEL • EVIDENCE LOGGING ENABLED</p>
         </div>
 
-        <div class="right">
-          <div>
-            <div class="callTitle">Inbound audio</div>
-            <p class="caller">Unknown Security Officer</p>
-            <p class="callerSub">Night shift • East side</p>
+        <div class="grid">
+          <div class="row">
+            <div class="k">CALLER</div>
+            <div class="v">Building Security</div>
+          </div>
+          <div class="row">
+            <div class="k">CASE</div>
+            <div class="v">File #001 • What They Buried</div>
+          </div>
+          <div class="row">
+            <div class="k">RECORDING</div>
+            <div class="v" id="recState">Connecting…</div>
+          </div>
+        </div>
 
-            <div class="statusPill">
-              <span class="dot"></span>LIVE AUDIO
-            </div>
+        <div class="callBox">
+          <p class="label">INBOUND AUDIO</p>
+          <p class="who">Unknown Security Officer</p>
+          <p class="meta">Night shift • East side</p>
 
-            <div class="btnRow">
-              <button class="btn danger" id="endBtn">End</button>
-            </div>
-
-            <p class="hint" id="timer">00:00</p>
+          <div class="pillRow">
+            <span class="pill live"><span class="dot" style="width:10px;height:10px;"></span>LIVE AUDIO</span>
+            <span class="pill" id="timer">00:00</span>
           </div>
 
-          <p class="hint">This channel will auto-close after the call ends.</p>
+          <div class="lockNotice">
+            <div class="bar"></div>
+            <p class="lockText">
+              <strong>SECURE HOLD ENABLED.</strong> This call cannot be cut from your device.
+              Line will close automatically when the recording ends.
+            </p>
+          </div>
+
+          <p class="tiny">Do not refresh this page during playback.</p>
         </div>
+
+        <!-- Auto-play audio -->
+        <audio id="callAudio" playsinline preload="auto" src="security-call.mp3.mp3"></audio>
       </div>
-    </div>
-  </div>
-
-  <audio id="callAudio" preload="auto">
-    <source src="security-call.mp3.mp3" type="audio/mpeg" />
-  </audio>
-
-  <div class="endOverlay" id="endOverlay" aria-hidden="true">
-    <div class="endCard" role="dialog" aria-modal="true" aria-label="Attachment Received">
-      <div class="endSys">SYSTEM EVENT</div>
-      <div class="endBig glitch" data-text="ATTACHMENT RECEIVED">ATTACHMENT RECEIVED</div>
-      <p class="endSmall">Proceed to <strong>Envelope A</strong>.</p>
     </div>
   </div>
 
   <script>
     const audio = document.getElementById('callAudio');
-    const endBtn = document.getElementById('endBtn');
-    const timer = document.getElementById('timer');
     const recState = document.getElementById('recState');
-    const endOverlay = document.getElementById('endOverlay');
-    const tapHint = document.getElementById('tapHint');
+    const timerEl = document.getElementById('timer');
 
-    let tInt = null;
-    function fmt(s){
-      s = Math.max(0, Math.floor(s));
-      const m = String(Math.floor(s/60)).padStart(2,'0');
-      const ss = String(s%60).padStart(2,'0');
-      return `${m}:${ss}`;
-    }
-    function startTimer(){
-      clearInterval(tInt);
-      tInt = setInterval(() => timer.textContent = fmt(audio.currentTime), 250);
-    }
-    function stopTimer(){
-      clearInterval(tInt); tInt = null;
+    let t0 = 0;
+    let raf = null;
+
+    function fmt(sec){
+      sec = Math.max(0, Math.floor(sec));
+      const m = String(Math.floor(sec/60)).padStart(2,'0');
+      const s = String(sec%60).padStart(2,'0');
+      return `${m}:${s}`;
     }
 
-    async function startCall(){
+    function tick(){
+      if (!audio.paused && !audio.ended) {
+        timerEl.textContent = fmt(audio.currentTime);
+      }
+      raf = requestAnimationFrame(tick);
+    }
+
+    function setState(text){
+      recState.textContent = text;
+    }
+
+    async function tryAutoplay(){
+      setState("Live…");
       try{
         await audio.play();
-        recState.textContent = "Recording";
-        tapHint.style.display = "none";
-        startTimer();
-        return true;
+        setState("Recording");
       }catch(e){
-        // iPhone/Safari may block until a user tap even after navigation.
-        recState.textContent = "Awaiting user input…";
-        tapHint.style.display = "block";
-        return false;
+        // iOS may block autoplay; show minimal instruction via state only
+        setState("Tap screen to begin");
       }
     }
 
-    function endCall(){
-      audio.pause();
-      audio.currentTime = 0;
-      stopTimer();
-      timer.textContent = "00:00";
-      recState.textContent = "Ended";
-    }
-
-    // Try autoplay immediately when page loads (accepting the call is already a user action)
-    window.addEventListener('load', () => { startCall(); });
-
-    // Safety: one-tap anywhere starts audio if Safari blocked it
-    document.addEventListener('click', () => { startCall(); }, { once: true });
-
-    endBtn.addEventListener('click', endCall);
-
-    audio.addEventListener('ended', () => {
-      stopTimer();
-      recState.textContent = "Completed";
-      setTimeout(() => {
-        endOverlay.classList.add('show');
-        endOverlay.setAttribute('aria-hidden','false');
-      }, 650);
+    // Tap anywhere to start if autoplay is blocked
+    document.addEventListener('click', () => {
+      if (audio.paused && !audio.ended) {
+        audio.play().then(()=>setState("Recording")).catch(()=>{});
+      }
     });
+
+    audio.addEventListener('playing', () => setState("Recording"));
+    audio.addEventListener('ended', () => {
+      setState("Ended");
+      timerEl.textContent = fmt(audio.duration || audio.currentTime || 0);
+
+      // After a short beat, jump to the “Attachment Received / Proceed to Envelope A” moment
+      // (Keep your existing behavior if you already redirect elsewhere.)
+      setTimeout(() => {
+        // If you already have a dedicated end screen, change this to that page.
+        window.location.href = "call-transcript.html#complete";
+      }, 900);
+    });
+
+    // Start
+    tryAutoplay();
+    tick();
   </script>
 </body>
 </html>
