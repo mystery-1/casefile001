@@ -1,1 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Directive A-1</title>
 
+<style>
+body{
+    margin:0;
+    background:#05070c;
+    font-family:Arial, sans-serif;
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+
+.container{
+    width:90%;
+    max-width:420px;
+    background:rgba(255,255,255,0.05);
+    padding:30px;
+    border-radius:20px;
+    border:1px solid rgba(255,255,255,0.08);
+    text-align:center;
+    backdrop-filter:blur(10px);
+}
+
+h1{
+    margin-bottom:10px;
+    font-size:26px;
+    letter-spacing:2px;
+}
+
+.sub{
+    opacity:0.6;
+    font-size:13px;
+    margin-bottom:25px;
+}
+
+input{
+    width:100%;
+    padding:14px;
+    font-size:18px;
+    background:#0c111b;
+    border:1px solid rgba(255,255,255,0.1);
+    border-radius:10px;
+    color:white;
+    text-align:center;
+    letter-spacing:2px;
+}
+
+button{
+    width:100%;
+    padding:14px;
+    margin-top:15px;
+    background:#b30000;
+    border:none;
+    border-radius:10px;
+    color:white;
+    font-weight:bold;
+    letter-spacing:2px;
+}
+
+button:hover{
+    background:#e00000;
+}
+
+#error{
+    color:#ff4d4d;
+    margin-top:15px;
+    display:none;
+}
+
+#file{
+    display:none;
+    margin-top:20px;
+    text-align:left;
+    font-size:14px;
+    line-height:1.6;
+}
+.unlock{
+    margin-top:15px;
+    color:#00ff99;
+    font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>ENCRYPTED FILE</h1>
+    <div class="sub">Directive A-1 • Secure Internal Archive</div>
+
+    <input type="password" id="code" placeholder="ENTER NUMERIC KEY">
+    <button onclick="unlock()">DECRYPT FILE</button>
+
+    <div id="error">ACCESS DENIED</div>
+
+    <div id="file">
+        <div class="unlock">ACCESS GRANTED</div>
+        <p><strong>FILE NAME:</strong> Internal Communication Log</p>
+        <p><strong>NOTE:</strong> Tom Whitlock entered the building at 11:42 PM. Entry badge not registered in official system.</p>
+        <p><strong>FLAG:</strong> Camera 3 temporarily disabled for 4 minutes.</p>
+        <p><strong>RECOMMENDATION:</strong> Cross-check maintenance override logs.</p>
+    </div>
+</div>
+
+<script>
+function unlock(){
+    var input = document.getElementById("code").value;
+    if(input === "11420817"){
+        document.getElementById("file").style.display = "block";
+        document.getElementById("error").style.display = "none";
+    } else {
+        document.getElementById("error").style.display = "block";
+    }
+}
+</script>
+
+</body>
+</html>
