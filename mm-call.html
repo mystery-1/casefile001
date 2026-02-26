@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Secure Line • M.M.</title>
+  <style>
+    body{
+      margin:0;
+      background:#05070c;
+      font-family:Arial, sans-serif;
+      color:#fff;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:22px;
+    }
+    .wrap{
+      width:100%;
+      max-width:520px;
+    }
+    .top{
+      opacity:.75;
+      letter-spacing:3px;
+      font-size:12px;
+      text-transform:uppercase;
+      margin-bottom:12px;
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:center;
+    }
+    .pill{
+      border:1px solid rgba(0,255,153,.25);
+      background:rgba(0,255,153,.06);
+      color:#7dffcc;
+      padding:8px 12px;
+      border-radius:999px;
+      font-weight:700;
+      letter-spacing:2px;
+      white-space:nowrap;
+    }
+    .card{
+      background:rgba(255,255,255,0.05);
+      border:1px solid rgba(255,255,255,0.08);
+      border-radius:22px;
+      padding:22px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 20px 80px rgba(0,0,0,.55);
+    }
+    h1{
+      margin:0 0 6px 0;
+      font-size:44px;
+      letter-spacing:1px;
+    }
+    .sub{
+      opacity:.7;
+      letter-spacing:3px;
+      text-transform:uppercase;
+      font-size:12px;
+      margin-bottom:18px;
+    }
+    .row{
+      display:flex;
+      gap:10px;
+      margin:10px 0;
+      flex-wrap:wrap;
+    }
+    .chip{
+      flex:1;
+      min-width:180px;
+      background:rgba(255,255,255,0.04);
+      border:1px solid rgba(255,255,255,0.08);
+      border-radius:14px;
+      padding:12px 14px;
+    }
+    .chip .k{
+      opacity:.65;
+      letter-spacing:2px;
+      text-transform:uppercase;
+      font-size:11px;
+      margin-bottom:6px;
+    }
+    .chip .v{
+      font-size:18px;
+      font-weight:700;
+      letter-spacing:.4px;
+    }
+    .callbox{
+      margin-top:16px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,0.10);
+      background:linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+      padding:18px;
+      position:relative;
+      overflow:hidden;
+    }
+    .live{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 14px;
+      border-radius:999px;
+      border:1px solid rgba(0,255,153,.25);
+      background:rgba(0,255,153,.06);
+      color:#7dffcc;
+      font-weight:800;
+      letter-spacing:2px;
+      text-transform:uppercase;
+      font-size:12px;
+      margin-bottom:12px;
+    }
+    .dot{
+      width:10px; height:10px;
+      border-radius:50%;
+      background:#00ff99;
+      box-shadow:0 0 18px rgba(0,255,153,.6);
+    }
+    .name{
+      font-size:40px;
+      font-weight:900;
+      line-height:1.05;
+      margin:0 0 6px 0;
+    }
+    .meta{
+      opacity:.75;
+      letter-spacing:2px;
+      text-transform:uppercase;
+      font-size:12px;
+      margin-bottom:14px;
+    }
+    .timer{
+      font-variant-numeric: tabular-nums;
+      opacity:.8;
+      letter-spacing:2px;
+      margin-top:10px;
+      font-size:14px;
+    }
+    .warn{
+      margin-top:14px;
+      border:1px solid rgba(255,60,60,.25);
+      background:rgba(255,60,60,.06);
+      border-radius:16px;
+      padding:14px;
+      color:#ffd5d5;
+      line-height:1.45;
+      font-size:14px;
+    }
+    .warn b{
+      letter-spacing:1px;
+    }
+    .hint{
+      margin-top:12px;
+      opacity:.55;
+      letter-spacing:3px;
+      text-transform:uppercase;
+      font-size:11px;
+      text-align:center;
+    }
+
+    /* Hidden audio element */
+    audio{ display:none; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div>MAJOR CRIMES DIVISION • SECURE LINE</div>
+      <div class="pill">CONNECTED</div>
+    </div>
+
+    <div class="card">
+      <h1>Audio Call</h1>
+      <div class="sub">Encrypted Channel • Evidence Logging Enabled</div>
+
+      <div class="row">
+        <div class="chip">
+          <div class="k">Caller</div>
+          <div class="v">Detective Marcus Malik (M.M.)</div>
+        </div>
+        <div class="chip">
+          <div class="k">Recipient</div>
+          <div class="v">Second Detective</div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="chip">
+          <div class="k">Case</div>
+          <div class="v">File #001 • Internal Follow-Up</div>
+        </div>
+        <div class="chip">
+          <div class="k">Recording</div>
+          <div class="v" id="recStatus">Connecting…</div>
+        </div>
+      </div>
+
+      <div class="callbox">
+        <div class="live"><span class="dot"></span> Live Audio</div>
+        <div class="name">M.M.</div>
+        <div class="meta">Secure channel • Do not refresh</div>
+        <div class="timer" id="timer">00:00</div>
+
+        <div class="warn">
+          <b>SECURE HOLD ENABLED.</b> This call cannot be cut from your device.
+          Line will close automatically when the recording ends.
+        </div>
+
+        <div class="hint">Playback begins automatically after load</div>
+      </div>
+
+      <audio id="mmAudio" preload="auto" playsinline>
+        <source src="mm-call.mp3" type="audio/mpeg">
+      </audio>
+    </div>
+  </div>
+
+  <script>
+    const audio = document.getElementById('mmAudio');
+    const timerEl = document.getElementById('timer');
+    const recStatus = document.getElementById('recStatus');
+
+    let tInterval = null;
+
+    function fmt(s){
+      s = Math.max(0, Math.floor(s));
+      const m = String(Math.floor(s/60)).padStart(2,'0');
+      const r = String(s%60).padStart(2,'0');
+      return `${m}:${r}`;
+    }
+
+    function startTimer(){
+      stopTimer();
+      tInterval = setInterval(() => {
+        timerEl.textContent = fmt(audio.currentTime);
+      }, 250);
+    }
+    function stopTimer(){
+      if(tInterval) clearInterval(tInterval);
+      tInterval = null;
+    }
+
+    // Attempt autoplay (iPhone requires user gesture sometimes).
+    async function tryPlay(){
+      try {
+        await audio.play();
+        recStatus.textContent = "Recording";
+        startTimer();
+      } catch (e) {
+        // If blocked, show a one-tap overlay
+        recStatus.textContent = "Tap to Start";
+        showTapOverlay();
+      }
+    }
+
+    function showTapOverlay(){
+      const overlay = document.createElement('div');
+      overlay.style.position='fixed';
+      overlay.style.inset='0';
+      overlay.style.background='rgba(0,0,0,.65)';
+      overlay.style.display='flex';
+      overlay.style.alignItems='center';
+      overlay.style.justifyContent='center';
+      overlay.style.zIndex='9999';
+      overlay.innerHTML = `
+        <div style="
+          width:min(420px,90%);
+          background:rgba(255,255,255,.06);
+          border:1px solid rgba(255,255,255,.10);
+          border-radius:18px;
+          padding:18px;
+          text-align:center;
+          backdrop-filter:blur(10px);
+          color:#fff;
+          font-family:Arial,sans-serif;">
+          <div style="letter-spacing:3px; opacity:.8; font-size:12px; text-transform:uppercase; margin-bottom:10px;">
+            Secure Line Connected
+          </div>
+          <div style="font-size:18px; font-weight:800; margin-bottom:14px;">
+            Tap to begin playback
+          </div>
+          <div style="opacity:.7; font-size:13px; line-height:1.4;">
+            iPhone requires one tap to start audio.
+          </div>
+          <button style="
+            margin-top:14px;
+            width:100%;
+            padding:14px;
+            border:none;
+            border-radius:12px;
+            background:#00b36b;
+            color:#fff;
+            font-weight:900;
+            letter-spacing:2px;
+            text-transform:uppercase;">
+            Start Call
+          </button>
+        </div>
+      `;
+      overlay.querySelector('button').onclick = async () => {
+        try{
+          await audio.play();
+          recStatus.textContent = "Recording";
+          startTimer();
+          overlay.remove();
+        }catch(e){}
+      };
+      document.body.appendChild(overlay);
+    }
+
+    audio.addEventListener('ended', () => {
+      stopTimer();
+      recStatus.textContent = "Ended";
+      // OPTIONAL: redirect after call ends
+      // window.location.href = "next-step.html";
+    });
+
+    window.addEventListener('load', () => {
+      tryPlay();
+    });
+  </script>
+</body>
+</html>
