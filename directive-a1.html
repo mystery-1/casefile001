@@ -1,203 +1,130 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Directive A-1</title>
-  <style>
-    :root{
-      --bg:#05070c;
-      --panel:rgba(255,255,255,0.06);
-      --border:rgba(255,255,255,0.10);
-      --muted:rgba(255,255,255,0.65);
-      --red:#c40000;
-      --red2:#ff2b2b;
-      --green:#00ff99;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      background: radial-gradient(1200px 800px at 30% 10%, rgba(255,0,60,0.10), transparent 60%),
-                  radial-gradient(1000px 700px at 80% 30%, rgba(0,255,153,0.08), transparent 55%),
-                  var(--bg);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
-      color:#fff;
-      min-height:100vh;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:24px;
-    }
-    .card{
-      width:min(460px, 92vw);
-      background:var(--panel);
-      border:1px solid var(--border);
-      border-radius:22px;
-      padding:26px 22px;
-      backdrop-filter: blur(14px);
-      box-shadow: 0 20px 60px rgba(0,0,0,0.55);
-    }
-    .top{
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:14px;
-      margin-bottom:18px;
-    }
-    .title{
-      font-weight:800;
-      letter-spacing:4px;
-      font-size:22px;
-      margin:0 0 8px 0;
-      text-transform:uppercase;
-    }
-    .sub{
-      margin:0;
-      color:var(--muted);
-      font-size:12px;
-      letter-spacing:1.8px;
-      text-transform:uppercase;
-      line-height:1.4;
-    }
-    .badge{
-      padding:10px 12px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,0.14);
-      color:rgba(255,255,255,0.85);
-      font-size:12px;
-      letter-spacing:2px;
-      text-transform:uppercase;
-      white-space:nowrap;
-      background:rgba(0,0,0,0.20);
-    }
-    .field{
-      margin-top:18px;
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,0.12);
-      background:rgba(0,0,0,0.20);
-      padding:14px;
-    }
-    input{
-      width:100%;
-      padding:14px;
-      font-size:18px;
-      background:#0c111b;
-      border:1px solid rgba(255,255,255,0.12);
-      border-radius:12px;
-      color:white;
-      text-align:center;
-      letter-spacing:3px;
-      outline:none;
-    }
-    button{
-      width:100%;
-      padding:14px;
-      margin-top:12px;
-      background:linear-gradient(180deg, var(--red2), var(--red));
-      border:none;
-      border-radius:12px;
-      color:white;
-      font-weight:800;
-      letter-spacing:2px;
-      text-transform:uppercase;
-      cursor:pointer;
-    }
-    button:active{transform:scale(0.995)}
-    #error{
-      display:none;
-      margin-top:12px;
-      color:#ff7070;
-      font-weight:700;
-      letter-spacing:1px;
-      text-transform:uppercase;
-      font-size:12px;
-    }
-    #file{
-      display:none;
-      margin-top:16px;
-      padding:14px;
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,0.12);
-      background:rgba(0,0,0,0.22);
-      line-height:1.6;
-    }
-    .ok{
-      color:var(--green);
-      font-weight:900;
-      letter-spacing:2px;
-      text-transform:uppercase;
-      margin-bottom:10px;
-    }
-    .kv{
-      margin:10px 0;
-      padding:10px 12px;
-      border-radius:14px;
-      background:rgba(255,255,255,0.05);
-      border:1px solid rgba(255,255,255,0.10);
-    }
-    .kv b{letter-spacing:1px}
-    .cta{
-      margin-top:12px;
-      background:linear-gradient(180deg, rgba(0,255,153,0.18), rgba(0,255,153,0.06));
-      border:1px solid rgba(0,255,153,0.35);
-      color:#bfffe8;
-    }
-    .hint{
-      margin-top:14px;
-      color:rgba(255,255,255,0.55);
-      font-size:12px;
-      letter-spacing:1px;
-      text-transform:uppercase;
-      text-align:center;
-    }
-  </style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Directive A-1</title>
+
+<style>
+body{
+    margin:0;
+    background:#05070c;
+    font-family:Arial, sans-serif;
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    overflow:hidden;
+}
+
+.container{
+    width:90%;
+    max-width:420px;
+    background:rgba(255,255,255,0.05);
+    padding:35px;
+    border-radius:18px;
+    border:1px solid rgba(255,255,255,0.08);
+    text-align:center;
+    backdrop-filter:blur(12px);
+    box-shadow:0 0 40px rgba(0,0,0,0.6);
+}
+
+h1{
+    font-size:24px;
+    letter-spacing:3px;
+    margin-bottom:8px;
+}
+
+.sub{
+    opacity:0.6;
+    font-size:12px;
+    margin-bottom:30px;
+}
+
+input{
+    width:100%;
+    padding:15px;
+    font-size:18px;
+    background:#0c111b;
+    border:1px solid rgba(255,255,255,0.15);
+    border-radius:10px;
+    color:white;
+    text-align:center;
+    letter-spacing:3px;
+}
+
+button{
+    width:100%;
+    padding:15px;
+    margin-top:18px;
+    background:#b30000;
+    border:none;
+    border-radius:10px;
+    color:white;
+    font-weight:bold;
+    letter-spacing:2px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#e00000;
+}
+
+#error{
+    color:#ff4d4d;
+    margin-top:18px;
+    display:none;
+    font-size:13px;
+}
+
+#glitch{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:black;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    font-size:18px;
+    letter-spacing:2px;
+}
+</style>
 </head>
 
 <body>
-  <div class="card">
-    <div class="top">
-      <div>
-        <h1 class="title">ENCRYPTED FILE</h1>
-        <p class="sub">Directive A-1 • Secure Internal Archive</p>
-      </div>
-      <div class="badge">Level 2</div>
-    </div>
 
-    <div class="field">
-      <input type="password" id="code" placeholder="ENTER NUMERIC KEY" inputmode="numeric" />
-      <button onclick="unlock()">DECRYPT FILE</button>
-      <div id="error">ACCESS DENIED</div>
-    </div>
+<div class="container">
+    <h1>DIRECTIVE A-1</h1>
+    <div class="sub">Restricted Internal Channel • Clearance Required</div>
 
-    <div id="file">
-      <div class="ok">ACCESS GRANTED</div>
+    <input type="password" id="code" placeholder="ENTER NUMERIC KEY">
+    <button onclick="unlock()">DECRYPT FILE</button>
 
-      <div class="kv"><b>FILE NAME:</b> Internal Communication Log</div>
-      <div class="kv"><b>NOTE:</b> Tom Whitlock entered the building at 11:42 PM. Entry badge not registered in official system.</div>
-      <div class="kv"><b>FLAG:</b> Camera 3 temporarily disabled for 4 minutes.</div>
-      <div class="kv"><b>RECOMMENDATION:</b> Cross-check maintenance override logs.</div>
+    <div id="error">ACCESS DENIED</div>
+</div>
 
-      <button class="cta" onclick="window.location.href='mm-call.html'">
-        INITIATE SECURE LINE (M.M.)
-      </button>
+<div id="glitch">
+    SECURE CHANNEL OPENING...
+</div>
 
-      <div class="hint">Do not refresh during playback.</div>
-    </div>
-  </div>
+<script>
+function unlock(){
+    var input = document.getElementById("code").value;
 
-  <script>
-    // Key stays the same as before
-    const KEY = "11420817";
-
-    function unlock(){
-      const input = document.getElementById("code").value.trim();
-      if(input === KEY){
-        document.getElementById("file").style.display = "block";
+    if(input === "11423817"){
         document.getElementById("error").style.display = "none";
-      } else {
+        document.getElementById("glitch").style.display = "flex";
+
+        setTimeout(function(){
+            window.location.href = "mm-call.html";
+        }, 2000);
+    } else {
         document.getElementById("error").style.display = "block";
-      }
     }
-  </script>
+}
+</script>
+
 </body>
 </html>
