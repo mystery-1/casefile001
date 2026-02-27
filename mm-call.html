@@ -1,14 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Secure Line • M.M.</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Secure Line — M.M.</title>
+
   <style>
+    :root{
+      --bg:#05070c;
+      --panel:rgba(255,255,255,0.06);
+      --border:rgba(255,255,255,0.12);
+      --muted:rgba(255,255,255,0.65);
+      --green:#00ff99;
+      --red:#d40000;
+      --red2:#ff2b2b;
+    }
+    *{box-sizing:border-box}
     body{
       margin:0;
-      background:#05070c;
-      font-family:Arial, sans-serif;
+      background: radial-gradient(1200px 800px at 30% 10%, rgba(255,0,60,0.10), transparent 60%),
+                  radial-gradient(1000px 700px at 80% 30%, rgba(0,255,153,0.08), transparent 55%),
+                  var(--bg);
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
       color:#fff;
       min-height:100vh;
       display:flex;
@@ -17,308 +30,352 @@
       padding:22px;
     }
     .wrap{
-      width:100%;
-      max-width:520px;
+      width:min(520px, 94vw);
     }
-    .top{
-      opacity:.75;
-      letter-spacing:3px;
-      font-size:12px;
-      text-transform:uppercase;
-      margin-bottom:12px;
+    .header{
       display:flex;
-      justify-content:space-between;
-      gap:10px;
       align-items:center;
+      justify-content:space-between;
+      margin-bottom:14px;
     }
-    .pill{
-      border:1px solid rgba(0,255,153,.25);
-      background:rgba(0,255,153,.06);
-      color:#7dffcc;
-      padding:8px 12px;
-      border-radius:999px;
-      font-weight:700;
-      letter-spacing:2px;
-      white-space:nowrap;
-    }
-    .card{
-      background:rgba(255,255,255,0.05);
-      border:1px solid rgba(255,255,255,0.08);
-      border-radius:22px;
-      padding:22px;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 20px 80px rgba(0,0,0,.55);
-    }
-    h1{
-      margin:0 0 6px 0;
-      font-size:44px;
-      letter-spacing:1px;
-    }
-    .sub{
-      opacity:.7;
-      letter-spacing:3px;
-      text-transform:uppercase;
+    .brand{
       font-size:12px;
-      margin-bottom:18px;
-    }
-    .row{
-      display:flex;
-      gap:10px;
-      margin:10px 0;
-      flex-wrap:wrap;
-    }
-    .chip{
-      flex:1;
-      min-width:180px;
-      background:rgba(255,255,255,0.04);
-      border:1px solid rgba(255,255,255,0.08);
-      border-radius:14px;
-      padding:12px 14px;
-    }
-    .chip .k{
-      opacity:.65;
-      letter-spacing:2px;
+      letter-spacing:5px;
       text-transform:uppercase;
-      font-size:11px;
-      margin-bottom:6px;
+      color:rgba(255,255,255,0.70);
+      line-height:1.4;
     }
-    .chip .v{
-      font-size:18px;
-      font-weight:700;
-      letter-spacing:.4px;
-    }
-    .callbox{
-      margin-top:16px;
-      border-radius:18px;
-      border:1px solid rgba(255,255,255,0.10);
-      background:linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
-      padding:18px;
-      position:relative;
-      overflow:hidden;
-    }
-    .live{
-      display:inline-flex;
+    .status{
+      display:flex;
       align-items:center;
       gap:10px;
       padding:10px 14px;
       border-radius:999px;
-      border:1px solid rgba(0,255,153,.25);
-      background:rgba(0,255,153,.06);
-      color:#7dffcc;
+      border:1px solid rgba(0,255,153,0.25);
+      background:rgba(0,255,153,0.08);
+      color:#bfffe8;
       font-weight:800;
-      letter-spacing:2px;
+      letter-spacing:3px;
       text-transform:uppercase;
       font-size:12px;
-      margin-bottom:12px;
+      white-space:nowrap;
     }
     .dot{
-      width:10px; height:10px;
-      border-radius:50%;
-      background:#00ff99;
-      box-shadow:0 0 18px rgba(0,255,153,.6);
+      width:10px;height:10px;border-radius:50%;
+      background:var(--green);
+      box-shadow:0 0 18px rgba(0,255,153,0.65);
     }
-    .name{
-      font-size:40px;
-      font-weight:900;
-      line-height:1.05;
-      margin:0 0 6px 0;
+    .card{
+      background:var(--panel);
+      border:1px solid var(--border);
+      border-radius:24px;
+      padding:22px;
+      backdrop-filter: blur(14px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.55);
     }
-    .meta{
-      opacity:.75;
-      letter-spacing:2px;
-      text-transform:uppercase;
-      font-size:12px;
-      margin-bottom:14px;
-    }
-    .timer{
-      font-variant-numeric: tabular-nums;
-      opacity:.8;
-      letter-spacing:2px;
-      margin-top:10px;
-      font-size:14px;
-    }
-    .warn{
-      margin-top:14px;
-      border:1px solid rgba(255,60,60,.25);
-      background:rgba(255,60,60,.06);
-      border-radius:16px;
-      padding:14px;
-      color:#ffd5d5;
-      line-height:1.45;
-      font-size:14px;
-    }
-    .warn b{
+    h1{
+      margin:0 0 8px 0;
+      font-size:44px;
       letter-spacing:1px;
     }
-    .hint{
+    .sub{
+      margin:0 0 18px 0;
+      color:rgba(255,255,255,0.72);
+      letter-spacing:4px;
+      text-transform:uppercase;
+      font-size:12px;
+      line-height:1.5;
+    }
+    .row{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:16px;
+    }
+    .pill{
+      flex:1 1 180px;
+      border-radius:16px;
+      padding:12px 14px;
+      background:rgba(0,0,0,0.18);
+      border:1px solid rgba(255,255,255,0.10);
+    }
+    .pill .k{
+      display:block;
+      font-size:11px;
+      letter-spacing:3px;
+      text-transform:uppercase;
+      color:rgba(255,255,255,0.55);
+      margin-bottom:6px;
+    }
+    .pill .v{
+      font-size:16px;
+      font-weight:800;
+      letter-spacing:0.5px;
+    }
+    .hold{
+      margin-top:14px;
+      border-radius:18px;
+      padding:14px;
+      border:1px solid rgba(255,80,80,0.25);
+      background:rgba(255,0,60,0.08);
+      color:rgba(255,255,255,0.80);
+      letter-spacing:0.5px;
+      line-height:1.5;
+    }
+    .small{
       margin-top:12px;
-      opacity:.55;
+      color:rgba(255,255,255,0.55);
       letter-spacing:3px;
       text-transform:uppercase;
       font-size:11px;
       text-align:center;
     }
 
-    /* Hidden audio element */
-    audio{ display:none; }
+    /* Incoming call overlay */
+    .overlay{
+      position:fixed;
+      inset:0;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      background:rgba(0,0,0,0.72);
+      backdrop-filter: blur(10px);
+      z-index:50;
+    }
+    .incoming{
+      width:min(520px, 94vw);
+      border-radius:26px;
+      border:1px solid rgba(255,255,255,0.12);
+      background:rgba(10,12,18,0.75);
+      box-shadow: 0 30px 90px rgba(0,0,0,0.7);
+      overflow:hidden;
+    }
+    .incomingTop{
+      padding:18px 18px 0 18px;
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:14px;
+    }
+    .incomingTitle{
+      margin:0;
+      font-weight:900;
+      letter-spacing:4px;
+      text-transform:uppercase;
+      font-size:14px;
+      color:rgba(255,255,255,0.80);
+    }
+    .incomingCaller{
+      margin:10px 0 0 0;
+      font-size:34px;
+      font-weight:900;
+      line-height:1.05;
+    }
+    .incomingMeta{
+      margin:8px 0 0 0;
+      color:rgba(255,255,255,0.65);
+      letter-spacing:3px;
+      text-transform:uppercase;
+      font-size:11px;
+    }
+    .ringline{
+      margin-top:10px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      color:rgba(255,255,255,0.75);
+      letter-spacing:2px;
+      text-transform:uppercase;
+      font-size:11px;
+    }
+    .ringdot{
+      width:10px;height:10px;border-radius:50%;
+      background:var(--red2);
+      box-shadow:0 0 18px rgba(255,43,43,0.7);
+      animation:pulse 1s infinite;
+    }
+    @keyframes pulse{
+      0%{transform:scale(1); opacity:0.9}
+      50%{transform:scale(1.35); opacity:0.55}
+      100%{transform:scale(1); opacity:0.9}
+    }
+    .incomingBtns{
+      display:flex;
+      gap:12px;
+      padding:18px;
+    }
+    .btn{
+      flex:1;
+      padding:14px 14px;
+      border-radius:14px;
+      border:none;
+      font-weight:900;
+      letter-spacing:3px;
+      text-transform:uppercase;
+      cursor:pointer;
+    }
+    .accept{
+      background:linear-gradient(180deg, rgba(0,255,153,0.25), rgba(0,255,153,0.12));
+      border:1px solid rgba(0,255,153,0.35);
+      color:#bfffe8;
+    }
+    .decline{
+      background:linear-gradient(180deg, rgba(255,43,43,0.20), rgba(255,0,60,0.10));
+      border:1px solid rgba(255,80,80,0.28);
+      color:rgba(255,255,255,0.92);
+    }
+    .warn{
+      padding:0 18px 18px 18px;
+      color:rgba(255,255,255,0.62);
+      letter-spacing:2px;
+      text-transform:uppercase;
+      font-size:10px;
+      text-align:center;
+    }
   </style>
 </head>
+
 <body>
   <div class="wrap">
-    <div class="top">
-      <div>MAJOR CRIMES DIVISION • SECURE LINE</div>
-      <div class="pill">CONNECTED</div>
+    <div class="header">
+      <div class="brand">Major Crimes Division • Secure Internal Server</div>
+      <div class="status"><span class="dot"></span> Connected</div>
     </div>
 
     <div class="card">
       <h1>Audio Call</h1>
-      <div class="sub">Encrypted Channel • Evidence Logging Enabled</div>
+      <p class="sub">Encrypted channel • Evidence logging enabled</p>
 
       <div class="row">
-        <div class="chip">
-          <div class="k">Caller</div>
-          <div class="v">Detective Marcus Malik (M.M.)</div>
+        <div class="pill">
+          <span class="k">Caller</span>
+          <span class="v">Detective Marcus Malik</span>
         </div>
-        <div class="chip">
-          <div class="k">Recipient</div>
-          <div class="v">Second Detective</div>
+        <div class="pill">
+          <span class="k">Case</span>
+          <span class="v">File #001 • Internal</span>
         </div>
-      </div>
-
-      <div class="row">
-        <div class="chip">
-          <div class="k">Case</div>
-          <div class="v">File #001 • Internal Follow-Up</div>
-        </div>
-        <div class="chip">
-          <div class="k">Recording</div>
-          <div class="v" id="recStatus">Connecting…</div>
+        <div class="pill">
+          <span class="k">Recording</span>
+          <span class="v" id="recState">Live</span>
         </div>
       </div>
 
-      <div class="callbox">
-        <div class="live"><span class="dot"></span> Live Audio</div>
-        <div class="name">M.M.</div>
-        <div class="meta">Secure channel • Do not refresh</div>
-        <div class="timer" id="timer">00:00</div>
-
-        <div class="warn">
-          <b>SECURE HOLD ENABLED.</b> This call cannot be cut from your device.
-          Line will close automatically when the recording ends.
-        </div>
-
-        <div class="hint">Playback begins automatically after load</div>
+      <div class="hold" id="holdBox">
+        SECURE HOLD ENABLED. This line cannot be cut from your device.
+        If a priority call interrupts, follow protocol.
       </div>
 
+      <div class="small">Do not refresh during playback.</div>
+
+      <!-- Hidden audio (autoplay attempt on load) -->
       <audio id="mmAudio" preload="auto" playsinline>
         <source src="mm-call.mp3" type="audio/mpeg">
       </audio>
     </div>
   </div>
 
+  <!-- Incoming call overlay -->
+  <div class="overlay" id="incomingOverlay" aria-hidden="true">
+    <div class="incoming">
+      <div class="incomingTop">
+        <div>
+          <p class="incomingTitle">Incoming Secure Call</p>
+          <p class="incomingCaller">Building Security</p>
+          <p class="incomingMeta">Night shift • East side</p>
+          <div class="ringline">
+            <span class="ringdot"></span>
+            <span>Priority channel — answer required</span>
+          </div>
+        </div>
+        <div class="status" style="border-color:rgba(255,80,80,0.25); background:rgba(255,0,60,0.08); color:rgba(255,255,255,0.85)">
+          <span class="ringdot" style="animation:none; box-shadow:none"></span> Calling
+        </div>
+      </div>
+
+      <div class="incomingBtns">
+        <button class="btn decline" id="declineBtn">Decline</button>
+        <button class="btn accept" id="acceptBtn">Accept</button>
+      </div>
+      <div class="warn">Decline will re-trigger.</div>
+    </div>
+  </div>
+
   <script>
-    const audio = document.getElementById('mmAudio');
-    const timerEl = document.getElementById('timer');
-    const recStatus = document.getElementById('recStatus');
+    // === Timing: show incoming at 1:26 (86s) while M.M audio continues ===
+    const INCOMING_AT_SECONDS = 86; // 1:26
+    const RECALL_AFTER_MS = 2000;   // if declined, re-show after 2s
 
-    let tInterval = null;
+    const mmAudio = document.getElementById('mmAudio');
+    const overlay = document.getElementById('incomingOverlay');
+    const acceptBtn = document.getElementById('acceptBtn');
+    const declineBtn = document.getElementById('declineBtn');
+    const recState = document.getElementById('recState');
 
-    function fmt(s){
-      s = Math.max(0, Math.floor(s));
-      const m = String(Math.floor(s/60)).padStart(2,'0');
-      const r = String(s%60).padStart(2,'0');
-      return `${m}:${r}`;
+    let incomingShown = false;
+    let recallTimer = null;
+    let arming = false;
+
+    function showIncoming(){
+      overlay.style.display = 'flex';
+      overlay.setAttribute('aria-hidden','false');
+      // NOTE: we do NOT pause mmAudio here — it keeps playing (as requested)
     }
 
-    function startTimer(){
-      stopTimer();
-      tInterval = setInterval(() => {
-        timerEl.textContent = fmt(audio.currentTime);
-      }, 250);
-    }
-    function stopTimer(){
-      if(tInterval) clearInterval(tInterval);
-      tInterval = null;
+    function hideIncoming(){
+      overlay.style.display = 'none';
+      overlay.setAttribute('aria-hidden','true');
     }
 
-    // Attempt autoplay (iPhone requires user gesture sometimes).
-    async function tryPlay(){
-      try {
-        await audio.play();
-        recStatus.textContent = "Recording";
-        startTimer();
-      } catch (e) {
-        // If blocked, show a one-tap overlay
-        recStatus.textContent = "Tap to Start";
-        showTapOverlay();
+    // Autoplay attempt (iPhone may require a tap once. If it fails, user can still start by tapping page once.)
+    async function tryAutoplay(){
+      try{
+        await mmAudio.play();
+        recState.textContent = 'Live';
+      }catch(e){
+        recState.textContent = 'Tap to start';
+        // One-tap unlock fallback
+        const oneTap = async () => {
+          try { await mmAudio.play(); recState.textContent='Live'; }
+          catch(_) {}
+          window.removeEventListener('touchstart', oneTap);
+          window.removeEventListener('click', oneTap);
+        };
+        window.addEventListener('touchstart', oneTap, { once:true });
+        window.addEventListener('click', oneTap, { once:true });
       }
     }
 
-    function showTapOverlay(){
-      const overlay = document.createElement('div');
-      overlay.style.position='fixed';
-      overlay.style.inset='0';
-      overlay.style.background='rgba(0,0,0,.65)';
-      overlay.style.display='flex';
-      overlay.style.alignItems='center';
-      overlay.style.justifyContent='center';
-      overlay.style.zIndex='9999';
-      overlay.innerHTML = `
-        <div style="
-          width:min(420px,90%);
-          background:rgba(255,255,255,.06);
-          border:1px solid rgba(255,255,255,.10);
-          border-radius:18px;
-          padding:18px;
-          text-align:center;
-          backdrop-filter:blur(10px);
-          color:#fff;
-          font-family:Arial,sans-serif;">
-          <div style="letter-spacing:3px; opacity:.8; font-size:12px; text-transform:uppercase; margin-bottom:10px;">
-            Secure Line Connected
-          </div>
-          <div style="font-size:18px; font-weight:800; margin-bottom:14px;">
-            Tap to begin playback
-          </div>
-          <div style="opacity:.7; font-size:13px; line-height:1.4;">
-            iPhone requires one tap to start audio.
-          </div>
-          <button style="
-            margin-top:14px;
-            width:100%;
-            padding:14px;
-            border:none;
-            border-radius:12px;
-            background:#00b36b;
-            color:#fff;
-            font-weight:900;
-            letter-spacing:2px;
-            text-transform:uppercase;">
-            Start Call
-          </button>
-        </div>
-      `;
-      overlay.querySelector('button').onclick = async () => {
-        try{
-          await audio.play();
-          recStatus.textContent = "Recording";
-          startTimer();
-          overlay.remove();
-        }catch(e){}
-      };
-      document.body.appendChild(overlay);
-    }
-
-    audio.addEventListener('ended', () => {
-      stopTimer();
-      recStatus.textContent = "Ended";
-      // OPTIONAL: redirect after call ends
-      // window.location.href = "next-step.html";
+    // Show incoming based on playback time (more reliable than setTimeout)
+    mmAudio.addEventListener('timeupdate', () => {
+      if(incomingShown) return;
+      if(mmAudio.currentTime >= INCOMING_AT_SECONDS){
+        incomingShown = true;
+        showIncoming();
+      }
     });
 
-    window.addEventListener('load', () => {
-      tryPlay();
+    // Accept: pause M.M and go to security page which autoplays immediately
+    acceptBtn.addEventListener('click', () => {
+      if (recallTimer) clearTimeout(recallTimer);
+      hideIncoming();
+      try { mmAudio.pause(); } catch(e) {}
+      // IMPORTANT: your Pages base is /casefile001/
+      window.location.href = "restricted.html";
     });
+
+    // Decline: hide, then force it back
+    declineBtn.addEventListener('click', () => {
+      hideIncoming();
+      if (recallTimer) clearTimeout(recallTimer);
+      recallTimer = setTimeout(() => {
+        showIncoming();
+      }, RECALL_AFTER_MS);
+    });
+
+    // Start
+    tryAutoplay();
   </script>
 </body>
 </html>
