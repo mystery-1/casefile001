@@ -3,121 +3,175 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>MCD Internal Server</title>
+<title>MCD • Secure Archive Access</title>
 
 <style>
 :root{
-  --bg:#0b0f17;
-  --panel:rgba(20,25,35,0.85);
-  --stroke:rgba(255,255,255,0.08);
-  --text:#e6e9ef;
+  --bg:#070a12;
+  --panel:rgba(18,22,34,0.78);
+  --stroke:rgba(255,255,255,0.10);
+  --text:#e8ecf4;
   --muted:rgba(255,255,255,0.55);
-  --accent:#00ff99;
+  --good:#00ff99;
+  --bad:#ff4d4d;
 }
 
 *{box-sizing:border-box}
 
 body{
   margin:0;
-  height:100vh;
+  min-height:100vh;
   display:flex;
   align-items:center;
   justify-content:center;
-  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
   color:var(--text);
   background:
-    radial-gradient(1000px 600px at 15% 10%, rgba(180,0,0,0.25), transparent 60%),
-    radial-gradient(900px 500px at 85% 20%, rgba(0,255,153,0.15), transparent 60%),
+    radial-gradient(900px 600px at 18% 12%, rgba(160,0,0,0.22), transparent 60%),
+    radial-gradient(900px 600px at 85% 18%, rgba(0,255,153,0.12), transparent 55%),
+    radial-gradient(700px 500px at 50% 85%, rgba(70,110,255,0.10), transparent 60%),
     var(--bg);
 }
 
-.container{
-  width:95%;
-  max-width:500px;
-  padding:32px;
+.wrap{
+  width:94%;
+  max-width:560px;
+  padding:30px 28px 24px;
   background:var(--panel);
   border:1px solid var(--stroke);
-  border-radius:20px;
-  backdrop-filter:blur(12px);
-  box-shadow:0 20px 60px rgba(0,0,0,0.6);
+  border-radius:22px;
+  backdrop-filter: blur(14px);
+  box-shadow: 0 22px 70px rgba(0,0,0,0.65);
+  position:relative;
+  overflow:hidden;
 }
 
-.header{
-  font-size:13px;
+.wrap:before{
+  content:"";
+  position:absolute;
+  inset:-2px;
+  border-radius:22px;
+  background: linear-gradient(135deg, rgba(0,255,153,0.18), rgba(255,0,0,0.14), rgba(255,255,255,0.02));
+  filter: blur(18px);
+  opacity:0.55;
+  z-index:0;
+}
+
+.inner{position:relative; z-index:1;}
+
+.topline{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:18px;
+}
+
+.kicker{
+  font-size:12px;
   letter-spacing:3px;
   text-transform:uppercase;
   color:var(--muted);
-  margin-bottom:10px;
+}
+
+.badge{
+  font-size:12px;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  padding:8px 12px;
+  border-radius:999px;
+  border:1px solid rgba(0,255,153,0.25);
+  color:rgba(0,255,153,0.9);
+  background:rgba(0,255,153,0.06);
 }
 
 h1{
   margin:0 0 6px 0;
-  font-size:26px;
-  letter-spacing:2px;
+  font-size:30px;
+  letter-spacing:1.5px;
 }
 
 .sub{
-  color:var(--muted);
+  margin:0 0 20px 0;
   font-size:13px;
-  margin-bottom:24px;
+  color:var(--muted);
+  line-height:1.5;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:14px;
 }
 
 label{
-  display:block;
   font-size:12px;
   letter-spacing:2px;
   text-transform:uppercase;
-  color:var(--muted);
-  margin-bottom:6px;
+  color:rgba(255,255,255,0.62);
+  display:block;
+  margin:0 0 8px 0;
 }
 
 input{
   width:100%;
-  padding:14px;
-  margin-bottom:16px;
-  border-radius:12px;
-  border:1px solid var(--stroke);
-  background:#101520;
-  color:white;
+  padding:14px 14px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,0.10);
+  background:rgba(10,14,24,0.95);
+  color:var(--text);
   font-size:15px;
 }
 
 input:focus{
   outline:none;
-  border-color:var(--accent);
-  box-shadow:0 0 0 3px rgba(0,255,153,0.1);
+  border-color: rgba(0,255,153,0.55);
+  box-shadow: 0 0 0 4px rgba(0,255,153,0.10);
 }
 
-button{
+.btn{
+  margin-top:6px;
   width:100%;
   padding:14px;
   border:none;
-  border-radius:12px;
-  background:linear-gradient(180deg,#e00000,#900000);
-  color:white;
-  font-weight:bold;
-  letter-spacing:2px;
+  border-radius:14px;
   cursor:pointer;
+  color:white;
+  font-weight:800;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  background:linear-gradient(180deg,#e40000,#8f0000);
 }
 
-button:hover{filter:brightness(1.1);}
+.btn:hover{ filter:brightness(1.08); }
+
+.sys{
+  margin-top:14px;
+  padding:12px 14px;
+  border-radius:14px;
+  border:1px dashed rgba(255,255,255,0.12);
+  color:rgba(255,255,255,0.52);
+  font-size:12px;
+  letter-spacing:1px;
+  text-transform:uppercase;
+}
 
 #error{
-  margin-top:15px;
-  padding:12px;
-  border-radius:10px;
-  border:1px dashed rgba(255,0,0,0.4);
-  background:rgba(255,0,0,0.08);
-  color:#ffaaaa;
-  font-size:13px;
   display:none;
+  margin-top:14px;
+  padding:12px 14px;
+  border-radius:14px;
+  border:1px solid rgba(255,77,77,0.35);
+  background:rgba(255,77,77,0.10);
+  color:#ffb3b3;
+  font-size:13px;
 }
 
-.footer{
-  margin-top:18px;
-  font-size:11px;
-  color:rgba(255,255,255,0.4);
+.small{
+  margin-top:10px;
   text-align:center;
+  font-size:11px;
+  color:rgba(255,255,255,0.40);
   letter-spacing:2px;
   text-transform:uppercase;
 }
@@ -125,43 +179,66 @@ button:hover{filter:brightness(1.1);}
 </head>
 
 <body>
+  <div class="wrap">
+    <div class="inner">
+      <div class="topline">
+        <div class="kicker">Major Crimes Division • Internal Network</div>
+        <div class="badge">Secure Link</div>
+      </div>
 
-<div class="container">
-  <div class="header">Major Crimes Division • Internal Network</div>
-  <h1>Secure Archive Access</h1>
-  <div class="sub">Case File #001 — Temporary Credentials Issued</div>
+      <h1>Secure Archive Access</h1>
+      <p class="sub">Case File #001 — Temporary Credentials Issued. Unauthorized access will be logged and traced.</p>
 
-  <label>Username</label>
-  <input id="username" autocomplete="off" placeholder="ENTER USERNAME" />
+      <form id="loginForm" autocomplete="off">
+        <div class="grid">
+          <div>
+            <label for="username">Username</label>
+            <input id="username" placeholder="MMDIV17" />
+          </div>
 
-  <label>Password</label>
-  <input id="password" type="password" placeholder="ENTER PASSWORD" />
+          <div>
+            <label for="password">Password</label>
+            <input id="password" type="password" placeholder="TEMP-ACCESS" />
+          </div>
 
-  <button onclick="login()">Access Archive</button>
+          <button class="btn" type="submit">Access Archive</button>
+        </div>
+      </form>
 
-  <div id="error">ACCESS DENIED — Invalid credentials</div>
+      <div id="error">ACCESS DENIED — Invalid credentials.</div>
 
-  <div class="footer">All access attempts are logged</div>
-</div>
+      <div class="sys">SYSLOG: Login required • Node: CaseFile001 • Status: Locked</div>
+      <div class="small">All access attempts are logged</div>
+    </div>
+  </div>
 
 <script>
-function login(){
-  const user = document.getElementById("username").value.trim();
-  const pass = document.getElementById("password").value.trim();
+(function(){
+  const EXPECT_USER = "MMDIV17";
+  const EXPECT_PASS = "TEMP-ACCESS";
 
-  // M.M. memo credentials (LOCKED)
-  if(user === "MMDIV17" && pass === "TEMP-ACCESS"){
-    // AFTER LOGIN -> RESTRICTED ACCESS (shoe-code gate)
-    window.location.href = "restricted.html";
-  } else {
-    document.getElementById("error").style.display = "block";
-  }
-}
+  // IMPORTANT FOR GITHUB PAGES PROJECT SITES:
+  // Your site base is /casefile001/ (NOT /)
+  const BASE = "/casefile001/";
+  const NEXT_PAGE = "restricted.html"; // must exist in repo root
 
-document.addEventListener("keydown", function(e){
-  if(e.key === "Enter") login();
-});
+  const form = document.getElementById("loginForm");
+  const err = document.getElementById("error");
+
+  form.addEventListener("submit", function(e){
+    e.preventDefault();
+
+    const user = (document.getElementById("username").value || "").trim();
+    const pass = (document.getElementById("password").value || "").trim();
+
+    if(user === EXPECT_USER && pass === EXPECT_PASS){
+      err.style.display = "none";
+      window.location.href = BASE + NEXT_PAGE;  // -> /casefile001/restricted.html
+    } else {
+      err.style.display = "block";
+    }
+  });
+})();
 </script>
-
 </body>
 </html>
