@@ -12,9 +12,8 @@
   --stroke:rgba(255,255,255,0.10);
   --text:#e8ecf4;
   --muted:rgba(255,255,255,0.55);
-  --good:#00ff99;
-  --bad:#ff4d4d;
   --warn:#ffd36a;
+  --bad:#ff4d4d;
 }
 *{box-sizing:border-box}
 body{
@@ -92,12 +91,7 @@ h1{ margin:0 0 8px 0; font-size:28px; letter-spacing:1.2px; }
   background:rgba(255,211,106,0.08);
   color:rgba(255,235,200,0.95);
   font-size:13px;
-  line-height:1.55;
-}
-.grid{
-  display:grid;
-  grid-template-columns: 1fr;
-  gap:12px;
+  line-height:1.6;
 }
 label{
   font-size:12px;
@@ -125,6 +119,7 @@ input:focus{
 }
 .btn{
   width:100%;
+  margin-top:14px;
   padding:14px;
   border:none;
   border-radius:14px;
@@ -148,11 +143,11 @@ input:focus{
 }
 .hint{
   margin-top:10px;
-  font-size:11px;
+  font-size:12px;
   color:rgba(255,255,255,0.45);
   letter-spacing:1.5px;
-  text-transform:uppercase;
   text-align:center;
+  font-style:italic;
 }
 .sys{
   margin-top:14px;
@@ -184,18 +179,19 @@ a.back:hover{ text-decoration:underline; }
       </div>
 
       <h1>Restricted Archive</h1>
-      <p class="sub">Case File #001 — Secondary verification required. Numeric key only.</p>
+      <p class="sub">Case File #001 — Secondary verification required.</p>
 
       <div class="alert">
-        <strong>RESTRICTION:</strong> This node is locked behind an offline evidence key.<br/>
-        Enter the <strong>numeric code</strong> exactly as recovered from physical evidence.
+        This node requires a numeric authentication sequence recovered from physical evidence.<br/>
+        Only the correct arrangement will unlock the archive.
       </div>
 
-      <form id="gateForm" class="grid" autocomplete="off">
-        <div>
-          <label for="code">Numeric Key</label>
-          <input id="code" inputmode="numeric" pattern="[0-9]*" placeholder="ENTER CODE" maxlength="12" />
-          <div class="hint">Hint: shoe measurement numbers • read in reverse</div>
+      <form id="gateForm" autocomplete="off">
+        <label for="code">Numeric Key</label>
+        <input id="code" inputmode="numeric" pattern="[0-9]*" placeholder="ENTER CODE" maxlength="12" />
+
+        <div class="hint">
+          Sometimes the truth only makes sense when you look at it from the other side.
         </div>
 
         <button class="btn" type="submit">Unlock Footage</button>
@@ -203,17 +199,15 @@ a.back:hover{ text-decoration:underline; }
 
       <div id="error">ACCESS DENIED — Invalid numeric key.</div>
 
-      <div class="sys">SYSLOG: Verification required • Node: CAM-17B • Status: Locked</div>
+      <div class="sys">SYSLOG: Verification Required • Node: CAM-17B • Status: Locked</div>
       <a class="back" href="/casefile001/">← Return to login</a>
     </div>
   </div>
 
 <script>
 (function(){
-  // IMPORTANT:
-  // Replace this value with the EXACT reversed shoe-code you want.
-  // Example placeholder: "82711673"
-  const NUMERIC_KEY = "REPLACE_ME";
+  // 🔴 REPLACE WITH YOUR ACTUAL REVERSED SHOE CODE
+  const NUMERIC_KEY = "REPLACE_WITH_REAL_CODE";
 
   const BASE = "/casefile001/";
   const NEXT_PAGE = "footage.html";
