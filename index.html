@@ -1,109 +1,248 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Case File 001</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>MCD Internal Access</title>
 
 <style>
-body{
+  :root{
+    --bg:#05070c;
+    --panel: rgba(255,255,255,0.06);
+    --stroke: rgba(255,255,255,0.10);
+    --soft: rgba(255,255,255,0.08);
+    --text: rgba(255,255,255,0.92);
+    --muted: rgba(255,255,255,0.60);
+    --danger:#b30000;
+    --danger2:#e00000;
+    --ok:#00ff99;
+  }
+
+  *{box-sizing:border-box}
+  body{
     margin:0;
-    background:#05070c;
-    font-family:Arial, sans-serif;
-    color:white;
+    min-height:100vh;
     display:flex;
-    justify-content:center;
     align-items:center;
-    height:100vh;
-}
+    justify-content:center;
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    color:var(--text);
+    background:
+      radial-gradient(900px 500px at 20% 10%, rgba(120,20,20,0.25), transparent 60%),
+      radial-gradient(800px 500px at 80% 20%, rgba(20,120,90,0.18), transparent 60%),
+      radial-gradient(900px 700px at 50% 100%, rgba(255,255,255,0.06), transparent 60%),
+      var(--bg);
+  }
 
-.container{
-    width:90%;
-    max-width:420px;
-    background:rgba(255,255,255,0.05);
-    padding:30px;
-    border-radius:20px;
-    border:1px solid rgba(255,255,255,0.08);
-    text-align:center;
-    backdrop-filter:blur(10px);
-}
+  .wrap{
+    width:min(520px, 92vw);
+    padding:26px;
+  }
 
-h1{
-    margin-bottom:10px;
-    font-size:24px;
+  .topline{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    margin-bottom:14px;
+  }
+
+  .tag{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:8px 12px;
+    border-radius:999px;
+    background:rgba(255,255,255,0.06);
+    border:1px solid var(--stroke);
     letter-spacing:2px;
-}
-
-.sub{
-    opacity:0.6;
     font-size:12px;
-    margin-bottom:25px;
-    letter-spacing:2px;
-}
+    text-transform:uppercase;
+    color:var(--muted);
+  }
 
-input{
+  .dot{
+    width:10px;height:10px;border-radius:50%;
+    background:var(--ok);
+    box-shadow:0 0 14px rgba(0,255,153,0.45);
+  }
+
+  .brand{
+    font-size:12px;
+    letter-spacing:3px;
+    text-transform:uppercase;
+    color:rgba(255,255,255,0.55);
+  }
+
+  .card{
+    background:var(--panel);
+    border:1px solid var(--stroke);
+    border-radius:22px;
+    padding:26px;
+    backdrop-filter: blur(12px);
+    box-shadow:
+      0 20px 60px rgba(0,0,0,0.55),
+      inset 0 1px 0 rgba(255,255,255,0.06);
+    position:relative;
+    overflow:hidden;
+  }
+
+  .card:before{
+    content:"";
+    position:absolute;
+    inset:-120px -120px auto -120px;
+    height:220px;
+    background: radial-gradient(circle at 30% 40%, rgba(255,255,255,0.08), transparent 60%);
+    transform: rotate(-8deg);
+  }
+
+  h1{
+    margin:0 0 6px 0;
+    font-size:28px;
+    letter-spacing:3px;
+    text-transform:uppercase;
+  }
+
+  .sub{
+    margin:0 0 18px 0;
+    color:var(--muted);
+    font-size:13px;
+    line-height:1.4;
+  }
+
+  .grid{
+    display:grid;
+    gap:12px;
+    margin-top:14px;
+  }
+
+  label{
+    font-size:12px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    color:rgba(255,255,255,0.62);
+    margin-bottom:6px;
+    display:block;
+  }
+
+  input{
     width:100%;
-    padding:14px;
-    margin-bottom:12px;
+    padding:14px 14px;
+    border-radius:14px;
+    border:1px solid var(--soft);
+    background:rgba(10,14,22,0.70);
+    color:var(--text);
     font-size:16px;
-    background:#0c111b;
-    border:1px solid rgba(255,255,255,0.1);
-    border-radius:10px;
-    color:white;
-}
+    outline:none;
+  }
+  input:focus{
+    border-color:rgba(0,255,153,0.35);
+    box-shadow:0 0 0 4px rgba(0,255,153,0.08);
+  }
 
-button{
+  .btn{
     width:100%;
-    padding:14px;
-    background:#b30000;
-    border:none;
-    border-radius:10px;
+    margin-top:6px;
+    padding:14px 16px;
+    border-radius:14px;
+    border:1px solid rgba(255,255,255,0.10);
+    background:linear-gradient(180deg, rgba(227,0,0,0.95), rgba(145,0,0,0.95));
     color:white;
-    font-weight:bold;
-    letter-spacing:2px;
-}
+    font-weight:800;
+    letter-spacing:3px;
+    text-transform:uppercase;
+    cursor:pointer;
+  }
+  .btn:hover{ filter:brightness(1.05); }
+  .btn:active{ transform: translateY(1px); }
 
-button:hover{
-    background:#e00000;
-}
-
-#error{
-    color:#ff4d4d;
-    margin-top:12px;
+  .msg{
+    margin-top:14px;
     display:none;
-}
+    border-radius:14px;
+    padding:12px 14px;
+    border:1px dashed rgba(255,255,255,0.16);
+    background:rgba(0,0,0,0.18);
+    color:rgba(255,255,255,0.72);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-size:12px;
+    line-height:1.5;
+  }
+
+  .msg.error{
+    display:block;
+    border-color: rgba(255,77,77,0.40);
+    color:#ffb3b3;
+  }
+
+  .footer{
+    margin-top:12px;
+    text-align:center;
+    color:rgba(255,255,255,0.45);
+    font-size:11px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+  }
 </style>
 </head>
 
 <body>
+  <div class="wrap">
+    <div class="topline">
+      <div class="brand">MAJOR CRIMES DIVISION • INTERNAL NETWORK</div>
+      <div class="tag"><span class="dot"></span> SECURE SESSION</div>
+    </div>
 
-<div class="container">
-    <h1>SECURE ACCESS</h1>
-    <div class="sub">Major Crimes Division • Internal Server</div>
+    <div class="card">
+      <h1>Secure Access</h1>
+      <p class="sub">
+        Case File #001 • Authorization Required<br/>
+        Enter credentials provided by Detective M.M.
+      </p>
 
-    <input type="text" id="username" placeholder="USERNAME">
-    <input type="password" id="password" placeholder="PASSWORD">
-    <button onclick="login()">ENTER</button>
+      <div class="grid">
+        <div>
+          <label for="username">Username</label>
+          <input id="username" autocomplete="off" placeholder="ENTER USERNAME" />
+        </div>
 
-    <div id="error">ACCESS DENIED</div>
-</div>
+        <div>
+          <label for="password">Password</label>
+          <input id="password" type="password" placeholder="ENTER PASSCODE" />
+        </div>
+
+        <button class="btn" onclick="login()">ENTER</button>
+
+        <div id="error" class="msg error" style="display:none;">
+          ACCESS DENIED — credentials not recognized.
+        </div>
+      </div>
+
+      <div class="footer">All access is logged • Do not share credentials</div>
+    </div>
+  </div>
 
 <script>
 function login(){
-    var user = document.getElementById("username").value.trim();
-    var pass = document.getElementById("password").value.trim();
+  const user = (document.getElementById("username").value || "").trim();
+  const pass = (document.getElementById("password").value || "").trim();
+  const err  = document.getElementById("error");
 
-    // Replace these with whatever M.M gave the player
-    var correctUser = "detective";
-    var correctPass = "11420817";
-
-    if(user === correctUser && pass === correctPass){
-        window.location.href = "footage.html";
-    } else {
-        document.getElementById("error").style.display = "block";
-    }
+  // PLAYER LOGIN (as you requested)
+  // Username: MM
+  // Password: 37161182
+  if(user === "MM" && pass === "37161182"){
+    err.style.display = "none";
+    window.location.href = "footage.html";
+  } else {
+    err.style.display = "block";
+  }
 }
-</script>
 
+// allow Enter key
+document.addEventListener("keydown", (e)=>{
+  if(e.key === "Enter") login();
+});
+</script>
 </body>
 </html>
