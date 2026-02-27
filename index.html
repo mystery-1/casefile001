@@ -15,9 +15,7 @@
   --good:#00ff99;
   --bad:#ff4d4d;
 }
-
 *{box-sizing:border-box}
-
 body{
   margin:0;
   min-height:100vh;
@@ -32,7 +30,6 @@ body{
     radial-gradient(700px 500px at 50% 85%, rgba(70,110,255,0.10), transparent 60%),
     var(--bg);
 }
-
 .wrap{
   width:94%;
   max-width:560px;
@@ -45,7 +42,6 @@ body{
   position:relative;
   overflow:hidden;
 }
-
 .wrap:before{
   content:"";
   position:absolute;
@@ -56,9 +52,7 @@ body{
   opacity:0.55;
   z-index:0;
 }
-
 .inner{position:relative; z-index:1;}
-
 .topline{
   display:flex;
   align-items:center;
@@ -66,14 +60,12 @@ body{
   gap:12px;
   margin-bottom:18px;
 }
-
 .kicker{
   font-size:12px;
   letter-spacing:3px;
   text-transform:uppercase;
   color:var(--muted);
 }
-
 .badge{
   font-size:12px;
   letter-spacing:2px;
@@ -84,26 +76,13 @@ body{
   color:rgba(0,255,153,0.9);
   background:rgba(0,255,153,0.06);
 }
-
-h1{
-  margin:0 0 6px 0;
-  font-size:30px;
-  letter-spacing:1.5px;
-}
-
+h1{ margin:0 0 6px 0; font-size:30px; letter-spacing:1.5px; }
 .sub{
   margin:0 0 20px 0;
   font-size:13px;
   color:var(--muted);
   line-height:1.5;
 }
-
-.grid{
-  display:grid;
-  grid-template-columns:1fr;
-  gap:14px;
-}
-
 label{
   font-size:12px;
   letter-spacing:2px;
@@ -112,7 +91,6 @@ label{
   display:block;
   margin:0 0 8px 0;
 }
-
 input{
   width:100%;
   padding:14px 14px;
@@ -122,15 +100,13 @@ input{
   color:var(--text);
   font-size:15px;
 }
-
 input:focus{
   outline:none;
   border-color: rgba(0,255,153,0.55);
   box-shadow: 0 0 0 4px rgba(0,255,153,0.10);
 }
-
 .btn{
-  margin-top:6px;
+  margin-top:14px;
   width:100%;
   padding:14px;
   border:none;
@@ -142,9 +118,7 @@ input:focus{
   text-transform:uppercase;
   background:linear-gradient(180deg,#e40000,#8f0000);
 }
-
 .btn:hover{ filter:brightness(1.08); }
-
 .sys{
   margin-top:14px;
   padding:12px 14px;
@@ -155,7 +129,6 @@ input:focus{
   letter-spacing:1px;
   text-transform:uppercase;
 }
-
 #error{
   display:none;
   margin-top:14px;
@@ -166,7 +139,6 @@ input:focus{
   color:#ffb3b3;
   font-size:13px;
 }
-
 .small{
   margin-top:10px;
   text-align:center;
@@ -187,22 +159,20 @@ input:focus{
       </div>
 
       <h1>Secure Archive Access</h1>
-      <p class="sub">Case File #001 — Temporary Credentials Issued. Unauthorized access will be logged and traced.</p>
+      <p class="sub">Case File #001 — Temporary credentials required. Unauthorized access will be logged and traced.</p>
 
       <form id="loginForm" autocomplete="off">
-        <div class="grid">
-          <div>
-            <label for="username">Username</label>
-            <input id="username" placeholder="MMDIV17" />
-          </div>
-
-          <div>
-            <label for="password">Password</label>
-            <input id="password" type="password" placeholder="TEMP-ACCESS" />
-          </div>
-
-          <button class="btn" type="submit">Access Archive</button>
+        <div>
+          <label for="username">Username</label>
+          <input id="username" placeholder="ENTER USERNAME" autocomplete="off" />
         </div>
+
+        <div style="margin-top:14px;">
+          <label for="password">Password</label>
+          <input id="password" type="password" placeholder="ENTER PASSWORD" autocomplete="off" />
+        </div>
+
+        <button class="btn" type="submit">Access Archive</button>
       </form>
 
       <div id="error">ACCESS DENIED — Invalid credentials.</div>
@@ -214,26 +184,25 @@ input:focus{
 
 <script>
 (function(){
+  // Correct story credentials (players learn from MM memo)
   const EXPECT_USER = "MMDIV17";
   const EXPECT_PASS = "TEMP-ACCESS";
 
-  // IMPORTANT FOR GITHUB PAGES PROJECT SITES:
-  // Your site base is /casefile001/ (NOT /)
+  // GitHub Pages project path
   const BASE = "/casefile001/";
-  const NEXT_PAGE = "restricted.html"; // must exist in repo root
+  const NEXT_PAGE = "restricted.html"; // numeric-code gate page
 
   const form = document.getElementById("loginForm");
   const err = document.getElementById("error");
 
   form.addEventListener("submit", function(e){
     e.preventDefault();
-
     const user = (document.getElementById("username").value || "").trim();
     const pass = (document.getElementById("password").value || "").trim();
 
     if(user === EXPECT_USER && pass === EXPECT_PASS){
       err.style.display = "none";
-      window.location.href = BASE + NEXT_PAGE;  // -> /casefile001/restricted.html
+      window.location.href = BASE + NEXT_PAGE + "?v=" + Date.now();
     } else {
       err.style.display = "block";
     }
