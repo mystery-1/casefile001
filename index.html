@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>MCD Internal Server</title>
 
 <style>
@@ -13,7 +13,6 @@
   --text:#e6e9ef;
   --muted:rgba(255,255,255,0.55);
   --accent:#00ff99;
-  --danger:#c40000;
 }
 
 *{box-sizing:border-box}
@@ -101,9 +100,7 @@ button{
   cursor:pointer;
 }
 
-button:hover{
-  filter:brightness(1.1);
-}
+button:hover{filter:brightness(1.1);}
 
 #error{
   margin-top:15px;
@@ -135,10 +132,10 @@ button:hover{
   <div class="sub">Case File #001 — Temporary Credentials Issued</div>
 
   <label>Username</label>
-  <input id="username" autocomplete="off" placeholder="ENTER USERNAME">
+  <input id="username" autocomplete="off" placeholder="ENTER USERNAME" />
 
   <label>Password</label>
-  <input id="password" type="password" placeholder="ENTER PASSWORD">
+  <input id="password" type="password" placeholder="ENTER PASSWORD" />
 
   <button onclick="login()">Access Archive</button>
 
@@ -152,8 +149,10 @@ function login(){
   const user = document.getElementById("username").value.trim();
   const pass = document.getElementById("password").value.trim();
 
+  // M.M. memo credentials (LOCKED)
   if(user === "MMDIV17" && pass === "TEMP-ACCESS"){
-    window.location.href = "footage.html";
+    // AFTER LOGIN -> RESTRICTED ACCESS (shoe-code gate)
+    window.location.href = "restricted.html";
   } else {
     document.getElementById("error").style.display = "block";
   }
