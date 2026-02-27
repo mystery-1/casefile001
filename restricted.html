@@ -1,139 +1,273 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Restricted Archive – CAM-17B</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Secure Line — Building Security</title>
 
-<style>
-body{
-  margin:0;
-  background:#0b0b0b;
-  color:#e9e9e9;
-  font-family: Arial, sans-serif;
-  padding:30px 15px;
-}
-.container{max-width:520px;margin:auto;}
-.header{
-  border:1px solid #2a2a2a;
-  background:#111;
-  padding:15px;
-}
-.header-top{
-  font-size:12px;
-  text-transform:uppercase;
-  letter-spacing:1px;
-  color:#bdbdbd;
-}
-.header-main{margin-top:6px;font-size:18px;font-weight:bold;}
-.header-sub{margin-top:4px;font-size:12px;color:#bdbdbd;}
+  <style>
+    :root{
+      --bg:#05070c;
+      --panel:rgba(255,255,255,0.06);
+      --border:rgba(255,255,255,0.12);
+      --muted:rgba(255,255,255,0.65);
+      --green:#00ff99;
+      --red:#d40000;
+      --red2:#ff2b2b;
+      --gold:#ffd08a;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      background: radial-gradient(1200px 800px at 30% 10%, rgba(255,0,60,0.10), transparent 60%),
+                  radial-gradient(1000px 700px at 80% 30%, rgba(0,255,153,0.08), transparent 55%),
+                  var(--bg);
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+      color:#fff;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:22px;
+    }
+    .wrap{width:min(520px, 94vw);}
+    .header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:14px;
+    }
+    .brand{
+      font-size:12px;
+      letter-spacing:5px;
+      text-transform:uppercase;
+      color:rgba(255,255,255,0.70);
+      line-height:1.4;
+    }
+    .status{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 14px;
+      border-radius:999px;
+      border:1px solid rgba(0,255,153,0.25);
+      background:rgba(0,255,153,0.08);
+      color:#bfffe8;
+      font-weight:800;
+      letter-spacing:3px;
+      text-transform:uppercase;
+      font-size:12px;
+      white-space:nowrap;
+    }
+    .dot{
+      width:10px;height:10px;border-radius:50%;
+      background:var(--green);
+      box-shadow:0 0 18px rgba(0,255,153,0.65);
+    }
+    .card{
+      background:var(--panel);
+      border:1px solid var(--border);
+      border-radius:24px;
+      padding:22px;
+      backdrop-filter: blur(14px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.55);
+    }
+    h1{
+      margin:0 0 8px 0;
+      font-size:44px;
+      letter-spacing:1px;
+    }
+    .sub{
+      margin:0 0 18px 0;
+      color:rgba(255,255,255,0.72);
+      letter-spacing:4px;
+      text-transform:uppercase;
+      font-size:12px;
+      line-height:1.5;
+    }
+    .row{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:16px;
+    }
+    .pill{
+      flex:1 1 180px;
+      border-radius:16px;
+      padding:12px 14px;
+      background:rgba(0,0,0,0.18);
+      border:1px solid rgba(255,255,255,0.10);
+    }
+    .pill .k{
+      display:block;
+      font-size:11px;
+      letter-spacing:3px;
+      text-transform:uppercase;
+      color:rgba(255,255,255,0.55);
+      margin-bottom:6px;
+    }
+    .pill .v{
+      font-size:16px;
+      font-weight:800;
+      letter-spacing:0.5px;
+    }
+    .hold{
+      margin-top:14px;
+      border-radius:18px;
+      padding:14px;
+      border:1px solid rgba(255,80,80,0.25);
+      background:rgba(255,0,60,0.08);
+      color:rgba(255,255,255,0.80);
+      letter-spacing:0.5px;
+      line-height:1.5;
+    }
+    .small{
+      margin-top:12px;
+      color:rgba(255,255,255,0.55);
+      letter-spacing:3px;
+      text-transform:uppercase;
+      font-size:11px;
+      text-align:center;
+    }
 
-.panel{
-  margin-top:15px;
-  border:1px solid #2a2a2a;
-  background:#101010;
-  padding:16px;
-}
-.alert{
-  border-left:4px solid #8b0000;
-  background:#0f0f0f;
-  padding:10px 12px;
-  font-size:12px;
-  line-height:1.5;
-  color:#d7d7d7;
-}
-label{
-  display:block;
-  margin-top:14px;
-  font-size:12px;
-  color:#bdbdbd;
-  text-transform:uppercase;
-  letter-spacing:1px;
-}
-input{
-  width:100%;
-  box-sizing:border-box;
-  padding:14px;
-  margin-top:8px;
-  font-size:16px;
-  background:#0c0c0c;
-  border:1px solid #333;
-  color:white;
-}
-button{
-  width:100%;
-  padding:14px;
-  margin-top:14px;
-  font-size:16px;
-  font-weight:bold;
-  background:#8b0000;
-  border:none;
-  color:white;
-  cursor:pointer;
-}
-.syslog{
-  margin-top:15px;
-  font-family:monospace;
-  font-size:11px;
-  background:#0c0c0c;
-  border:1px dashed #2b2b2b;
-  padding:10px;
-  color:#9b9b9b;
-  line-height:1.35;
-}
-</style>
+    /* Attachment popup */
+    .popup{
+      position:fixed;
+      inset:0;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      background:rgba(0,0,0,0.72);
+      backdrop-filter: blur(10px);
+      z-index:60;
+    }
+    .popupCard{
+      width:min(520px, 94vw);
+      border-radius:24px;
+      border:1px solid rgba(255,255,255,0.14);
+      background:rgba(10,12,18,0.82);
+      box-shadow: 0 30px 90px rgba(0,0,0,0.7);
+      padding:18px;
+      text-align:center;
+    }
+    .popTop{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      margin-bottom:10px;
+      color:#bfffe8;
+      letter-spacing:3px;
+      text-transform:uppercase;
+      font-weight:900;
+      font-size:12px;
+    }
+    .popTitle{
+      font-size:22px;
+      font-weight:900;
+      margin:10px 0 6px 0;
+      letter-spacing:1px;
+    }
+    .popMsg{
+      color:rgba(255,255,255,0.78);
+      line-height:1.5;
+      margin:0 0 14px 0;
+    }
+    .popAction{
+      display:inline-block;
+      padding:12px 16px;
+      border-radius:14px;
+      border:1px solid rgba(255,208,138,0.30);
+      background:rgba(255,208,138,0.10);
+      color:#ffe3b9;
+      font-weight:900;
+      letter-spacing:2px;
+      text-transform:uppercase;
+      font-size:12px;
+    }
+  </style>
 </head>
 
 <body>
-<div class="container">
-
-  <div class="header">
-    <div class="header-top">Major Crimes Division • Internal Network</div>
-    <div class="header-main">SECURE ARCHIVE: CAM-17B</div>
-    <div class="header-sub">Access Restricted • Authorization Required</div>
-  </div>
-
-  <div class="panel">
-    <div class="alert">
-      <b>ERROR:</b> This file is sealed under restricted access.<br>
-      Enter the authorization code to unlock the archive.
+  <div class="wrap">
+    <div class="header">
+      <div class="brand">Major Crimes Division • Secure Line</div>
+      <div class="status"><span class="dot"></span> Connected</div>
     </div>
 
-    <label>ENTER AUTHORIZATION CODE</label>
-    <input id="code" type="text" placeholder="Authorization Code">
+    <div class="card">
+      <h1>Audio Call</h1>
+      <p class="sub">Encrypted channel • Evidence logging enabled</p>
 
-    <button onclick="unlock()">SUBMIT CODE</button>
+      <div class="row">
+        <div class="pill">
+          <span class="k">Caller</span>
+          <span class="v">Building Security</span>
+        </div>
+        <div class="pill">
+          <span class="k">Case</span>
+          <span class="v">File #001 • External Evidence</span>
+        </div>
+        <div class="pill">
+          <span class="k">Recording</span>
+          <span class="v" id="recState">Live</span>
+        </div>
+      </div>
 
-    <div class="syslog" id="syslog">
-      SYSLOG: archive locked...<br>
-      NODE: CAM-17B • STATUS: RESTRICTED
+      <div class="hold">
+        SECURE HOLD ENABLED. This call cannot be cut from your device.
+        Line will close automatically when the recording ends.
+      </div>
+
+      <div class="small">Do not refresh during playback.</div>
+
+      <audio id="secAudio" preload="auto" playsinline>
+        <source src="security-call.mp3.mp3" type="audio/mpeg">
+      </audio>
     </div>
   </div>
 
-</div>
+  <div class="popup" id="attachPopup">
+    <div class="popupCard">
+      <div class="popTop">SYSTEM • ATTACHMENT RECEIVED</div>
+      <div class="popTitle">Evidence Logged</div>
+      <p class="popMsg">
+        A new file has been added to Case File #001.<br/>
+        Chain-of-custody marked <b>external</b>.
+      </p>
+      <div class="popAction">Proceed to Envelope A (Physical)</div>
+    </div>
+  </div>
 
-<script>
-function unlock(){
-  var code = document.getElementById("code").value.trim();
-  var sys = document.getElementById("syslog");
+  <script>
+    const secAudio = document.getElementById('secAudio');
+    const recState = document.getElementById('recState');
+    const popup = document.getElementById('attachPopup');
 
-  sys.innerHTML = "SYSLOG: verifying code...<br>NODE: CAM-17B • STATUS: CHECKING";
-
-  setTimeout(function(){
-    if(code === "37161182"){
-      sys.innerHTML = "SYSLOG: authorization accepted.<br>NODE: CAM-17B • STATUS: UNLOCKING";
-
-      // IMPORTANT: unlock live case log access for this device/session
-      localStorage.setItem("camUnlocked", "true");
-
-      setTimeout(function(){ window.location.href="footage.html"; }, 500);
-    } else {
-      sys.innerHTML = "SYSLOG: authorization rejected.<br>NODE: CAM-17B • STATUS: RESTRICTED";
-      alert("INVALID AUTHORIZATION CODE");
+    async function tryAutoplay(){
+      try{
+        await secAudio.play();
+        recState.textContent = "Live";
+      }catch(e){
+        recState.textContent = "Tap to start";
+        const oneTap = async () => {
+          try { await secAudio.play(); recState.textContent='Live'; }
+          catch(_) {}
+          window.removeEventListener('touchstart', oneTap);
+          window.removeEventListener('click', oneTap);
+        };
+        window.addEventListener('touchstart', oneTap, { once:true });
+        window.addEventListener('click', oneTap, { once:true });
+      }
     }
-  }, 500);
-}
-</script>
 
+    secAudio.addEventListener('ended', () => {
+      recState.textContent = "Ended";
+      popup.style.display = "flex";
+    });
+
+    tryAutoplay();
+  </script>
 </body>
 </html>
