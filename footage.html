@@ -13,6 +13,8 @@
   --text:#e8ecf4;
   --muted:rgba(255,255,255,0.55);
   --accent:#00ff99;
+  --danger:#ff2b2b;
+  --warn:#ffd24a;
 }
 *{box-sizing:border-box}
 body{
@@ -38,6 +40,8 @@ body{
   border-radius:22px;
   backdrop-filter: blur(14px);
   box-shadow: 0 22px 70px rgba(0,0,0,0.65);
+  position:relative;
+  overflow:hidden;
 }
 .top{
   display:flex;
@@ -93,20 +97,18 @@ video{
   display:block;
   background:#000;
 }
-.overlay{
+.playOverlay{
   position:absolute;
   inset:0;
   display:flex;
   align-items:center;
   justify-content:center;
   background: radial-gradient(900px 500px at 50% 50%, rgba(255,255,255,0.08), rgba(0,0,0,0.85));
-  pointer-events:none;
   opacity:1;
   transition: opacity .25s ease;
 }
-.overlay.hidden{ opacity:0; }
+.playOverlay.hidden{ opacity:0; pointer-events:none; }
 .playBtn{
-  pointer-events:auto;
   cursor:pointer;
   border:none;
   padding:14px 18px;
@@ -119,6 +121,7 @@ video{
   box-shadow: 0 14px 40px rgba(0,0,0,0.55);
 }
 .playBtn:hover{ filter:brightness(1.05); }
+
 .sys{
   margin-top:14px;
   padding:12px 14px;
@@ -134,6 +137,114 @@ video{
   color:rgba(255,255,255,0.50);
   font-size:12px;
   letter-spacing:1.2px;
+}
+
+/* Incoming call modal */
+.backdrop{
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,0.55);
+  backdrop-filter: blur(8px);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+}
+.backdrop.show{ display:flex; }
+
+.callCard{
+  width:100%;
+  max-width:520px;
+  border-radius:20px;
+  border:1px solid rgba(255,255,255,0.12);
+  background:rgba(12,15,24,0.88);
+  box-shadow: 0 25px 90px rgba(0,0,0,0.75);
+  overflow:hidden;
+}
+.callHeader{
+  padding:18px 18px 14px;
+  border-bottom:1px solid rgba(255,255,255,0.10);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+.callTitle{
+  font-weight:900;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  font-size:13px;
+  color:rgba(255,255,255,0.75);
+}
+.ringing{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  color:rgba(255,210,74,0.92);
+  font-size:12px;
+  letter-spacing:2px;
+  text-transform:uppercase;
+}
+.pulse{
+  width:9px;height:9px;border-radius:50%;
+  background:var(--warn);
+  box-shadow: 0 0 16px rgba(255,210,74,0.65);
+  animation:pulse 1.1s infinite;
+}
+@keyframes pulse{
+  0%{ transform:scale(1); opacity:1; }
+  60%{ transform:scale(1.6); opacity:0.25; }
+  100%{ transform:scale(1); opacity:1; }
+}
+.callBody{
+  padding:18px;
+}
+.from{
+  font-size:28px;
+  font-weight:950;
+  line-height:1.05;
+  margin:0 0 8px 0;
+}
+.subfrom{
+  margin:0;
+  color:rgba(255,255,255,0.60);
+  letter-spacing:1px;
+}
+.callBtns{
+  display:flex;
+  gap:12px;
+  padding:18px;
+  border-top:1px solid rgba(255,255,255,0.10);
+}
+.btn{
+  flex:1;
+  border:none;
+  border-radius:14px;
+  padding:14px 12px;
+  font-weight:900;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  cursor:pointer;
+}
+.btn.accept{
+  background:rgba(0,255,153,0.16);
+  border:1px solid rgba(0,255,153,0.35);
+  color:rgba(0,255,153,0.95);
+}
+.btn.accept:hover{ filter:brightness(1.08); }
+.btn.decline{
+  background:rgba(255,43,43,0.16);
+  border:1px solid rgba(255,43,43,0.35);
+  color:rgba(255,43,43,0.95);
+}
+.btn.decline:hover{ filter:brightness(1.08); }
+
+.note{
+  padding:0 18px 16px;
+  color:rgba(255,255,255,0.45);
+  font-size:12px;
+  letter-spacing:1px;
+  text-transform:uppercase;
 }
 </style>
 </head>
@@ -153,125 +264,265 @@ video{
     </div>
 
     <div class="player">
-      <video id="vid" preload="auto" playsinline>
+      <video id="vid" preload="auto" playsinline muted>
         <source src="footage.mp4" type="video/mp4" />
       </video>
 
-      <div id="overlay" class="overlay">
+      <div id="playOverlay" class="playOverlay">
         <button id="playBtn" class="playBtn">Play Footage</button>
       </div>
     </div>
 
-    <div class="sys">SYSLOG: SESSION ACTIVE • WATCH WINDOW ENFORCED • AUTO-ROUTE ON COMPLETION</div>
+    <div class="sys">SYSLOG: SESSION ACTIVE • WATCH WINDOW ENFORCED • EVENT ROUTING ARMED</div>
     <div class="small">Note: Do not refresh during playback.</div>
+
+    <!-- Incoming call -->
+    <div id="backdrop" class="backdrop">
+      <div class="callCard">
+        <div class="callHeader">
+          <div class="callTitle">Incoming Secure Line</div>
+          <div class="ringing"><span class="pulse"></span> Ringing</div>
+        </div>
+        <div class="callBody">
+          <p class="from">Building Security</p>
+          <p class="subfrom">Night shift • East side</p>
+        </div>
+        <div class="callBtns">
+          <button id="declineBtn" class="btn decline">Decline</button>
+          <button id="acceptBtn" class="btn accept">Accept</button>
+        </div>
+        <div class="note">This call will repeat until answered.</div>
+      </div>
+    </div>
   </div>
 
 <script>
 (function(){
   const BASE = "/casefile001/";
 
-  // ✅ After 9 seconds, go to the SECURITY CALL page
-  // Change this filename only if your security-call page is different.
-  const NEXT_PAGE = "call-transcript.html";
+  // ✅ On ACCEPT, send them to the security-call page
+  // Keep this as call-transcript.html unless your actual file is different.
+  const SECURITY_CALL_PAGE = "call-transcript.html";
+
+  // Footage length
+  const FOOTAGE_MS = 9000;
 
   const vid = document.getElementById("vid");
-  const overlay = document.getElementById("overlay");
+  const playOverlay = document.getElementById("playOverlay");
   const playBtn = document.getElementById("playBtn");
 
-  let routed = false;
-  let routeTimer = null;
+  const backdrop = document.getElementById("backdrop");
+  const acceptBtn = document.getElementById("acceptBtn");
+  const declineBtn = document.getElementById("declineBtn");
 
-  // --- Scary static generator (no file needed) ---
-  function playStatic(durationMs = 1200){
+  // --- One persistent audio context (created on first click) ---
+  let ctx = null;
+
+  // Static nodes
+  let staticSource = null;
+  let staticGain = null;
+  let staticFilter = null;
+
+  // Ring nodes
+  let ringOsc1 = null, ringOsc2 = null;
+  let ringGain = null;
+  let ringInterval = null;
+
+  // Call popup re-try timer
+  let recallTimer = null;
+
+  function ensureAudioContext(){
+    if(ctx) return;
     const AudioContext = window.AudioContext || window.webkitAudioContext;
     if(!AudioContext) return;
+    ctx = new AudioContext();
+  }
 
-    const ctx = new AudioContext();
+  // --- Creepy 9-second static (buffer noise + low rumble + filter) ---
+  function startCreepyStatic(durationMs){
+    ensureAudioContext();
+    if(!ctx) return;
 
-    // white noise buffer
+    stopCreepyStatic();
+
+    const seconds = Math.max(0.5, durationMs / 1000);
     const sampleRate = ctx.sampleRate;
-    const seconds = Math.max(0.25, durationMs / 1000);
     const frameCount = Math.floor(sampleRate * seconds);
+
+    // Noise buffer
     const buffer = ctx.createBuffer(1, frameCount, sampleRate);
     const data = buffer.getChannelData(0);
 
-    // harsher static (more “bite”)
+    // "Chilling" noise: mostly harsh white noise + occasional spikes
     for(let i=0;i<frameCount;i++){
-      const r = Math.random() * 2 - 1;
-      // emphasize spiky noise
-      data[i] = Math.sign(r) * Math.pow(Math.abs(r), 0.25) * 0.85;
+      let r = Math.random() * 2 - 1;
+      // harsher profile
+      let v = Math.sign(r) * Math.pow(Math.abs(r), 0.25);
+
+      // occasional spike pops
+      if(Math.random() < 0.0015){
+        v *= 3.0;
+      }
+      data[i] = Math.max(-1, Math.min(1, v * 0.75));
     }
 
-    const source = ctx.createBufferSource();
-    source.buffer = buffer;
+    staticSource = ctx.createBufferSource();
+    staticSource.buffer = buffer;
 
-    const gain = ctx.createGain();
-    gain.gain.value = 0.0;
+    // Filter to make it feel like "radio corruption"
+    staticFilter = ctx.createBiquadFilter();
+    staticFilter.type = "bandpass";
+    staticFilter.frequency.value = 1200;
+    staticFilter.Q.value = 0.8;
 
-    // tiny “radio whine” layer
-    const osc = ctx.createOscillator();
-    osc.type = "sine";
-    osc.frequency.value = 880;
+    // Slow wobble of filter freq (creepy movement)
+    const lfo = ctx.createOscillator();
+    lfo.type = "sine";
+    lfo.frequency.value = 0.35; // slow
+    const lfoGain = ctx.createGain();
+    lfoGain.gain.value = 450;   // wobble amount
+    lfo.connect(lfoGain).connect(staticFilter.frequency);
+    lfo.start();
 
-    const oscGain = ctx.createGain();
-    oscGain.gain.value = 0.0;
+    staticGain = ctx.createGain();
+    staticGain.gain.value = 0.0;
 
-    source.connect(gain).connect(ctx.destination);
-    osc.connect(oscGain).connect(ctx.destination);
+    staticSource.connect(staticFilter).connect(staticGain).connect(ctx.destination);
 
     const now = ctx.currentTime;
+    staticGain.gain.setValueAtTime(0.0, now);
+    staticGain.gain.linearRampToValueAtTime(0.65, now + 0.08);     // quick fade in
+    staticGain.gain.linearRampToValueAtTime(0.55, now + seconds);  // hold near-constant
 
-    // fade in quick, then fade out
-    gain.gain.setValueAtTime(0.0, now);
-    gain.gain.linearRampToValueAtTime(0.55, now + 0.05);
-    gain.gain.linearRampToValueAtTime(0.0, now + seconds);
+    staticSource.start(now);
+    staticSource.stop(now + seconds);
 
-    oscGain.gain.setValueAtTime(0.0, now);
-    oscGain.gain.linearRampToValueAtTime(0.08, now + 0.03);
-    oscGain.gain.linearRampToValueAtTime(0.0, now + seconds);
-
-    osc.start(now);
-    source.start(now);
-
-    source.stop(now + seconds);
-    osc.stop(now + seconds);
-
-    source.onended = () => {
-      try { ctx.close(); } catch(e){}
+    // Stop lfo when done
+    staticSource.onended = () => {
+      try { lfo.stop(); } catch(e){}
+      try { lfo.disconnect(); lfoGain.disconnect(); } catch(e){}
     };
   }
 
-  function routeNext(){
-    if(routed) return;
-    routed = true;
-    window.location.href = BASE + NEXT_PAGE + "?from=footage&v=" + Date.now();
+  function stopCreepyStatic(){
+    try{
+      if(staticSource){ staticSource.stop(); staticSource.disconnect(); }
+    }catch(e){}
+    staticSource = null;
+    staticFilter = null;
+    staticGain = null;
   }
 
+  // --- Phone ringtone (synthetic) ---
+  // US-style double-tone ring pulses, looped
+  function startRingtone(){
+    ensureAudioContext();
+    if(!ctx) return;
+
+    stopRingtone();
+
+    ringGain = ctx.createGain();
+    ringGain.gain.value = 0.0;
+    ringGain.connect(ctx.destination);
+
+    ringOsc1 = ctx.createOscillator();
+    ringOsc2 = ctx.createOscillator();
+    ringOsc1.type = "sine";
+    ringOsc2.type = "sine";
+    ringOsc1.frequency.value = 440;
+    ringOsc2.frequency.value = 480;
+    ringOsc1.connect(ringGain);
+    ringOsc2.connect(ringGain);
+
+    ringOsc1.start();
+    ringOsc2.start();
+
+    // Ring pattern: 0.4s on, 0.2s off, 0.4s on, 2.0s off (repeat)
+    const pattern = () => {
+      const t = ctx.currentTime;
+      ringGain.gain.cancelScheduledValues(t);
+      ringGain.gain.setValueAtTime(0.0, t);
+
+      ringGain.gain.linearRampToValueAtTime(0.20, t + 0.02);
+      ringGain.gain.setValueAtTime(0.20, t + 0.40);
+      ringGain.gain.linearRampToValueAtTime(0.0, t + 0.42);
+
+      ringGain.gain.linearRampToValueAtTime(0.20, t + 0.62);
+      ringGain.gain.setValueAtTime(0.20, t + 1.02);
+      ringGain.gain.linearRampToValueAtTime(0.0, t + 1.04);
+    };
+
+    pattern();
+    ringInterval = setInterval(pattern, 3000);
+  }
+
+  function stopRingtone(){
+    if(ringInterval){ clearInterval(ringInterval); ringInterval = null; }
+    try{
+      if(ringGain) ringGain.gain.value = 0.0;
+      if(ringOsc1){ ringOsc1.stop(); ringOsc1.disconnect(); }
+      if(ringOsc2){ ringOsc2.stop(); ringOsc2.disconnect(); }
+      if(ringGain){ ringGain.disconnect(); }
+    }catch(e){}
+    ringOsc1 = ringOsc2 = null;
+    ringGain = null;
+  }
+
+  function showIncomingCall(){
+    backdrop.classList.add("show");
+    startRingtone();
+  }
+
+  function hideIncomingCall(){
+    backdrop.classList.remove("show");
+    stopRingtone();
+  }
+
+  function scheduleRecall(){
+    clearTimeout(recallTimer);
+    recallTimer = setTimeout(() => {
+      showIncomingCall();
+    }, 2000);
+  }
+
+  function acceptCall(){
+    hideIncomingCall();
+    // ✅ go to security call page, pass a flag so we can auto-play there (next step)
+    window.location.href = BASE + SECURITY_CALL_PAGE + "?autoplay=1&v=" + Date.now();
+  }
+
+  function declineCall(){
+    hideIncomingCall();
+    scheduleRecall(); // unlimited retries
+  }
+
+  // --- Playback flow ---
   function startPlayback(){
-    overlay.classList.add("hidden");
+    playOverlay.classList.add("hidden");
 
-    // Static sound right on click
-    playStatic(1200);
+    // Start static for full 9 seconds
+    startCreepyStatic(FOOTAGE_MS);
 
-    // Start the video
+    // Start video (muted)
     vid.currentTime = 0;
     const p = vid.play();
     if(p && typeof p.catch === "function"){
       p.catch(() => {
-        // if blocked, show overlay again
-        overlay.classList.remove("hidden");
+        // If blocked for any reason, let them try again
+        playOverlay.classList.remove("hidden");
       });
     }
 
-    // hard route at 9 seconds
-    clearTimeout(routeTimer);
-    routeTimer = setTimeout(routeNext, 9000);
+    // At end of 9 seconds, show call popup (not auto-transfer)
+    setTimeout(() => {
+      showIncomingCall();
+    }, FOOTAGE_MS);
   }
 
   playBtn.addEventListener("click", startPlayback);
+  acceptBtn.addEventListener("click", acceptCall);
+  declineBtn.addEventListener("click", declineCall);
 
-  // If the video ends early, still route
-  vid.addEventListener("ended", routeNext);
 })();
 </script>
 </body>
