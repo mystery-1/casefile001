@@ -1,279 +1,203 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Directive A-1 • Encrypted File</title>
-
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Directive A-1</title>
   <style>
+    :root{
+      --bg:#05070c;
+      --panel:rgba(255,255,255,0.06);
+      --border:rgba(255,255,255,0.10);
+      --muted:rgba(255,255,255,0.65);
+      --red:#c40000;
+      --red2:#ff2b2b;
+      --green:#00ff99;
+    }
+    *{box-sizing:border-box}
     body{
       margin:0;
-      background:#05070c;
-      font-family:Arial, sans-serif;
-      color:#ffffff;
+      background: radial-gradient(1200px 800px at 30% 10%, rgba(255,0,60,0.10), transparent 60%),
+                  radial-gradient(1000px 700px at 80% 30%, rgba(0,255,153,0.08), transparent 55%),
+                  var(--bg);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      color:#fff;
       min-height:100vh;
       display:flex;
+      align-items:center;
       justify-content:center;
-      align-items:center;
-      padding:22px;
+      padding:24px;
     }
-
-    .wrap{
-      width:100%;
-      max-width:520px;
-    }
-
-    .top{
-      opacity:.75;
-      letter-spacing:3px;
-      font-size:12px;
-      text-transform:uppercase;
-      margin-bottom:12px;
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
-      align-items:center;
-    }
-
-    .pill{
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(255,255,255,.05);
-      padding:8px 12px;
-      border-radius:999px;
-      letter-spacing:2px;
-      font-weight:800;
-      white-space:nowrap;
-    }
-
     .card{
-      background:rgba(255,255,255,0.05);
-      border:1px solid rgba(255,255,255,0.08);
+      width:min(460px, 92vw);
+      background:var(--panel);
+      border:1px solid var(--border);
       border-radius:22px;
-      padding:22px;
-      backdrop-filter:blur(10px);
-      box-shadow: 0 20px 80px rgba(0,0,0,.55);
+      padding:26px 22px;
+      backdrop-filter: blur(14px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.55);
     }
-
-    h1{
-      margin:0 0 6px 0;
-      font-size:40px;
-      letter-spacing:2px;
-      text-transform:uppercase;
-    }
-
-    .sub{
-      opacity:.7;
-      letter-spacing:3px;
-      text-transform:uppercase;
-      font-size:12px;
+    .top{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:14px;
       margin-bottom:18px;
     }
-
-    .box{
-      background:rgba(0,0,0,.20);
-      border:1px solid rgba(255,255,255,.10);
-      border-radius:18px;
-      padding:16px;
+    .title{
+      font-weight:800;
+      letter-spacing:4px;
+      font-size:22px;
+      margin:0 0 8px 0;
+      text-transform:uppercase;
     }
-
+    .sub{
+      margin:0;
+      color:var(--muted);
+      font-size:12px;
+      letter-spacing:1.8px;
+      text-transform:uppercase;
+      line-height:1.4;
+    }
+    .badge{
+      padding:10px 12px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,0.14);
+      color:rgba(255,255,255,0.85);
+      font-size:12px;
+      letter-spacing:2px;
+      text-transform:uppercase;
+      white-space:nowrap;
+      background:rgba(0,0,0,0.20);
+    }
+    .field{
+      margin-top:18px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,0.12);
+      background:rgba(0,0,0,0.20);
+      padding:14px;
+    }
     input{
       width:100%;
-      padding:16px;
-      font-size:20px;
+      padding:14px;
+      font-size:18px;
       background:#0c111b;
       border:1px solid rgba(255,255,255,0.12);
       border-radius:12px;
       color:white;
       text-align:center;
-      letter-spacing:6px;
+      letter-spacing:3px;
       outline:none;
     }
-
     button{
       width:100%;
-      padding:16px;
-      margin-top:14px;
-      background:#b30000;
+      padding:14px;
+      margin-top:12px;
+      background:linear-gradient(180deg, var(--red2), var(--red));
       border:none;
       border-radius:12px;
       color:white;
-      font-weight:900;
-      letter-spacing:3px;
-      text-transform:uppercase;
-      font-size:14px;
-    }
-
-    button:hover{
-      background:#e00000;
-    }
-
-    .error{
-      display:none;
-      margin-top:14px;
-      border:1px solid rgba(255,60,60,.25);
-      background:rgba(255,60,60,.06);
-      border-radius:14px;
-      padding:12px 14px;
-      color:#ffd5d5;
+      font-weight:800;
       letter-spacing:2px;
+      text-transform:uppercase;
+      cursor:pointer;
+    }
+    button:active{transform:scale(0.995)}
+    #error{
+      display:none;
+      margin-top:12px;
+      color:#ff7070;
+      font-weight:700;
+      letter-spacing:1px;
       text-transform:uppercase;
       font-size:12px;
     }
-
-    .file{
+    #file{
       display:none;
       margin-top:16px;
-      border:1px solid rgba(0,255,153,.22);
-      background:rgba(0,255,153,.06);
+      padding:14px;
       border-radius:16px;
-      padding:16px;
-      color:#dfffee;
-      line-height:1.55;
-      font-size:15px;
+      border:1px solid rgba(255,255,255,0.12);
+      background:rgba(0,0,0,0.22);
+      line-height:1.6;
     }
-
-    .granted{
-      color:#00ff99;
+    .ok{
+      color:var(--green);
       font-weight:900;
       letter-spacing:2px;
       text-transform:uppercase;
       margin-bottom:10px;
-      font-size:13px;
     }
-
     .kv{
       margin:10px 0;
+      padding:10px 12px;
+      border-radius:14px;
+      background:rgba(255,255,255,0.05);
+      border:1px solid rgba(255,255,255,0.10);
     }
-
-    .k{
-      opacity:.8;
-      letter-spacing:2px;
-      text-transform:uppercase;
-      font-size:12px;
-      margin-bottom:6px;
+    .kv b{letter-spacing:1px}
+    .cta{
+      margin-top:12px;
+      background:linear-gradient(180deg, rgba(0,255,153,0.18), rgba(0,255,153,0.06));
+      border:1px solid rgba(0,255,153,0.35);
+      color:#bfffe8;
     }
-
-    .v{
-      font-size:16px;
-      font-weight:700;
-      color:#ffffff;
-    }
-
     .hint{
       margin-top:14px;
-      opacity:.55;
-      letter-spacing:3px;
-      text-transform:uppercase;
-      font-size:11px;
-      text-align:center;
-    }
-
-    .continue{
-      display:none;
-      width:100%;
-      padding:14px;
-      margin-top:14px;
-      border-radius:12px;
-      border:1px solid rgba(0,255,153,.22);
-      background:rgba(0,255,153,.08);
-      color:#7dffcc;
-      font-weight:900;
-      letter-spacing:2px;
+      color:rgba(255,255,255,0.55);
+      font-size:12px;
+      letter-spacing:1px;
       text-transform:uppercase;
       text-align:center;
-      cursor:pointer;
-    }
-    .continue:hover{
-      background:rgba(0,255,153,.12);
     }
   </style>
 </head>
 
 <body>
-  <div class="wrap">
+  <div class="card">
     <div class="top">
-      <div>MAJOR CRIMES DIVISION • INTERNAL</div>
-      <div class="pill">DIRECTIVE A-1</div>
+      <div>
+        <h1 class="title">ENCRYPTED FILE</h1>
+        <p class="sub">Directive A-1 • Secure Internal Archive</p>
+      </div>
+      <div class="badge">Level 2</div>
     </div>
 
-    <div class="card">
-      <h1>Encrypted File</h1>
-      <div class="sub">Secure Internal Archive • Evidence Access</div>
+    <div class="field">
+      <input type="password" id="code" placeholder="ENTER NUMERIC KEY" inputmode="numeric" />
+      <button onclick="unlock()">DECRYPT FILE</button>
+      <div id="error">ACCESS DENIED</div>
+    </div>
 
-      <div class="box">
-        <input type="password" id="code" inputmode="numeric" placeholder="ENTER NUMERIC KEY">
-        <button id="btn">DECRYPT FILE</button>
+    <div id="file">
+      <div class="ok">ACCESS GRANTED</div>
 
-        <div class="error" id="error">ACCESS DENIED • INVALID KEY</div>
+      <div class="kv"><b>FILE NAME:</b> Internal Communication Log</div>
+      <div class="kv"><b>NOTE:</b> Tom Whitlock entered the building at 11:42 PM. Entry badge not registered in official system.</div>
+      <div class="kv"><b>FLAG:</b> Camera 3 temporarily disabled for 4 minutes.</div>
+      <div class="kv"><b>RECOMMENDATION:</b> Cross-check maintenance override logs.</div>
 
-        <div class="file" id="file">
-          <div class="granted">ACCESS GRANTED</div>
+      <button class="cta" onclick="window.location.href='mm-call.html'">
+        INITIATE SECURE LINE (M.M.)
+      </button>
 
-          <div class="kv">
-            <div class="k">File Name</div>
-            <div class="v">Internal Communication Log</div>
-          </div>
-
-          <div class="kv">
-            <div class="k">Note</div>
-            <div class="v">Tom Whitlock entered the building at 11:42 PM. Entry badge not registered in official system.</div>
-          </div>
-
-          <div class="kv">
-            <div class="k">Flag</div>
-            <div class="v">Camera 3 temporarily disabled for 4 minutes.</div>
-          </div>
-
-          <div class="kv">
-            <div class="k">Recommendation</div>
-            <div class="v">Cross-check maintenance override logs.</div>
-          </div>
-
-          <div class="continue" id="continueBtn">INITIATE SECURE LINE</div>
-        </div>
-
-        <div class="hint">Do not refresh. Access attempts are logged.</div>
-      </div>
+      <div class="hint">Do not refresh during playback.</div>
     </div>
   </div>
 
   <script>
-    // KEY (locked)
+    // Key stays the same as before
     const KEY = "11420817";
 
-    // Where to send players after decrypting
-    // Make sure this file exists in the same repo level:
-    // https://mystery-1.github.io/casefile001/mm-call.html
-    const NEXT_PAGE = "mm-call.html";
-
-    const input = document.getElementById("code");
-    const btn = document.getElementById("btn");
-    const err = document.getElementById("error");
-    const file = document.getElementById("file");
-    const continueBtn = document.getElementById("continueBtn");
-
     function unlock(){
-      const val = (input.value || "").trim();
-      if(val === KEY){
-        file.style.display = "block";
-        err.style.display = "none";
-        continueBtn.style.display = "block";
-      }else{
-        err.style.display = "block";
-        file.style.display = "none";
-        continueBtn.style.display = "none";
+      const input = document.getElementById("code").value.trim();
+      if(input === KEY){
+        document.getElementById("file").style.display = "block";
+        document.getElementById("error").style.display = "none";
+      } else {
+        document.getElementById("error").style.display = "block";
       }
     }
-
-    btn.addEventListener("click", unlock);
-
-    input.addEventListener("keydown", (e) => {
-      if(e.key === "Enter") unlock();
-    });
-
-    continueBtn.addEventListener("click", () => {
-      window.location.href = NEXT_PAGE;
-    });
   </script>
 </body>
 </html>
