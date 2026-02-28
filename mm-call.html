@@ -1,439 +1,272 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Secure Call — Det. Marcus Malik (M.M.)</title>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Secure Call — M.M.</title>
   <style>
     :root{
-      --bg1:#05070c;
-      --bg2:#0b1220;
-      --card: rgba(255,255,255,0.06);
-      --card2: rgba(255,255,255,0.04);
-      --stroke: rgba(255,255,255,0.12);
-      --text: rgba(255,255,255,0.92);
-      --muted: rgba(255,255,255,0.62);
-      --good:#00ff99;
-      --warn:#ffcc66;
-      --bad:#ff4d4d;
-      --red:#b30000;
+      --bg:#05070c;
+      --card: rgba(255,255,255,.06);
+      --stroke: rgba(255,255,255,.12);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.62);
+      --green:#19d39b;
+      --red:#d11b2d;
     }
-
     *{box-sizing:border-box}
     body{
-      margin:0;
-      min-height:100vh;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      margin:0; min-height:100vh;
+      display:flex; align-items:center; justify-content:center;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
       color:var(--text);
       background:
-        radial-gradient(900px 600px at 20% 20%, rgba(120,60,255,0.18), transparent 60%),
-        radial-gradient(800px 520px at 80% 30%, rgba(0,255,153,0.10), transparent 55%),
-        radial-gradient(900px 700px at 50% 85%, rgba(255,0,80,0.08), transparent 60%),
-        linear-gradient(180deg, var(--bg1), var(--bg2));
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:24px;
+        radial-gradient(900px 600px at 20% 20%, rgba(0,255,180,.10), transparent 55%),
+        radial-gradient(900px 600px at 80% 25%, rgba(160,70,255,.16), transparent 60%),
+        linear-gradient(180deg, #070a14, var(--bg));
     }
-
-    .wrap{
-      width:min(560px, 92vw);
-    }
-
-    .topline{
-      letter-spacing:3px;
-      text-transform:uppercase;
-      font-size:12px;
+    .wrap{ width:min(820px, 92vw); padding:22px; }
+    .top{
+      display:flex; justify-content:space-between; align-items:center;
+      letter-spacing:.22em; text-transform:uppercase; font-size:12px;
       color:var(--muted);
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      margin-bottom:10px;
+      margin-bottom:14px;
     }
-
-    .chip{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:8px 12px;
-      border-radius:999px;
-      background:rgba(0,255,153,0.08);
-      border:1px solid rgba(0,255,153,0.18);
-      color:rgba(255,255,255,0.86);
-      font-size:12px;
-      letter-spacing:1px;
+    .badge{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 12px; border-radius:999px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.10);
     }
-    .dot{
-      width:8px;height:8px;border-radius:50%;
-      background:var(--good);
-      box-shadow:0 0 16px rgba(0,255,153,0.7);
-    }
-
+    .dot{ width:8px; height:8px; border-radius:99px; background:var(--green); box-shadow:0 0 18px rgba(25,211,155,.55);}
     .card{
       background:var(--card);
       border:1px solid var(--stroke);
       border-radius:22px;
-      padding:18px;
-      backdrop-filter: blur(12px);
-      box-shadow: 0 22px 70px rgba(0,0,0,0.45);
-      overflow:hidden;
+      padding:22px;
+      backdrop-filter: blur(14px);
+      box-shadow: 0 18px 70px rgba(0,0,0,.45);
       position:relative;
-    }
-
-    .title{
-      font-size:26px;
-      letter-spacing:1px;
-      margin:6px 0 6px;
-      font-weight:800;
-    }
-    .subtitle{
-      color:var(--muted);
-      margin:0 0 14px;
-      font-size:13px;
-      line-height:1.45;
-    }
-
-    .panel{
-      background:var(--card2);
-      border:1px solid rgba(255,255,255,0.10);
-      border-radius:18px;
-      padding:14px;
-      margin-top:12px;
-    }
-
-    .row{
-      display:flex;
-      gap:12px;
-      flex-wrap:wrap;
-      margin-top:10px;
-    }
-
-    .field{
-      flex:1 1 220px;
-      background:rgba(0,0,0,0.22);
-      border:1px solid rgba(255,255,255,0.10);
-      border-radius:14px;
-      padding:12px;
-      min-height:58px;
-    }
-    .label{
-      color:rgba(255,255,255,0.55);
-      text-transform:uppercase;
-      letter-spacing:2px;
-      font-size:11px;
-      margin-bottom:6px;
-    }
-    .value{
-      font-weight:700;
-      letter-spacing:0.5px;
-    }
-
-    .bar{
-      height:10px;
-      background:rgba(255,255,255,0.08);
-      border:1px solid rgba(255,255,255,0.10);
-      border-radius:999px;
       overflow:hidden;
-      margin-top:14px;
     }
-    .fill{
-      height:100%;
-      width:0%;
-      background:linear-gradient(90deg, rgba(0,255,153,0.45), rgba(255,255,255,0.10));
-      transition:width 0.35s ease;
+    .h1{ font-size:30px; font-weight:900; letter-spacing:.04em; margin:4px 0 10px; }
+    .sub{ color:var(--muted); margin:0 0 14px; line-height:1.35; }
+    .panel{
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(0,0,0,.22);
+      border-radius:16px;
+      padding:14px;
     }
-
-    .sys{
+    .syslog{
       margin-top:12px;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-      font-size:12px;
-      color:rgba(255,255,255,0.70);
-      background:rgba(0,0,0,0.22);
-      border:1px dashed rgba(255,255,255,0.18);
+      padding:12px 14px;
       border-radius:14px;
-      padding:12px;
-      line-height:1.6;
-    }
-
-    .footerNote{
-      margin-top:10px;
-      color:rgba(255,255,255,0.55);
+      border:1px dashed rgba(255,255,255,.18);
+      color:rgba(255,255,255,.68);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
       font-size:12px;
+      line-height:1.5;
     }
+    .hint{ margin-top:10px; color:rgba(255,255,255,.55); font-size:12px; }
 
-    .incoming{
+    /* Incoming overlay */
+    .overlay{
+      position:fixed; inset:0;
+      background: rgba(0,0,0,.70);
       display:none;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
     }
-
-    .actions{
-      display:flex;
-      gap:10px;
-      margin-top:12px;
+    .incoming{
+      width:min(720px, 94vw);
+      border-radius:22px;
+      background: rgba(10,12,18,.92);
+      border:1px solid rgba(255,255,255,.14);
+      box-shadow: 0 30px 120px rgba(0,0,0,.65);
+      padding:20px;
+      backdrop-filter: blur(14px);
+    }
+    .incomingTop{
+      display:flex; justify-content:space-between; align-items:center;
+      color:rgba(255,255,255,.70);
+      font-size:12px; letter-spacing:.22em; text-transform:uppercase;
+      margin-bottom:10px;
+    }
+    .incomingTitle{
+      font-size:26px; font-weight:900; margin:6px 0 10px;
+      letter-spacing:.03em;
+    }
+    .incomingSub{ color:rgba(255,255,255,.70); margin:0 0 14px; }
+    .row{
+      display:flex; gap:12px; flex-wrap:wrap;
     }
     .btn{
       flex:1;
+      min-width:160px;
       padding:14px 14px;
       border-radius:14px;
-      border:1px solid rgba(255,255,255,0.12);
-      background:rgba(255,255,255,0.06);
-      color:rgba(255,255,255,0.92);
-      font-weight:800;
-      letter-spacing:2px;
+      border:0;
+      font-weight:900;
+      letter-spacing:.18em;
       text-transform:uppercase;
       cursor:pointer;
+      color:#fff;
     }
-    .btn:hover{ filter:brightness(1.08); }
-
-    .btn.accept{
-      background:linear-gradient(180deg, rgba(0,255,153,0.22), rgba(0,255,153,0.08));
-      border-color: rgba(0,255,153,0.22);
-    }
-    .btn.decline{
-      background:linear-gradient(180deg, rgba(255,77,77,0.22), rgba(255,77,77,0.08));
-      border-color: rgba(255,77,77,0.22);
-    }
-
-    .statusLine{
-      margin-top:10px;
-      padding:12px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,0.10);
-      background:rgba(0,0,0,0.18);
-      color:rgba(255,255,255,0.78);
-      display:flex;
-      align-items:flex-start;
-      gap:10px;
-      line-height:1.4;
-    }
-
-    .statusStripe{
-      width:4px;
-      border-radius:99px;
-      background:var(--warn);
-      box-shadow:0 0 18px rgba(255,204,102,0.20);
-      margin-top:2px;
-      flex:none;
-    }
-
-    .tapHelp{
-      display:none;
-      margin-top:10px;
-      padding:12px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,0.10);
-      background:rgba(0,0,0,0.22);
-      color:rgba(255,255,255,0.72);
-      font-size:12px;
-    }
-
-    .tapBtn{
-      margin-top:10px;
-      width:100%;
-      padding:14px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,0.14);
-      background:rgba(255,255,255,0.08);
-      color:rgba(255,255,255,0.92);
-      font-weight:800;
-      letter-spacing:2px;
-      text-transform:uppercase;
-      cursor:pointer;
-      display:none;
-    }
-
-    .small{
-      font-size:12px;
-      color:rgba(255,255,255,0.55);
-    }
+    .decline{ background: linear-gradient(180deg, rgba(209,27,45,.92), rgba(130,18,28,.92)); }
+    .accept{ background: linear-gradient(180deg, rgba(25,211,155,.92), rgba(12,120,89,.92)); }
+    .small{ margin-top:10px; color:rgba(255,255,255,.55); font-size:12px; }
   </style>
 </head>
-
 <body>
   <div class="wrap">
-    <div class="topline">
+    <div class="top">
       <div>MAJOR CRIMES DIVISION • INTERNAL</div>
-      <div class="chip"><span class="dot"></span><span id="chipText">INCOMING</span></div>
+      <div class="badge"><span class="dot"></span> CONNECTED</div>
     </div>
 
     <div class="card">
-      <div class="subtitle">CASE FILE #001</div>
-      <div class="title" id="mainTitle">INCOMING SECURE CALL</div>
-      <div class="subtitle" id="mainSub">
-        Caller: <strong>Detective Marcus Malik (M.M.)</strong><br/>
-        Channel: Encrypted / Unlogged • Classification: Sensitive — do not route through dispatch
-      </div>
+      <div class="h1">SECURE CALL ACTIVE — DET. MARCUS MALIK (M.M.)</div>
+      <p class="sub">Channel: Encrypted / Unlogged • Classification: Sensitive — do not route through dispatch</p>
 
       <div class="panel">
-        <div class="row">
-          <div class="field">
-            <div class="label">Caller</div>
-            <div class="value">Det. Marcus Malik (M.M.)</div>
-          </div>
-          <div class="field">
-            <div class="label">Case</div>
-            <div class="value">File #001 • Internal</div>
-          </div>
-        </div>
-
-        <div class="statusLine" id="statusBox">
-          <div class="statusStripe"></div>
-          <div>
-            <div><strong id="statusHead">Connection request</strong></div>
-            <div class="small" id="statusBody">Accept to initialize the secure voice stream.</div>
-          </div>
-        </div>
-
-        <div class="actions" id="incomingActions">
-          <button class="btn decline" id="declineBtn">Decline</button>
-          <button class="btn accept" id="acceptBtn">Accept</button>
-        </div>
-
-        <div class="bar"><div class="fill" id="fill"></div></div>
-
-        <div class="sys" id="syslog">
-          SYSLOG: handshake pending…<br/>
-          NODE: MCD–INTRA • SESSION: HOLD<br/>
-          NOTE: Audio may require a tap on mobile devices.
-        </div>
-
-        <div class="tapHelp" id="tapHelp">
-          If you hear nothing on iPhone: tap <strong>ACCEPT</strong>, then tap <strong>START AUDIO</strong> if prompted.
-        </div>
-        <button class="tapBtn" id="tapBtn">Start Audio</button>
-
-        <div class="footerNote" id="footerNote">Do not refresh during playback.</div>
+        <strong>STATUS:</strong> CONNECTED<br/>
+        <span style="color:rgba(255,255,255,.72)">NOTE:</span> This call may be monitored by internal audit.
       </div>
 
-      <!-- AUDIO -->
-      <!-- Ringtone (optional). iOS may block until user gesture. -->
-      <audio id="ringtone" preload="auto" loop>
-        <!-- Use a real ringtone file if you add one later -->
-        <!-- For now, we keep it empty to avoid broken requests. -->
-      </audio>
+      <div class="syslog" id="log">
+        SYSLOG: voice stream initializing…<br/>
+        NODE: MCD-INTRA • SESSION: LIVE
+      </div>
 
-      <!-- Call audio -->
+      <div class="hint">If audio doesn’t start on mobile, tap once anywhere.</div>
+
       <audio id="callAudio" preload="auto" playsinline>
-        <source src="mm-call.mp3" type="audio/mpeg" />
+        <source src="./mm-call.mp3" type="audio/mpeg">
       </audio>
     </div>
   </div>
 
+  <!-- Incoming call from Kavya -->
+  <div class="overlay" id="overlay">
+    <div class="incoming">
+      <div class="incomingTop">
+        <div>INCOMING SECURE CALL</div>
+        <div class="badge"><span class="dot"></span> INCOMING</div>
+      </div>
+      <div class="incomingTitle">Caller: Kavya (Unlisted)</div>
+      <p class="incomingSub">Priority: Panic / Live • Route: Direct • Source: External</p>
+
+      <div class="row">
+        <button class="btn decline" id="declineBtn">DECLINE</button>
+        <button class="btn accept" id="acceptBtn">ACCEPT</button>
+      </div>
+
+      <div class="small">Declining will not stop repeated attempts.</div>
+    </div>
+  </div>
+
 <script>
-  const acceptBtn   = document.getElementById("acceptBtn");
-  const declineBtn  = document.getElementById("declineBtn");
-  const incomingActions = document.getElementById("incomingActions");
+  // === SETTINGS ===
+  const KAVYA_POP_TIME_SECONDS = 86; // 1:26
+  const DECLINE_RETRY_MS = 2000;
+  const KAVYA_PAGE = "./kavya-call.html"; // you will create this next
 
-  const chipText = document.getElementById("chipText");
-  const fill     = document.getElementById("fill");
+  const audio = document.getElementById("callAudio");
+  const overlay = document.getElementById("overlay");
+  const log = document.getElementById("log");
+  const declineBtn = document.getElementById("declineBtn");
+  const acceptBtn = document.getElementById("acceptBtn");
 
-  const mainTitle = document.getElementById("mainTitle");
-  const statusHead= document.getElementById("statusHead");
-  const statusBody= document.getElementById("statusBody");
-  const syslog    = document.getElementById("syslog");
+  // Ringtone using WebAudio (no mp3 needed)
+  let audioCtx = null;
+  let ringInterval = null;
 
-  const tapHelp = document.getElementById("tapHelp");
-  const tapBtn  = document.getElementById("tapBtn");
-
-  const callAudio = document.getElementById("callAudio");
-
-  let recallTimer = null;
-  let connected = false;
-
-  function setFill(pct){ fill.style.width = pct + "%"; }
-
-  function showIncoming(messageHead, messageBody){
-    connected = false;
-    chipText.textContent = "INCOMING";
-    mainTitle.textContent = "INCOMING SECURE CALL";
-    statusHead.textContent = messageHead || "Connection request";
-    statusBody.textContent = messageBody || "Accept to initialize the secure voice stream.";
-    syslog.innerHTML =
-      "SYSLOG: handshake pending…<br/>" +
-      "NODE: MCD–INTRA • SESSION: HOLD<br/>" +
-      "NOTE: Audio may require a tap on mobile devices.";
-    incomingActions.style.display = "flex";
-    tapHelp.style.display = "none";
-    tapBtn.style.display = "none";
-    setFill(20);
-  }
-
-  function scheduleRecall(){
-    clearTimeout(recallTimer);
-    recallTimer = setTimeout(() => {
-      showIncoming("Incoming again", "The call reappears. Accept to connect.");
-    }, 2000);
-  }
-
-  async function tryPlayCall(){
+  function ringStart(){
+    if (ringInterval) return;
     try{
-      await callAudio.play();
-      // playing
-      tapHelp.style.display = "none";
-      tapBtn.style.display = "none";
-      return true;
-    } catch(e){
-      // blocked
-      tapHelp.style.display = "block";
-      tapBtn.style.display = "block";
-      return false;
+      audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+
+      const beep = (freq, ms) => {
+        const o = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        o.type = "sine";
+        o.frequency.value = freq;
+        g.gain.value = 0.0001;
+        o.connect(g); g.connect(audioCtx.destination);
+        o.start();
+        const now = audioCtx.currentTime;
+        g.gain.setValueAtTime(0.0001, now);
+        g.gain.exponentialRampToValueAtTime(0.20, now + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.0001, now + (ms/1000));
+        o.stop(now + (ms/1000) + 0.02);
+      };
+
+      ringInterval = setInterval(()=>{
+        beep(880, 220);
+        setTimeout(()=>beep(660, 220), 260);
+      }, 1800);
+
+      beep(880, 220);
+      setTimeout(()=>beep(660, 220), 260);
+    }catch(e){}
+  }
+
+  function ringStop(){
+    if (ringInterval){ clearInterval(ringInterval); ringInterval = null; }
+  }
+
+  let kavyaTriggered = false;
+  let declineTimer = null;
+
+  function showKavyaIncoming(){
+    overlay.style.display = "flex";
+    ringStart();
+    log.innerHTML = "SYSLOG: incoming call detected…<br/>SOURCE: external • CALLER: KAVYA (unlisted)<br/>ACTION: accept/decline required";
+  }
+
+  function hideKavyaIncoming(){
+    overlay.style.display = "none";
+    ringStop();
+  }
+
+  declineBtn.addEventListener("click", ()=>{
+    hideKavyaIncoming();
+    if (declineTimer) clearTimeout(declineTimer);
+    declineTimer = setTimeout(()=>{ showKavyaIncoming(); }, DECLINE_RETRY_MS);
+  });
+
+  acceptBtn.addEventListener("click", ()=>{
+    // Accept ends this call path and transfers to Kavya
+    hideKavyaIncoming();
+    try{ audio.pause(); }catch(e){}
+    window.location.href = KAVYA_PAGE;
+  });
+
+  // Autoplay attempt (mobile may require a tap)
+  async function tryPlay(){
+    try{
+      await audio.play();
+      log.innerHTML = "SYSLOG: voice stream active<br/>NODE: MCD-INTRA • SESSION: LIVE<br/>ENCRYPTION: stable";
+    }catch(e){
+      log.innerHTML = "SYSLOG: autoplay blocked<br/>NOTE: tap once to enable audio";
     }
   }
 
-  function connectUI(){
-    chipText.textContent = "CONNECTED";
-    mainTitle.textContent = "SECURE CALL ACTIVE — DET. MARCUS MALIK (M.M.)";
-    statusHead.textContent = "Status: CONNECTED";
-    statusBody.textContent = "This call may be monitored by internal audit.";
-    incomingActions.style.display = "none";
-    setFill(65);
+  // Allow tap to start audio
+  window.addEventListener("pointerdown", ()=>{ tryPlay(); }, { once:false });
 
-    syslog.innerHTML =
-      "SYSLOG: voice stream initializing…<br/>" +
-      "NODE: MCD–INTRA • SESSION: LIVE<br/>" +
-      "LOGGING: DISABLED";
-  }
-
-  declineBtn.addEventListener("click", () => {
-    // Stop any attempt (audio not started yet usually)
-    callAudio.pause();
-    callAudio.currentTime = 0;
-
-    chipText.textContent = "MISSED";
-    statusHead.textContent = "Call declined";
-    statusBody.textContent = "Reattempt scheduled.";
-    syslog.innerHTML =
-      "SYSLOG: user declined call.<br/>" +
-      "NODE: MCD–INTRA • SESSION: HOLD<br/>" +
-      "RETRY: in 2 seconds…";
-    setFill(10);
-
-    incomingActions.style.display = "none";
-    scheduleRecall();
-  });
-
-  acceptBtn.addEventListener("click", async () => {
-    clearTimeout(recallTimer);
-
-    connected = true;
-    connectUI();
-
-    // Try to start the call audio immediately (this click is the user gesture iOS needs)
-    const ok = await tryPlayCall();
-
-    if(ok){
-      setFill(100);
-    }else{
-      setFill(75);
+  // Trigger incoming at 1:26 while M.M audio continues
+  audio.addEventListener("timeupdate", ()=>{
+    if (!kavyaTriggered && audio.currentTime >= KAVYA_POP_TIME_SECONDS){
+      kavyaTriggered = true;
+      showKavyaIncoming();
+      // ringtone plays over voices, M.M audio continues until Accept
     }
   });
 
-  tapBtn.addEventListener("click", async () => {
-    const ok = await tryPlayCall();
-    if(ok) setFill(100);
-  });
-
-  // Initial state
-  showIncoming();
+  // Start immediately
+  tryPlay();
 </script>
 </body>
 </html>
