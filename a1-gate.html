@@ -1,4 +1,4 @@
-<!-- a1-gate.html  -->
+<!-- a1-gate.html (FIXED) -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,7 +9,6 @@
     :root{
       --bg1:#05060a;
       --bg2:#0a1020;
-      --card:#0f1424cc;
       --stroke:#ffffff1a;
       --text:#e9eefc;
       --muted:#aab4d6;
@@ -34,7 +33,6 @@
       overflow-x:hidden;
     }
 
-    /* subtle animated noise */
     .noise{
       pointer-events:none;
       position:fixed; inset:0;
@@ -147,12 +145,6 @@
       line-height:1.35;
     }
 
-    .grid{
-      display:grid;
-      grid-template-columns:1fr;
-      gap:12px;
-      margin-top:10px;
-    }
     label{
       display:block;
       font-size:12px;
@@ -204,6 +196,7 @@
     }
     .btn:hover{transform:translateY(-1px); filter:saturate(1.03)}
     .btn:active{transform:translateY(0px); filter:saturate(.98)}
+    .btn:disabled{opacity:.75; cursor:not-allowed; transform:none}
 
     .msg{
       margin-top:12px;
@@ -238,16 +231,8 @@
       gap:10px;
       flex-wrap:wrap;
     }
-    .link{
-      color:rgba(170,180,214,.85);
-      text-decoration:none;
-      border-bottom:1px solid rgba(170,180,214,.25);
-    }
-    .link:hover{border-bottom-color: rgba(240,194,75,.45); color:rgba(240,194,75,.9)}
 
-    .shake{
-      animation: shake .22s ease-in-out 0s 2;
-    }
+    .shake{ animation: shake .22s ease-in-out 0s 2; }
     @keyframes shake{
       0%{transform:translateX(0)}
       25%{transform:translateX(-6px)}
@@ -256,7 +241,6 @@
       100%{transform:translateX(0)}
     }
 
-    /* mobile */
     @media (max-width:520px){
       h1{font-size:28px}
       .card{padding:22px 18px}
@@ -289,26 +273,25 @@
         </div>
       </div>
 
-      <div class="grid">
-        <div>
-          <label for="code">Numeric Key</label>
-          <input
-            id="code"
-            class="input"
-            inputmode="numeric"
-            autocomplete="one-time-code"
-            placeholder="ENTER CODE"
-            maxlength="12"
-          />
-          <div class="hint">Some truths don’t change — only the way you read the record.</div>
-          <button class="btn" id="unlockBtn">Unlock & Route Call</button>
+      <div>
+        <label for="code">Numeric Key</label>
+        <input
+          id="code"
+          class="input"
+          inputmode="numeric"
+          autocomplete="one-time-code"
+          placeholder="ENTER CODE"
+          maxlength="12"
+        />
+        <div class="hint">Some truths don’t change — only the way you read the record.</div>
 
-          <div class="msg" id="msg">SYSLOG: verification required • NODE: MCD–INTRA • STATUS: LOCKED</div>
+        <button class="btn" id="unlockBtn">Unlock & Route Call</button>
 
-          <div class="fineprint">
-            <span>All access attempts are logged.</span>
-            <a class="link" href="./directive-a1.html">← Return to Directive</a>
-          </div>
+        <div class="msg" id="msg">SYSLOG: verification required • NODE: MCD–INTRA • STATUS: LOCKED</div>
+
+        <div class="fineprint">
+          <span>All access attempts are logged.</span>
+          <!-- REMOVED: Return to Directive (it was redundant and confusing) -->
         </div>
       </div>
     </div>
@@ -316,30 +299,24 @@
 
   <script>
     /**
-     * A-1 Gate
-     * - Requires numeric key derived from Envelope A, page 1
-     * - Correct code: 11403820
-     * - On success: short "ring" cue (WebAudio) then redirect to mm-call.html
-     *
-     * Notes:
-     * - Mobile browsers often block audio until a user gesture.
-     *   This page triggers sound only after the user presses the button.
+     * A-1 Gate (Envelope A)
+     * Correct code: 11403820
+     * On success: play a short ring using your existing mm-call.mp3, then route to mm-call.html
      */
 
     const REQUIRED_CODE = "11403820";
     const REDIRECT_URL  = "./mm-call.html";
+    const RING_FILE     = "./mm-call.mp3"; // use existing file as requested
 
-    const card = document.getElementById("card");
+    const card  = document.getElementById("card");
     const input = document.getElementById("code");
-    const btn = document.getElementById("unlockBtn");
-    const msg = document.getElementById("msg");
+    const btn   = document.getElementById("unlockBtn");
+    const msg   = document.getElementById("msg");
 
-    // Keep only digits
     input.addEventListener("input", () => {
       input.value = input.value.replace(/[^\d]/g, "");
     });
 
-    // Enter submits
     input.addEventListener("keydown", (e) => {
       if (e.key === "Enter") btn.click();
     });
@@ -352,57 +329,24 @@
 
     function shake(){
       card.classList.remove("shake");
-      // reflow
       void card.offsetWidth;
       card.classList.add("shake");
     }
 
-    // Simple synthesized ring (no external file needed)
-    async function playRing(ms = 1800){
-      const AudioCtx = window.AudioContext || window.webkitAudioContext;
-      if(!AudioCtx) return;
+    // Plays the first ~2 seconds of mm-call.mp3 as a "ring" cue (user gesture required on mobile)
+    async function playRingFromFile(){
+      const a = new Audio(RING_FILE);
+      a.preload = "auto";
+      a.volume = 0.9;
 
-      const ctx = new AudioCtx();
-      const gain = ctx.createGain();
-      gain.gain.value = 0.0001;
-      gain.connect(ctx.destination);
+      // Try to start near the beginning; if metadata not ready, this will just start at 0.
+      try { a.currentTime = 0; } catch(e){}
 
-      const osc1 = ctx.createOscillator();
-      const osc2 = ctx.createOscillator();
-      osc1.type = "sine";
-      osc2.type = "sine";
-
-      // classic phone-ish dual tone
-      osc1.frequency.value = 440;
-      osc2.frequency.value = 480;
-
-      osc1.connect(gain);
-      osc2.connect(gain);
-
-      const now = ctx.currentTime;
-      gain.gain.setValueAtTime(0.0001, now);
-      gain.gain.exponentialRampToValueAtTime(0.12, now + 0.03);
-
-      osc1.start(now);
-      osc2.start(now);
-
-      // ring pattern: on/off pulses
-      const endAt = now + (ms/1000);
-      const pulse = 0.35; // seconds
-      let t = now + 0.06;
-      while (t < endAt){
-        gain.gain.setTargetAtTime(0.001, t + pulse, 0.02);
-        gain.gain.setTargetAtTime(0.12,  t,        0.02);
-        t += pulse*2;
-      }
-
-      gain.gain.setTargetAtTime(0.0001, endAt - 0.05, 0.02);
-
-      osc1.stop(endAt);
-      osc2.stop(endAt);
-
-      // close after stop
-      setTimeout(() => ctx.close().catch(()=>{}), ms + 120);
+      // Play, wait ~2s, stop
+      await a.play();
+      await new Promise(r => setTimeout(r, 2000));
+      a.pause();
+      try { a.currentTime = 0; } catch(e){}
     }
 
     btn.addEventListener("click", async () => {
@@ -419,18 +363,20 @@
 
       setMsg("ACCESS GRANTED — routing secure line…", "ok");
 
-      // ring cue (only after user gesture, so it works on mobile)
-      try { await playRing(1900); } catch(e){}
+      // Ring cue (works on mobile because it's triggered by the button tap)
+      try {
+        await playRingFromFile();
+      } catch(e) {
+        // If audio fails, still proceed.
+      }
 
       setMsg("SYSLOG: handshake accepted • STATUS: ROUTING", "ok");
 
-      // short delay then route
       setTimeout(() => {
         window.location.href = REDIRECT_URL;
-      }, 700);
+      }, 450);
     });
 
-    // Optional: focus input on load
     setTimeout(() => input.focus(), 250);
   </script>
 </body>
