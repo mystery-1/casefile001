@@ -13,6 +13,7 @@
       --muted: rgba(255,255,255,.62);
       --green:#19d39b;
       --red:#d11b2d;
+      --gold:#f0c24b;
     }
     *{box-sizing:border-box}
     body{
@@ -24,8 +25,9 @@
         radial-gradient(900px 600px at 20% 20%, rgba(0,255,180,.10), transparent 55%),
         radial-gradient(900px 600px at 80% 25%, rgba(160,70,255,.16), transparent 60%),
         linear-gradient(180deg, #070a14, var(--bg));
+      overflow:hidden;
     }
-    .wrap{ width:min(820px, 92vw); padding:22px; }
+    .wrap{ width:min(860px, 92vw); padding:22px; }
     .top{
       display:flex; justify-content:space-between; align-items:center;
       letter-spacing:.22em; text-transform:uppercase; font-size:12px;
@@ -37,6 +39,7 @@
       padding:8px 12px; border-radius:999px;
       background:rgba(255,255,255,.06);
       border:1px solid rgba(255,255,255,.10);
+      white-space:nowrap;
     }
     .dot{ width:8px; height:8px; border-radius:99px; background:var(--green); box-shadow:0 0 18px rgba(25,211,155,.55);}
     .card{
@@ -49,6 +52,15 @@
       position:relative;
       overflow:hidden;
     }
+    .card:before{
+      content:"";
+      position:absolute; inset:-2px;
+      background:
+        radial-gradient(680px 240px at 20% 0%, rgba(240,194,75,.10), transparent 60%),
+        radial-gradient(720px 260px at 95% 85%, rgba(25,211,155,.08), transparent 55%);
+      pointer-events:none;
+    }
+    .card > *{ position:relative; }
     .h1{ font-size:30px; font-weight:900; letter-spacing:.04em; margin:4px 0 10px; }
     .sub{ color:var(--muted); margin:0 0 14px; line-height:1.35; }
     .panel{
@@ -56,6 +68,7 @@
       background:rgba(0,0,0,.22);
       border-radius:16px;
       padding:14px;
+      line-height:1.55;
     }
     .syslog{
       margin-top:12px;
@@ -66,29 +79,42 @@
       font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
       font-size:12px;
       line-height:1.5;
+      min-height:64px;
     }
     .hint{ margin-top:10px; color:rgba(255,255,255,.55); font-size:12px; }
 
     /* Incoming overlay */
     .overlay{
       position:fixed; inset:0;
-      background: rgba(0,0,0,.70);
+      background: rgba(0,0,0,.72);
       display:none;
       align-items:center;
       justify-content:center;
       padding:18px;
+      z-index:999;
     }
     .incoming{
-      width:min(720px, 94vw);
+      width:min(760px, 94vw);
       border-radius:22px;
-      background: rgba(10,12,18,.92);
+      background: rgba(10,12,18,.94);
       border:1px solid rgba(255,255,255,.14);
       box-shadow: 0 30px 120px rgba(0,0,0,.65);
       padding:20px;
       backdrop-filter: blur(14px);
+      position:relative;
+      overflow:hidden;
     }
+    .incoming:before{
+      content:"";
+      position:absolute; inset:-2px;
+      background:
+        radial-gradient(520px 220px at 15% 0%, rgba(240,194,75,.10), transparent 62%),
+        radial-gradient(680px 260px at 90% 90%, rgba(25,211,155,.08), transparent 62%);
+      pointer-events:none;
+    }
+    .incoming > *{ position:relative; }
     .incomingTop{
-      display:flex; justify-content:space-between; align-items:center;
+      display:flex; justify-content:space-between; align-items:center; gap:10px;
       color:rgba(255,255,255,.70);
       font-size:12px; letter-spacing:.22em; text-transform:uppercase;
       margin-bottom:10px;
@@ -97,7 +123,7 @@
       font-size:26px; font-weight:900; margin:6px 0 10px;
       letter-spacing:.03em;
     }
-    .incomingSub{ color:rgba(255,255,255,.70); margin:0 0 14px; }
+    .incomingSub{ color:rgba(255,255,255,.70); margin:0 0 14px; line-height:1.4; }
     .row{
       display:flex; gap:12px; flex-wrap:wrap;
     }
@@ -112,10 +138,22 @@
       text-transform:uppercase;
       cursor:pointer;
       color:#fff;
+      transition:transform .08s ease;
     }
+    .btn:active{ transform:scale(.985); }
     .decline{ background: linear-gradient(180deg, rgba(209,27,45,.92), rgba(130,18,28,.92)); }
     .accept{ background: linear-gradient(180deg, rgba(25,211,155,.92), rgba(12,120,89,.92)); }
     .small{ margin-top:10px; color:rgba(255,255,255,.55); font-size:12px; }
+
+    /* optional: subtle “ringing” glow */
+    .ringGlow{
+      box-shadow: 0 0 0 0 rgba(240,194,75,.12);
+      animation: glow 1.6s ease-in-out infinite;
+    }
+    @keyframes glow{
+      0%,100%{ box-shadow: 0 0 0 0 rgba(240,194,75,.08); }
+      50%{ box-shadow: 0 0 0 10px rgba(240,194,75,.10); }
+    }
   </style>
 </head>
 <body>
@@ -125,13 +163,13 @@
       <div class="badge"><span class="dot"></span> CONNECTED</div>
     </div>
 
-    <div class="card">
+    <div class="card" id="card">
       <div class="h1">SECURE CALL ACTIVE — DET. MARCUS MALIK (M.M.)</div>
       <p class="sub">Channel: Encrypted / Unlogged • Classification: Sensitive — do not route through dispatch</p>
 
       <div class="panel">
         <strong>STATUS:</strong> CONNECTED<br/>
-        <span style="color:rgba(255,255,255,.72)">NOTE:</span> This call may be monitored by internal audit.
+        <span style="color:rgba(255,255,255,.72)">NOTE:</span> This line may be monitored by internal audit.
       </div>
 
       <div class="syslog" id="log">
@@ -141,6 +179,7 @@
 
       <div class="hint">If audio doesn’t start on mobile, tap once anywhere.</div>
 
+      <!-- M.M. call audio -->
       <audio id="callAudio" preload="auto" playsinline>
         <source src="./mm-call.mp3" type="audio/mpeg">
       </audio>
@@ -149,11 +188,12 @@
 
   <!-- Incoming call from Kavya -->
   <div class="overlay" id="overlay">
-    <div class="incoming">
+    <div class="incoming ringGlow">
       <div class="incomingTop">
         <div>INCOMING SECURE CALL</div>
         <div class="badge"><span class="dot"></span> INCOMING</div>
       </div>
+
       <div class="incomingTitle">Caller: Kavya (Unlisted)</div>
       <p class="incomingSub">Priority: Panic / Live • Route: Direct • Source: External</p>
 
@@ -162,67 +202,178 @@
         <button class="btn accept" id="acceptBtn">ACCEPT</button>
       </div>
 
-      <div class="small">Declining will not stop repeated attempts.</div>
+      <div class="small">Declining will not stop repeated attempts. Call will retry automatically.</div>
     </div>
   </div>
 
 <script>
-  // === SETTINGS ===
-  const KAVYA_POP_TIME_SECONDS = 86; // 1:26
+  // =========================
+  // SETTINGS
+  // =========================
+  const KAVYA_POP_TIME_SECONDS = 86;   // 1:26 into mm-call.mp3
   const DECLINE_RETRY_MS = 2000;
-  const KAVYA_PAGE = "./kavya-call.html"; // you will create this next
+  const KAVYA_PAGE = "./kavya-call.html"; // create next
+  const DRONE_LEVEL = 0.035;           // recommended subtle creepy bed
 
   const audio = document.getElementById("callAudio");
   const overlay = document.getElementById("overlay");
   const log = document.getElementById("log");
-  const declineBtn = document.getElementById("declineBtn");
-  const acceptBtn = document.getElementById("acceptBtn");
 
-  // Ringtone using WebAudio (no mp3 needed)
-  let audioCtx = null;
+  const declineBtn = document.getElementById("declineBtn");
+  const acceptBtn  = document.getElementById("acceptBtn");
+
+  // =========================
+  // RINGTONE (WebAudio synth)
+  // =========================
   let ringInterval = null;
+  let audioCtx = null;
+
+  function ensureCtx(){
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return null;
+    audioCtx = audioCtx || new AudioCtx();
+    return audioCtx;
+  }
 
   function ringStart(){
     if (ringInterval) return;
-    try{
-      audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
 
-      const beep = (freq, ms) => {
-        const o = audioCtx.createOscillator();
-        const g = audioCtx.createGain();
-        o.type = "sine";
-        o.frequency.value = freq;
-        g.gain.value = 0.0001;
-        o.connect(g); g.connect(audioCtx.destination);
-        o.start();
-        const now = audioCtx.currentTime;
-        g.gain.setValueAtTime(0.0001, now);
-        g.gain.exponentialRampToValueAtTime(0.20, now + 0.02);
-        g.gain.exponentialRampToValueAtTime(0.0001, now + (ms/1000));
-        o.stop(now + (ms/1000) + 0.02);
-      };
+    const ctx = ensureCtx();
+    if (!ctx) return;
 
-      ringInterval = setInterval(()=>{
-        beep(880, 220);
-        setTimeout(()=>beep(660, 220), 260);
-      }, 1800);
+    const beep = (freq, ms, gainVal) => {
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      o.type = "sine";
+      o.frequency.value = freq;
+      g.gain.value = 0.0001;
 
-      beep(880, 220);
-      setTimeout(()=>beep(660, 220), 260);
-    }catch(e){}
+      o.connect(g); g.connect(ctx.destination);
+      o.start();
+
+      const now = ctx.currentTime;
+      g.gain.setValueAtTime(0.0001, now);
+      g.gain.exponentialRampToValueAtTime(gainVal, now + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, now + (ms/1000));
+      o.stop(now + (ms/1000) + 0.02);
+    };
+
+    ringInterval = setInterval(()=>{
+      beep(880, 220, 0.20);
+      setTimeout(()=>beep(660, 220, 0.18), 260);
+    }, 1800);
+
+    // immediate first ring
+    beep(880, 220, 0.20);
+    setTimeout(()=>beep(660, 220, 0.18), 260);
   }
 
   function ringStop(){
-    if (ringInterval){ clearInterval(ringInterval); ringInterval = null; }
+    if (ringInterval){
+      clearInterval(ringInterval);
+      ringInterval = null;
+    }
   }
 
+  // =========================
+  // CREEPY BACKGROUND DRONE (WebAudio)
+  // - Subtle, stays behind voices
+  // - Only runs after user gesture (mobile policy)
+  // =========================
+  let droneOn = false;
+  let droneNodes = null;
+
+  function startDrone(){
+    if (droneOn) return;
+
+    const ctx = ensureCtx();
+    if (!ctx) return;
+
+    // Noise source
+    const bufferSize = 2 * ctx.sampleRate;
+    const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const output = noiseBuffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      output[i] = (Math.random() * 2 - 1);
+    }
+
+    const noise = ctx.createBufferSource();
+    noise.buffer = noiseBuffer;
+    noise.loop = true;
+
+    // Filter noise to low rumble
+    const filter = ctx.createBiquadFilter();
+    filter.type = "lowpass";
+    filter.frequency.value = 180;
+    filter.Q.value = 0.7;
+
+    // Subtle “wobble” in filter freq (creepy movement)
+    const lfo = ctx.createOscillator();
+    lfo.type = "sine";
+    lfo.frequency.value = 0.12; // very slow
+    const lfoGain = ctx.createGain();
+    lfoGain.gain.value = 35;    // small modulation
+
+    lfo.connect(lfoGain);
+    lfoGain.connect(filter.frequency);
+
+    // A low sine bed (sub-bass)
+    const tone = ctx.createOscillator();
+    tone.type = "sine";
+    tone.frequency.value = 52; // low A-ish
+
+    // Add tiny detuned layer
+    const tone2 = ctx.createOscillator();
+    tone2.type = "sine";
+    tone2.frequency.value = 55;
+
+    // Mix + master gain (RECOMMENDED LEVEL)
+    const master = ctx.createGain();
+    master.gain.value = DRONE_LEVEL;
+
+    noise.connect(filter);
+    filter.connect(master);
+
+    tone.connect(master);
+    tone2.connect(master);
+
+    master.connect(ctx.destination);
+
+    // start
+    noise.start();
+    lfo.start();
+    tone.start();
+    tone2.start();
+
+    droneNodes = { noise, filter, lfo, lfoGain, tone, tone2, master };
+    droneOn = true;
+  }
+
+  function stopDrone(){
+    if (!droneOn || !droneNodes) return;
+    try{
+      droneNodes.noise.stop();
+      droneNodes.lfo.stop();
+      droneNodes.tone.stop();
+      droneNodes.tone2.stop();
+    }catch(e){}
+    droneNodes = null;
+    droneOn = false;
+  }
+
+  // =========================
+  // INCOMING CALL OVERLAY
+  // =========================
   let kavyaTriggered = false;
   let declineTimer = null;
 
   function showKavyaIncoming(){
     overlay.style.display = "flex";
     ringStart();
-    log.innerHTML = "SYSLOG: incoming call detected…<br/>SOURCE: external • CALLER: KAVYA (unlisted)<br/>ACTION: accept/decline required";
+    log.innerHTML =
+      "SYSLOG: incoming call detected…<br/>" +
+      "SOURCE: external • CALLER: KAVYA (unlisted)<br/>" +
+      "ACTION: accept/decline required";
   }
 
   function hideKavyaIncoming(){
@@ -237,35 +388,49 @@
   });
 
   acceptBtn.addEventListener("click", ()=>{
-    // Accept ends this call path and transfers to Kavya
     hideKavyaIncoming();
+    // Stop M.M audio only when they accept the new call
     try{ audio.pause(); }catch(e){}
+    // optional: stop the drone when leaving this page
+    stopDrone();
     window.location.href = KAVYA_PAGE;
   });
 
-  // Autoplay attempt (mobile may require a tap)
+  // =========================
+  // AUTOPLAY + MOBILE UNLOCK
+  // =========================
   async function tryPlay(){
     try{
       await audio.play();
-      log.innerHTML = "SYSLOG: voice stream active<br/>NODE: MCD-INTRA • SESSION: LIVE<br/>ENCRYPTION: stable";
+      log.innerHTML =
+        "SYSLOG: voice stream active<br/>" +
+        "NODE: MCD-INTRA • SESSION: LIVE<br/>" +
+        "ENCRYPTION: stable";
     }catch(e){
       log.innerHTML = "SYSLOG: autoplay blocked<br/>NOTE: tap once to enable audio";
     }
   }
 
-  // Allow tap to start audio
-  window.addEventListener("pointerdown", ()=>{ tryPlay(); }, { once:false });
+  // One tap should unlock BOTH: WebAudio (drone + ring) and HTML audio
+  async function userUnlock(){
+    ensureCtx();
+    startDrone();
+    tryPlay();
+  }
+
+  // Any tap anywhere unlocks
+  window.addEventListener("pointerdown", userUnlock, { passive:true });
 
   // Trigger incoming at 1:26 while M.M audio continues
   audio.addEventListener("timeupdate", ()=>{
     if (!kavyaTriggered && audio.currentTime >= KAVYA_POP_TIME_SECONDS){
       kavyaTriggered = true;
       showKavyaIncoming();
-      // ringtone plays over voices, M.M audio continues until Accept
+      // ringtone plays over voices; M.M continues until Accept
     }
   });
 
-  // Start immediately
+  // Start immediately (may be blocked; tap will fix)
   tryPlay();
 </script>
 </body>
