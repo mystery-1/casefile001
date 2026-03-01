@@ -1,1 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Incoming Call — Kavya</title>
 
+<style>
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#05070c;
+  font-family: system-ui;
+  color:white;
+}
+.card{
+  text-align:center;
+}
+h1{
+  letter-spacing:.15em;
+}
+.sub{
+  opacity:.6;
+}
+</style>
+</head>
+<body>
+
+<div class="card">
+  <h1>CALL ACTIVE — KAVYA</h1>
+  <p class="sub">Unrecorded / External Line</p>
+</div>
+
+<audio id="kavyaVoice" preload="auto">
+  <source src="./call-kavya.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+const voice = document.getElementById("kavyaVoice");
+
+let ctx;
+let droneOsc;
+let droneGain;
+let lfo;
+let lfoGain;
+
+function startDrone(){
+  ctx = new (window.AudioContext || window.webkitAudioContext)();
+
+  droneOsc = ctx.createOscillator();
+  droneGain = ctx.createGain();
+  lfo = ctx.createOscillator();
+  lfoGain = ctx.createGain();
+
+  droneOsc.type = "sine";
+  droneOsc.frequency.value = 52;
+
+  droneGain.gain.value = 0.035; // subtle but disturbing
+
+  lfo.frequency.value = 0.15;
+  lfoGain.gain.value = 8;
+
+  lfo.connect(lfoGain);
+  lfoGain.connect(droneOsc.frequency);
+
+  droneOsc.connect(droneGain);
+  droneGain.connect(ctx.destination);
+
+  droneOsc.start();
+  lfo.start();
+}
+
+function stopDrone(){
+  if(droneOsc){
+    droneOsc.stop();
+    lfo.stop();
+  }
+}
+
+async function startCall(){
+  try{
+    startDrone();
+    await voice.play();
+  }catch(e){}
+}
+
+voice.addEventListener("ended", ()=>{
+  stopDrone();
+
+  document.body.innerHTML = `
+    <div style="text-align:center;">
+      <h1>CALL LOST</h1>
+      <p style="opacity:.6;">Line disconnected.</p>
+    </div>
+  `;
+});
+
+// mobile tap fallback
+window.addEventListener("pointerdown", startCall, { once:false });
+
+startCall();
+</script>
+
+</body>
+</html>
