@@ -14,6 +14,7 @@
       --green:#19d39b;
       --red:#d11b2d;
       --gold:#f0c24b;
+      --gold2:#f6d26f;
     }
     *{box-sizing:border-box}
     body{
@@ -38,7 +39,6 @@
       padding:8px 12px; border-radius:999px;
       background:rgba(255,255,255,.06);
       border:1px solid rgba(255,255,255,.10);
-      white-space:nowrap;
     }
     .dot{ width:8px; height:8px; border-radius:99px; background:var(--green); box-shadow:0 0 18px rgba(25,211,155,.55);}
     .card{
@@ -69,19 +69,18 @@
       font-size:12px;
       line-height:1.5;
     }
-    .hint{ margin-top:10px; color:rgba(255,255,255,.55); font-size:12px; }
 
-    /* Clean "tap to connect" overlay */
-    .startOverlay{
+    /* Connect overlay */
+    .connectOverlay{
       position:fixed; inset:0;
-      background: rgba(0,0,0,.78);
+      background: rgba(0,0,0,.70);
       display:flex;
       align-items:center;
       justify-content:center;
       padding:18px;
       z-index:50;
     }
-    .startCard{
+    .connectCard{
       width:min(720px, 94vw);
       border-radius:22px;
       background: rgba(10,12,18,.92);
@@ -89,22 +88,21 @@
       box-shadow: 0 30px 120px rgba(0,0,0,.65);
       padding:20px;
       backdrop-filter: blur(14px);
-      text-align:left;
     }
-    .startTop{
+    .connectTop{
       display:flex; justify-content:space-between; align-items:center;
       color:rgba(255,255,255,.70);
       font-size:12px; letter-spacing:.22em; text-transform:uppercase;
       margin-bottom:10px;
     }
-    .startTitle{
-      font-size:26px; font-weight:900; margin:6px 0 10px;
-      letter-spacing:.03em;
+    .connectTitle{
+      font-size:34px; font-weight:900; margin:6px 0 10px;
+      letter-spacing:.01em;
     }
-    .startSub{ color:rgba(255,255,255,.70); margin:0 0 14px; line-height:1.4; }
-    .startBtn{
+    .connectSub{ color:rgba(255,255,255,.70); margin:0 0 14px; line-height:1.4; }
+    .connectBtn{
       width:100%;
-      padding:14px 14px;
+      padding:16px 14px;
       border-radius:14px;
       border:0;
       font-weight:900;
@@ -112,9 +110,14 @@
       text-transform:uppercase;
       cursor:pointer;
       color:#1b1200;
-      background: linear-gradient(180deg, rgba(240,194,75,.95), rgba(180,130,40,.95));
+      background:linear-gradient(180deg, var(--gold2), var(--gold));
     }
-    .startSmall{ margin-top:10px; color:rgba(255,255,255,.55); font-size:12px; }
+    .connectSmall{
+      margin-top:10px;
+      color:rgba(255,255,255,.55);
+      font-size:12px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
 
     /* Incoming overlay */
     .overlay{
@@ -146,12 +149,9 @@
       letter-spacing:.03em;
     }
     .incomingSub{ color:rgba(255,255,255,.70); margin:0 0 14px; }
-    .row{
-      display:flex; gap:12px; flex-wrap:wrap;
-    }
+    .row{ display:flex; gap:12px; flex-wrap:wrap; }
     .btn{
-      flex:1;
-      min-width:160px;
+      flex:1; min-width:160px;
       padding:14px 14px;
       border-radius:14px;
       border:0;
@@ -183,11 +183,9 @@
       </div>
 
       <div class="syslog" id="log">
-        SYSLOG: voice stream pending user handshake…<br/>
+        SYSLOG: awaiting user gesture…<br/>
         NODE: MCD-INTRA • SESSION: LIVE
       </div>
-
-      <div class="hint">Audio requires a single tap on iPhone browsers (WebKit).</div>
 
       <audio id="callAudio" preload="auto" playsinline>
         <source src="./mm-call.mp3" type="audio/mpeg">
@@ -195,17 +193,19 @@
     </div>
   </div>
 
-  <!-- Tap-to-start overlay -->
-  <div class="startOverlay" id="startOverlay">
-    <div class="startCard">
-      <div class="startTop">
+  <!-- CONNECT overlay (audio handshake) -->
+  <div class="connectOverlay" id="connectOverlay">
+    <div class="connectCard">
+      <div class="connectTop">
         <div>SECURE HANDSHAKE REQUIRED</div>
-        <div class="badge" title="Restricted node"><span class="dot"></span> READY</div>
+        <div class="badge"><span class="dot"></span> READY</div>
       </div>
-      <div class="startTitle">Tap to connect audio</div>
-      <p class="startSub">This device requires a manual handshake before encrypted voice can begin.</p>
-      <button class="startBtn" id="startBtn">CONNECT</button>
-      <div class="startSmall">SYSLOG: awaiting user gesture • NODE: MCD-INTRA</div>
+      <div class="connectTitle">Tap to connect audio</div>
+      <p class="connectSub">
+        iPhone browsers require a manual handshake before voice playback can begin.
+      </p>
+      <button class="connectBtn" id="connectBtn">CONNECT</button>
+      <div class="connectSmall">SYSLOG: awaiting user gesture • NODE: MCD-INTRA</div>
     </div>
   </div>
 
@@ -230,34 +230,28 @@
 
 <script>
   // === SETTINGS ===
-  const KAVYA_POP_TIME_SECONDS = 86;   // set to your exact quiet moment start
+  const KAVYA_POP_TIME_SECONDS = 86; // 1:26 (set to your exact silence moment)
   const DECLINE_RETRY_MS = 2000;
   const KAVYA_PAGE = "./kavya-call.html";
 
   const audio = document.getElementById("callAudio");
-  const overlay = document.getElementById("overlay");
   const log = document.getElementById("log");
+
+  const connectOverlay = document.getElementById("connectOverlay");
+  const connectBtn = document.getElementById("connectBtn");
+
+  const overlay = document.getElementById("overlay");
   const declineBtn = document.getElementById("declineBtn");
   const acceptBtn = document.getElementById("acceptBtn");
-  const startOverlay = document.getElementById("startOverlay");
-  const startBtn = document.getElementById("startBtn");
 
   // Ringtone using WebAudio (no mp3 needed)
   let audioCtx = null;
   let ringInterval = null;
 
-  function ensureCtx(){
-    if (!audioCtx){
-      const AC = window.AudioContext || window.webkitAudioContext;
-      if (AC) audioCtx = new AC();
-    }
-  }
-
   function ringStart(){
     if (ringInterval) return;
     try{
-      ensureCtx();
-      if (!audioCtx) return;
+      audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
 
       const beep = (freq, ms) => {
         const o = audioCtx.createOscillator();
@@ -269,7 +263,7 @@
         o.start();
         const now = audioCtx.currentTime;
         g.gain.setValueAtTime(0.0001, now);
-        g.gain.exponentialRampToValueAtTime(0.18, now + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.20, now + 0.02);
         g.gain.exponentialRampToValueAtTime(0.0001, now + (ms/1000));
         o.stop(now + (ms/1000) + 0.02);
       };
@@ -288,9 +282,6 @@
     if (ringInterval){ clearInterval(ringInterval); ringInterval = null; }
   }
 
-  let kavyaTriggered = false;
-  let declineTimer = null;
-
   function showKavyaIncoming(){
     overlay.style.display = "flex";
     ringStart();
@@ -301,6 +292,9 @@
     overlay.style.display = "none";
     ringStop();
   }
+
+  let kavyaTriggered = false;
+  let declineTimer = null;
 
   declineBtn.addEventListener("click", ()=>{
     hideKavyaIncoming();
@@ -314,30 +308,41 @@
     window.location.href = KAVYA_PAGE;
   });
 
+  // IMPORTANT: DO NOT AUTOPLAY.
+  // Only start audio when user taps CONNECT.
   async function startCallAudio(){
     try{
-      // resume WebAudio context so ringtone can work later
-      ensureCtx();
-      if (audioCtx && audioCtx.state === "suspended") await audioCtx.resume();
-
       await audio.play();
-      startOverlay.style.display = "none";
+      connectOverlay.style.display = "none";
       log.innerHTML = "SYSLOG: voice stream active<br/>NODE: MCD-INTRA • SESSION: LIVE<br/>ENCRYPTION: stable";
     }catch(e){
-      // keep overlay up if it still fails
-      log.innerHTML = "SYSLOG: handshake failed<br/>NOTE: tap CONNECT again";
+      // If it fails, keep overlay up.
+      log.innerHTML = "SYSLOG: audio blocked<br/>NOTE: tap CONNECT again";
     }
   }
 
-  startBtn.addEventListener("click", startCallAudio);
+  connectBtn.addEventListener("click", async ()=>{
+    await startCallAudio();
+  });
 
-  // Trigger incoming at your timestamp while M.M audio continues
+  // Trigger incoming at your timestamp while MM audio continues
   audio.addEventListener("timeupdate", ()=>{
     if (!kavyaTriggered && audio.currentTime >= KAVYA_POP_TIME_SECONDS){
       kavyaTriggered = true;
       showKavyaIncoming();
-      // ringtone plays over voices, M.M audio continues until Accept
+      // ringtone plays over voices, MM audio continues until Accept
     }
+  });
+
+  // Optional: if you navigate back here, reset
+  window.addEventListener("pageshow", ()=>{
+    if (!audio.paused){
+      // If browser restored state weirdly, pause and require connect again
+      try{ audio.pause(); audio.currentTime = 0; }catch(e){}
+    }
+    connectOverlay.style.display = "flex";
+    kavyaTriggered = false;
+    hideKavyaIncoming();
   });
 </script>
 </body>
