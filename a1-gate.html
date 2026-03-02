@@ -1,4 +1,4 @@
-<!-- a1-gate.html (FIXED) -->
+<!-- a1-gate.html  -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,6 +9,7 @@
     :root{
       --bg1:#05060a;
       --bg2:#0a1020;
+      --card:#0f1424cc;
       --stroke:#ffffff1a;
       --text:#e9eefc;
       --muted:#aab4d6;
@@ -32,7 +33,6 @@
         linear-gradient(180deg,var(--bg1),var(--bg2));
       overflow-x:hidden;
     }
-
     .noise{
       pointer-events:none;
       position:fixed; inset:0;
@@ -102,22 +102,11 @@
     }
     .card > *{position:relative}
 
-    h1{
-      margin:8px 0 6px;
-      font-size:34px;
-      letter-spacing:.02em;
-      line-height:1.05;
-    }
-    .sub{
-      margin:0 0 16px;
-      color:var(--muted);
-      font-size:14px;
-    }
+    h1{ margin:8px 0 6px; font-size:34px; letter-spacing:.02em; line-height:1.05; }
+    .sub{ margin:0 0 16px; color:var(--muted); font-size:14px; }
 
     .callstrip{
-      display:flex;
-      gap:14px;
-      align-items:flex-start;
+      display:flex; gap:14px; align-items:flex-start;
       padding:14px 14px;
       border:1px solid var(--stroke);
       border-radius:16px;
@@ -125,25 +114,13 @@
       margin:14px 0 16px;
     }
     .callstrip .left{
-      width:6px;
-      border-radius:999px;
+      width:6px; border-radius:999px;
       background:linear-gradient(180deg, var(--gold), rgba(240,194,75,.15));
       box-shadow: 0 0 18px rgba(240,194,75,.18);
     }
-    .callstrip .meta{
-      flex:1;
-      display:grid;
-      gap:4px;
-    }
-    .callstrip .meta .title{
-      font-weight:700;
-      letter-spacing:.02em;
-    }
-    .callstrip .meta .small{
-      color:var(--muted);
-      font-size:13px;
-      line-height:1.35;
-    }
+    .callstrip .meta{ flex:1; display:grid; gap:4px; }
+    .callstrip .meta .title{ font-weight:700; letter-spacing:.02em; }
+    .callstrip .meta .small{ color:var(--muted); font-size:13px; line-height:1.35; }
 
     label{
       display:block;
@@ -164,13 +141,11 @@
       letter-spacing:.22em;
       font-family:var(--mono);
       outline:none;
-      transition: transform .12s ease, border-color .2s ease, box-shadow .2s ease;
     }
     .input:focus{
       border-color: rgba(240,194,75,.55);
       box-shadow: 0 0 0 6px rgba(240,194,75,.10);
     }
-
     .hint{
       margin-top:10px;
       color:rgba(233,238,252,.78);
@@ -178,7 +153,6 @@
       font-style:italic;
       letter-spacing:.02em;
     }
-
     .btn{
       margin-top:14px;
       width:100%;
@@ -192,12 +166,7 @@
       color:#1b1200;
       background:linear-gradient(180deg, var(--gold2), var(--gold));
       box-shadow: 0 18px 40px rgba(240,194,75,.18);
-      transition: transform .12s ease, filter .15s ease;
     }
-    .btn:hover{transform:translateY(-1px); filter:saturate(1.03)}
-    .btn:active{transform:translateY(0px); filter:saturate(.98)}
-    .btn:disabled{opacity:.75; cursor:not-allowed; transform:none}
-
     .msg{
       margin-top:12px;
       padding:12px 12px;
@@ -221,7 +190,6 @@
       color: rgba(255,214,218,.92);
       background: rgba(255,77,94,.08);
     }
-
     .fineprint{
       margin-top:14px;
       color:rgba(170,180,214,.7);
@@ -230,6 +198,11 @@
       justify-content:space-between;
       gap:10px;
       flex-wrap:wrap;
+    }
+    .link{
+      color:rgba(170,180,214,.85);
+      text-decoration:none;
+      border-bottom:1px solid rgba(170,180,214,.25);
     }
 
     .shake{ animation: shake .22s ease-in-out 0s 2; }
@@ -284,29 +257,22 @@
           maxlength="12"
         />
         <div class="hint">Some truths don’t change — only the way you read the record.</div>
-
         <button class="btn" id="unlockBtn">Unlock & Route Call</button>
 
         <div class="msg" id="msg">SYSLOG: verification required • NODE: MCD–INTRA • STATUS: LOCKED</div>
 
         <div class="fineprint">
           <span>All access attempts are logged.</span>
-          <!-- REMOVED: Return to Directive (it was redundant and confusing) -->
+          <a class="link" href="./directive-a1.html">← Return to Directive</a>
         </div>
       </div>
     </div>
   </div>
 
   <script>
-    /**
-     * A-1 Gate (Envelope A)
-     * Correct code: 11403820
-     * On success: play a short ring using your existing mm-call.mp3, then route to mm-call.html
-     */
-
     const REQUIRED_CODE = "11403820";
-    const REDIRECT_URL  = "./mm-call.html";
-    const RING_FILE     = "./mm-call.mp3"; // use existing file as requested
+    // Add a query flag so mm-call can show the CONNECT overlay immediately.
+    const REDIRECT_URL  = "./mm-call.html?autostart=0";
 
     const card  = document.getElementById("card");
     const input = document.getElementById("code");
@@ -333,23 +299,7 @@
       card.classList.add("shake");
     }
 
-    // Plays the first ~2 seconds of mm-call.mp3 as a "ring" cue (user gesture required on mobile)
-    async function playRingFromFile(){
-      const a = new Audio(RING_FILE);
-      a.preload = "auto";
-      a.volume = 0.9;
-
-      // Try to start near the beginning; if metadata not ready, this will just start at 0.
-      try { a.currentTime = 0; } catch(e){}
-
-      // Play, wait ~2s, stop
-      await a.play();
-      await new Promise(r => setTimeout(r, 2000));
-      a.pause();
-      try { a.currentTime = 0; } catch(e){}
-    }
-
-    btn.addEventListener("click", async () => {
+    btn.addEventListener("click", () => {
       const attempt = (input.value || "").trim();
 
       if(attempt !== REQUIRED_CODE){
@@ -361,20 +311,12 @@
       btn.disabled = true;
       input.disabled = true;
 
+      // IMPORTANT: do NOT start any audio here.
+      // Just route cleanly to mm-call.
       setMsg("ACCESS GRANTED — routing secure line…", "ok");
 
-      // Ring cue (works on mobile because it's triggered by the button tap)
-      try {
-        await playRingFromFile();
-      } catch(e) {
-        // If audio fails, still proceed.
-      }
-
-      setMsg("SYSLOG: handshake accepted • STATUS: ROUTING", "ok");
-
-      setTimeout(() => {
-        window.location.href = REDIRECT_URL;
-      }, 450);
+      // Route immediately (no delay that can cause weird “audio starts here” behavior)
+      window.location.replace(REDIRECT_URL);
     });
 
     setTimeout(() => input.focus(), 250);
