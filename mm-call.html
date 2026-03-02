@@ -70,7 +70,7 @@
       line-height:1.5;
     }
 
-    /* Connect overlay */
+    /* CONNECT overlay */
     .connectOverlay{
       position:fixed; inset:0;
       background: rgba(0,0,0,.70);
@@ -193,7 +193,7 @@
     </div>
   </div>
 
-  <!-- CONNECT overlay (audio handshake) -->
+  <!-- CONNECT overlay -->
   <div class="connectOverlay" id="connectOverlay">
     <div class="connectCard">
       <div class="connectTop">
@@ -201,15 +201,13 @@
         <div class="badge"><span class="dot"></span> READY</div>
       </div>
       <div class="connectTitle">Tap to connect audio</div>
-      <p class="connectSub">
-        iPhone browsers require a manual handshake before voice playback can begin.
-      </p>
+      <p class="connectSub">iPhone browsers require a manual handshake before voice playback can begin.</p>
       <button class="connectBtn" id="connectBtn">CONNECT</button>
       <div class="connectSmall">SYSLOG: awaiting user gesture • NODE: MCD-INTRA</div>
     </div>
   </div>
 
-  <!-- Incoming call from Kavya -->
+  <!-- Incoming call -->
   <div class="overlay" id="overlay">
     <div class="incoming">
       <div class="incomingTop">
@@ -230,9 +228,9 @@
 
 <script>
   // === SETTINGS ===
-  const KAVYA_POP_TIME_SECONDS = 86; // 1:26 (set to your exact silence moment)
+  const KAVYA_POP_TIME_SECONDS = 86;   // set to the exact silence moment
   const DECLINE_RETRY_MS = 2000;
-  const KAVYA_PAGE = "./kavya-call.html";
+  const KAVYA_PAGE = "./kavya-call.html?v=2";
 
   const audio = document.getElementById("callAudio");
   const log = document.getElementById("log");
@@ -244,7 +242,7 @@
   const declineBtn = document.getElementById("declineBtn");
   const acceptBtn = document.getElementById("acceptBtn");
 
-  // Ringtone using WebAudio (no mp3 needed)
+  // --- ringtone ---
   let audioCtx = null;
   let ringInterval = null;
 
@@ -293,56 +291,45 @@
     ringStop();
   }
 
-  let kavyaTriggered = false;
-  let declineTimer = null;
+  // --- IMPORTANT: only start audio once ---
+  let started = false;
 
+  async function startMM(){
+    if (started) return;                // prevents double-start/restart
+    started = true;
+
+    try{
+      await audio.play();
+      connectOverlay.style.display = "none";
+      log.innerHTML = "SYSLOG: voice stream active<br/>NODE: MCD-INTRA • SESSION: LIVE<br/>ENCRYPTION: stable";
+    }catch(e){
+      started = false;                  // allow retry if it failed
+      log.innerHTML = "SYSLOG: audio blocked<br/>Tap CONNECT again";
+    }
+  }
+
+  connectBtn.addEventListener("click", startMM);
+
+  // Incoming trigger
+  let kavyaTriggered = false;
+  audio.addEventListener("timeupdate", ()=>{
+    if (!kavyaTriggered && audio.currentTime >= KAVYA_POP_TIME_SECONDS){
+      kavyaTriggered = true;
+      showKavyaIncoming();
+    }
+  });
+
+  let declineTimer = null;
   declineBtn.addEventListener("click", ()=>{
     hideKavyaIncoming();
     if (declineTimer) clearTimeout(declineTimer);
-    declineTimer = setTimeout(()=>{ showKavyaIncoming(); }, DECLINE_RETRY_MS);
+    declineTimer = setTimeout(showKavyaIncoming, DECLINE_RETRY_MS);
   });
 
   acceptBtn.addEventListener("click", ()=>{
     hideKavyaIncoming();
     try{ audio.pause(); }catch(e){}
     window.location.href = KAVYA_PAGE;
-  });
-
-  // IMPORTANT: DO NOT AUTOPLAY.
-  // Only start audio when user taps CONNECT.
-  async function startCallAudio(){
-    try{
-      await audio.play();
-      connectOverlay.style.display = "none";
-      log.innerHTML = "SYSLOG: voice stream active<br/>NODE: MCD-INTRA • SESSION: LIVE<br/>ENCRYPTION: stable";
-    }catch(e){
-      // If it fails, keep overlay up.
-      log.innerHTML = "SYSLOG: audio blocked<br/>NOTE: tap CONNECT again";
-    }
-  }
-
-  connectBtn.addEventListener("click", async ()=>{
-    await startCallAudio();
-  });
-
-  // Trigger incoming at your timestamp while MM audio continues
-  audio.addEventListener("timeupdate", ()=>{
-    if (!kavyaTriggered && audio.currentTime >= KAVYA_POP_TIME_SECONDS){
-      kavyaTriggered = true;
-      showKavyaIncoming();
-      // ringtone plays over voices, MM audio continues until Accept
-    }
-  });
-
-  // Optional: if you navigate back here, reset
-  window.addEventListener("pageshow", ()=>{
-    if (!audio.paused){
-      // If browser restored state weirdly, pause and require connect again
-      try{ audio.pause(); audio.currentTime = 0; }catch(e){}
-    }
-    connectOverlay.style.display = "flex";
-    kavyaTriggered = false;
-    hideKavyaIncoming();
   });
 </script>
 </body>
