@@ -1,108 +1,198 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Incoming Call — Kavya</title>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Call Active — Kavya</title>
+  <style>
+    :root{
+      --bg:#05070c;
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.62);
+      --card: rgba(255,255,255,.06);
+      --stroke: rgba(255,255,255,.12);
+      --red:#d11b2d;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; min-height:100vh;
+      display:flex; align-items:center; justify-content:center;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      color:var(--text);
+      background:
+        radial-gradient(900px 600px at 30% 25%, rgba(255,0,80,.10), transparent 55%),
+        radial-gradient(900px 600px at 70% 45%, rgba(160,70,255,.14), transparent 60%),
+        linear-gradient(180deg, #070a14, var(--bg));
+    }
+    .wrap{ width:min(820px, 92vw); padding:22px; text-align:center; }
+    .title{
+      font-size:44px;
+      font-weight:900;
+      letter-spacing:.18em;
+      text-transform:uppercase;
+      margin:0;
+    }
+    .sub{
+      margin-top:14px;
+      color:var(--muted);
+      font-size:18px;
+      letter-spacing:.02em;
+    }
 
-<style>
-body{
-  margin:0;
-  height:100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:#05070c;
-  font-family: system-ui;
-  color:white;
-}
-.card{
-  text-align:center;
-}
-h1{
-  letter-spacing:.15em;
-}
-.sub{
-  opacity:.6;
-}
-</style>
+    .tapOverlay{
+      position:fixed; inset:0;
+      background: rgba(0,0,0,.82);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      z-index:50;
+    }
+    .tapCard{
+      width:min(720px, 94vw);
+      border-radius:22px;
+      background: rgba(10,12,18,.92);
+      border:1px solid rgba(255,255,255,.14);
+      box-shadow: 0 30px 120px rgba(0,0,0,.65);
+      padding:20px;
+      backdrop-filter: blur(14px);
+      text-align:left;
+    }
+    .tapTop{
+      display:flex; justify-content:space-between; align-items:center;
+      color:rgba(255,255,255,.70);
+      font-size:12px; letter-spacing:.22em; text-transform:uppercase;
+      margin-bottom:10px;
+    }
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 12px; border-radius:999px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.10);
+      white-space:nowrap;
+    }
+    .dot{ width:8px; height:8px; border-radius:99px; background:var(--red); box-shadow:0 0 18px rgba(209,27,45,.55);}
+    .tapTitle{
+      font-size:26px; font-weight:900; margin:6px 0 10px;
+      letter-spacing:.03em;
+    }
+    .tapSub{ color:rgba(255,255,255,.70); margin:0 0 14px; line-height:1.4; }
+    .tapBtn{
+      width:100%;
+      padding:14px 14px;
+      border-radius:14px;
+      border:0;
+      font-weight:900;
+      letter-spacing:.18em;
+      text-transform:uppercase;
+      cursor:pointer;
+      color:#fff;
+      background: linear-gradient(180deg, rgba(209,27,45,.95), rgba(130,18,28,.95));
+    }
+    .tapSmall{ margin-top:10px; color:rgba(255,255,255,.55); font-size:12px; }
+  </style>
 </head>
 <body>
+  <div class="wrap">
+    <h1 class="title">CALL ACTIVE — KAVYA</h1>
+    <div class="sub">Unrecorded / External Line</div>
 
-<div class="card">
-  <h1>CALL ACTIVE — KAVYA</h1>
-  <p class="sub">Unrecorded / External Line</p>
-</div>
+    <audio id="kavyaAudio" preload="auto" playsinline>
+      <source src="./call-kavya.mp3" type="audio/mpeg">
+    </audio>
+  </div>
 
-<audio id="kavyaVoice" preload="auto">
-  <source src="./call-kavya.mp3" type="audio/mpeg">
-</audio>
+  <div class="tapOverlay" id="tapOverlay">
+    <div class="tapCard">
+      <div class="tapTop">
+        <div>EXTERNAL LINE • PRIORITY</div>
+        <div class="pill"><span class="dot"></span> LIVE</div>
+      </div>
+      <div class="tapTitle">Tap to answer</div>
+      <p class="tapSub">This device requires a manual handshake to play voice audio.</p>
+      <button class="tapBtn" id="answerBtn">ANSWER</button>
+      <div class="tapSmall">If you hear only ambience, press ANSWER again.</div>
+    </div>
+  </div>
 
 <script>
-const voice = document.getElementById("kavyaVoice");
+  const audio = document.getElementById("kavyaAudio");
+  const overlay = document.getElementById("tapOverlay");
+  const answerBtn = document.getElementById("answerBtn");
 
-let ctx;
-let droneOsc;
-let droneGain;
-let lfo;
-let lfoGain;
+  // Creepy background bed (low volume) via WebAudio
+  let ctx = null;
+  let bedOn = false;
 
-function startDrone(){
-  ctx = new (window.AudioContext || window.webkitAudioContext)();
-
-  droneOsc = ctx.createOscillator();
-  droneGain = ctx.createGain();
-  lfo = ctx.createOscillator();
-  lfoGain = ctx.createGain();
-
-  droneOsc.type = "sine";
-  droneOsc.frequency.value = 52;
-
-  droneGain.gain.value = 0.035; // subtle but disturbing
-
-  lfo.frequency.value = 0.15;
-  lfoGain.gain.value = 8;
-
-  lfo.connect(lfoGain);
-  lfoGain.connect(droneOsc.frequency);
-
-  droneOsc.connect(droneGain);
-  droneGain.connect(ctx.destination);
-
-  droneOsc.start();
-  lfo.start();
-}
-
-function stopDrone(){
-  if(droneOsc){
-    droneOsc.stop();
-    lfo.stop();
+  function ensureCtx(){
+    if (!ctx){
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (AC) ctx = new AC();
+    }
   }
-}
 
-async function startCall(){
-  try{
-    startDrone();
-    await voice.play();
-  }catch(e){}
-}
+  function startCreepyBed(){
+    if (bedOn) return;
+    try{
+      ensureCtx();
+      if (!ctx) return;
 
-voice.addEventListener("ended", ()=>{
-  stopDrone();
+      const master = ctx.createGain();
+      master.gain.value = 0.035; // LOW volume bed
+      master.connect(ctx.destination);
 
-  document.body.innerHTML = `
-    <div style="text-align:center;">
-      <h1>CALL LOST</h1>
-      <p style="opacity:.6;">Line disconnected.</p>
-    </div>
-  `;
-});
+      // Two detuned sines + subtle tremolo for unease
+      const o1 = ctx.createOscillator();
+      const o2 = ctx.createOscillator();
+      o1.type = "sine";
+      o2.type = "sine";
+      o1.frequency.value = 52;
+      o2.frequency.value = 57;
 
-// mobile tap fallback
-window.addEventListener("pointerdown", startCall, { once:false });
+      const g1 = ctx.createGain(); g1.gain.value = 0.6;
+      const g2 = ctx.createGain(); g2.gain.value = 0.5;
 
-startCall();
+      // Tremolo
+      const lfo = ctx.createOscillator();
+      lfo.type = "sine";
+      lfo.frequency.value = 0.18;
+      const lfoGain = ctx.createGain();
+      lfoGain.gain.value = 0.18;
+
+      lfo.connect(lfoGain);
+      lfoGain.connect(master.gain);
+
+      o1.connect(g1); g1.connect(master);
+      o2.connect(g2); g2.connect(master);
+
+      o1.start();
+      o2.start();
+      lfo.start();
+
+      bedOn = true;
+    }catch(e){}
+  }
+
+  async function startAllAudio(){
+    try{
+      ensureCtx();
+      if (ctx && ctx.state === "suspended") await ctx.resume();
+
+      startCreepyBed();
+
+      await audio.play();            // this is the IMPORTANT part (call audio)
+      overlay.style.display = "none";
+    }catch(e){
+      // keep overlay so they can try again
+    }
+  }
+
+  answerBtn.addEventListener("click", startAllAudio);
+
+  // If user taps anywhere, also attempt (optional)
+  window.addEventListener("pointerdown", () => {
+    if (overlay.style.display !== "none") startAllAudio();
+  });
 </script>
-
 </body>
 </html>
