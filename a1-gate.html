@@ -271,8 +271,9 @@
 
   <script>
     const REQUIRED_CODE = "11403820";
-    // Add a query flag so mm-call can show the CONNECT overlay immediately.
-    const REDIRECT_URL  = "./mm-call.html?autostart=0";
+
+    // Cache-bust so iPhone Chrome doesn't serve an old mm-call.html
+    const REDIRECT_URL  = "./mm-call.html?v=2";
 
     const card  = document.getElementById("card");
     const input = document.getElementById("code");
@@ -312,10 +313,8 @@
       input.disabled = true;
 
       // IMPORTANT: do NOT start any audio here.
-      // Just route cleanly to mm-call.
       setMsg("ACCESS GRANTED — routing secure line…", "ok");
 
-      // Route immediately (no delay that can cause weird “audio starts here” behavior)
       window.location.replace(REDIRECT_URL);
     });
 
