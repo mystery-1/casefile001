@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Call Active — Kavya</title>
+  <title>External Line — Kavya</title>
   <style>
     :root{
       --bg:#05070c;
@@ -20,52 +20,81 @@
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
       color:var(--text);
       background:
-        radial-gradient(900px 600px at 20% 20%, rgba(255,0,80,.08), transparent 55%),
+        radial-gradient(900px 600px at 20% 20%, rgba(255,60,90,.08), transparent 55%),
         radial-gradient(900px 600px at 80% 25%, rgba(160,70,255,.16), transparent 60%),
         linear-gradient(180deg, #070a14, var(--bg));
+      overflow:hidden;
     }
-    .wrap{ width:min(820px, 92vw); padding:22px; text-align:center; }
-    .title{
-      font-size:44px; font-weight:900; letter-spacing:.10em;
-      margin:0 0 10px;
-      text-transform:uppercase;
-    }
-    .sub{ color:var(--muted); margin:0; font-size:16px; }
-
-    .overlay{
-      position:fixed; inset:0;
-      background: rgba(0,0,0,.70);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:18px;
-      z-index:50;
-    }
+    .wrap{ width:min(920px, 92vw); padding:22px; }
     .card{
-      width:min(760px, 94vw);
+      background:var(--card);
+      border:1px solid var(--stroke);
       border-radius:22px;
-      background: rgba(10,12,18,.92);
-      border:1px solid rgba(255,255,255,.14);
-      box-shadow: 0 30px 120px rgba(0,0,0,.65);
       padding:22px;
       backdrop-filter: blur(14px);
-      text-align:left;
+      box-shadow: 0 18px 70px rgba(0,0,0,.45);
+      position:relative;
+      overflow:hidden;
     }
     .top{
       display:flex; justify-content:space-between; align-items:center;
-      color:rgba(255,255,255,.70);
-      font-size:12px; letter-spacing:.22em; text-transform:uppercase;
-      margin-bottom:10px;
+      letter-spacing:.22em; text-transform:uppercase; font-size:12px;
+      color:var(--muted);
+      margin-bottom:14px;
     }
     .badge{
       display:inline-flex; align-items:center; gap:8px;
       padding:8px 12px; border-radius:999px;
       background:rgba(255,255,255,.06);
       border:1px solid rgba(255,255,255,.10);
+      white-space:nowrap;
     }
     .dot{ width:8px; height:8px; border-radius:99px; background:var(--red); box-shadow:0 0 18px rgba(209,27,45,.55);}
-    .h1{ font-size:34px; font-weight:900; margin:4px 0 8px; }
-    .p{ color:rgba(255,255,255,.70); margin:0 0 14px; line-height:1.45; }
+    .h1{ font-size:34px; font-weight:900; letter-spacing:.06em; margin:8px 0 6px; text-transform:uppercase; }
+    .sub{ color:var(--muted); margin:0 0 14px; line-height:1.35; }
+
+    .syslog{
+      margin-top:12px;
+      padding:12px 14px;
+      border-radius:14px;
+      border:1px dashed rgba(255,255,255,.18);
+      color:rgba(255,255,255,.68);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size:12px;
+      line-height:1.5;
+    }
+
+    /* Answer overlay (single tap starts BOTH audios) */
+    .overlay{
+      position:fixed; inset:0;
+      background: rgba(0,0,0,.74);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      z-index:50;
+    }
+    .incoming{
+      width:min(720px, 94vw);
+      border-radius:22px;
+      background: rgba(10,12,18,.92);
+      border:1px solid rgba(255,255,255,.14);
+      box-shadow: 0 30px 120px rgba(0,0,0,.65);
+      padding:20px;
+      backdrop-filter: blur(14px);
+    }
+    .incomingTop{
+      display:flex; justify-content:space-between; align-items:center;
+      color:rgba(255,255,255,.70);
+      font-size:12px; letter-spacing:.22em; text-transform:uppercase;
+      margin-bottom:10px;
+    }
+    .incomingTitle{
+      font-size:30px; font-weight:900; margin:6px 0 10px;
+      letter-spacing:.04em;
+      text-transform:uppercase;
+    }
+    .incomingSub{ color:rgba(255,255,255,.70); margin:0 0 16px; }
     .btn{
       width:100%;
       padding:16px 14px;
@@ -76,109 +105,200 @@
       text-transform:uppercase;
       cursor:pointer;
       color:#fff;
-      background: linear-gradient(180deg, rgba(209,27,45,.92), rgba(130,18,28,.92));
+      background: linear-gradient(180deg, rgba(209,27,45,.95), rgba(130,18,28,.95));
     }
+    .small{ margin-top:10px; color:rgba(255,255,255,.55); font-size:12px; }
+
+    .hint{ margin-top:10px; color:rgba(255,255,255,.55); font-size:12px; }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <div class="title">CALL ACTIVE — KAVYA</div>
-    <p class="sub">Unrecorded / External Line</p>
-  </div>
-
-  <div class="overlay" id="overlay">
     <div class="card">
       <div class="top">
-        <div>EXTERNAL LINE • PRIORITY</div>
+        <div>MAJOR CRIMES DIVISION • EXTERNAL LINE</div>
         <div class="badge"><span class="dot"></span> LIVE</div>
       </div>
-      <div class="h1">Tap to answer</div>
-      <p class="p">This device requires a manual handshake to play voice audio.</p>
-      <button class="btn" id="answerBtn">ANSWER</button>
+
+      <div class="h1">CALL ACTIVE — KAVYA</div>
+      <p class="sub">Unrecorded / External Line • Priority: Panic / Live</p>
+
+      <div class="syslog" id="log">
+        SYSLOG: awaiting manual handshake…<br/>
+        NODE: EXT-LINE • ROUTE: DIRECT
+      </div>
+
+      <div class="hint">Audio starts after ANSWER (required on iPhone browsers).</div>
+
+      <!-- Voice call -->
+      <audio id="voice" preload="auto" playsinline>
+        <source src="./call-kavya.mp3" type="audio/mpeg">
+      </audio>
     </div>
   </div>
 
-  <!-- Main call -->
-  <audio id="voice" preload="auto" playsinline>
-    <source src="./call-kavya.mp3" type="audio/mpeg">
-  </audio>
+  <!-- Answer overlay -->
+  <div class="overlay" id="overlay">
+    <div class="incoming">
+      <div class="incomingTop">
+        <div>EXTERNAL LINE • PRIORITY</div>
+        <div class="badge"><span class="dot"></span> LIVE</div>
+      </div>
+      <div class="incomingTitle">Tap to answer</div>
+      <p class="incomingSub">This device requires a manual handshake to play voice audio.</p>
+      <button class="btn" id="answerBtn">ANSWER</button>
+      <div class="small"> </div>
+    </div>
+  </div>
 
-  <!-- Creepy ambience (no file needed; generated) -->
-  <script>
-    const overlay = document.getElementById("overlay");
-    const answerBtn = document.getElementById("answerBtn");
-    const voice = document.getElementById("voice");
+<script>
+  // =========================
+  // SETTINGS
+  // =========================
+  const VOICE_FILE = "./call-kavya.mp3";
 
-    // --- Creepy ambience via WebAudio (LOUDER) ---
-    let ctx = null;
-    let ambience = null;
+  // Make the creepy sound LOUDER than before, but still under the voice.
+  // If you want it even louder, raise AMBIENCE_GAIN to 0.35 max.
+  const AMBIENCE_GAIN = 0.26;   // <- louder than before
+  const VOICE_GAIN    = 1.00;   // keep voice normal
 
-    function startAmbience(){
-      if (ambience) return;
+  const overlay = document.getElementById("overlay");
+  const answerBtn = document.getElementById("answerBtn");
+  const log = document.getElementById("log");
+  const voice = document.getElementById("voice");
 
-      const AudioCtx = window.AudioContext || window.webkitAudioContext;
-      if (!AudioCtx) return;
+  // =========================
+  // Creepy ambience (WebAudio)
+  // =========================
+  let ctx = null;
+  let ambienceOn = false;
 
-      ctx = ctx || new AudioCtx();
+  function createAmbience(audioCtx){
+    // Master gain for ambience volume
+    const master = audioCtx.createGain();
+    master.gain.value = AMBIENCE_GAIN;
+    master.connect(audioCtx.destination);
 
-      const noiseBuf = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate);
-      const data = noiseBuf.getChannelData(0);
-      for (let i=0;i<data.length;i++) data[i] = (Math.random()*2-1) * 0.35; // stronger noise
+    // 1) Low drone (two detuned sines)
+    const droneGain = audioCtx.createGain();
+    droneGain.gain.value = 0.42;
+    droneGain.connect(master);
 
-      const noise = ctx.createBufferSource();
-      noise.buffer = noiseBuf;
-      noise.loop = true;
+    const o1 = audioCtx.createOscillator();
+    const o2 = audioCtx.createOscillator();
+    o1.type = "sine";
+    o2.type = "sine";
+    o1.frequency.value = 54;     // low rumble pitch
+    o2.frequency.value = 57;     // slight detune for “unease”
+    o1.connect(droneGain);
+    o2.connect(droneGain);
 
-      const filter = ctx.createBiquadFilter();
-      filter.type = "lowpass";
-      filter.frequency.value = 420; // dark
-      filter.Q.value = 0.9;
+    // 2) Air hiss (filtered noise)
+    const noiseBuf = audioCtx.createBuffer(1, audioCtx.sampleRate * 2, audioCtx.sampleRate);
+    const data = noiseBuf.getChannelData(0);
+    for (let i=0; i<data.length; i++){
+      data[i] = (Math.random()*2 - 1) * 0.25;
+    }
+    const noise = audioCtx.createBufferSource();
+    noise.buffer = noiseBuf;
+    noise.loop = true;
 
-      const trem = ctx.createOscillator();
-      trem.type = "sine";
-      trem.frequency.value = 0.18; // slow
+    const hp = audioCtx.createBiquadFilter();
+    hp.type = "highpass";
+    hp.frequency.value = 280;
 
-      const tremGain = ctx.createGain();
-      tremGain.gain.value = 0.18; // modulation depth
+    const hissGain = audioCtx.createGain();
+    hissGain.gain.value = 0.20;
 
-      const out = ctx.createGain();
-      out.gain.value = 0.22; // LOUDER than before (was too quiet)
+    noise.connect(hp);
+    hp.connect(hissGain);
+    hissGain.connect(master);
 
-      trem.connect(tremGain);
-      tremGain.connect(out.gain);
+    // 3) Slow pulse (makes it feel “alive”)
+    const lfo = audioCtx.createOscillator();
+    lfo.type = "sine";
+    lfo.frequency.value = 0.08; // very slow
+    const lfoGain = audioCtx.createGain();
+    lfoGain.gain.value = 0.18;  // amount of pulsing
+    lfo.connect(lfoGain);
+    lfoGain.connect(master.gain);
 
-      noise.connect(filter);
-      filter.connect(out);
-      out.connect(ctx.destination);
+    // Start everything
+    const now = audioCtx.currentTime;
+    // Fade in a bit
+    master.gain.setValueAtTime(0.0001, now);
+    master.gain.exponentialRampToValueAtTime(AMBIENCE_GAIN, now + 0.35);
 
-      noise.start();
-      trem.start();
+    o1.start();
+    o2.start();
+    noise.start();
+    lfo.start();
 
-      ambience = { noise, trem };
+    return { master, o1, o2, noise, lfo };
+  }
+
+  let ambienceNodes = null;
+
+  async function startAmbience(){
+    if (ambienceOn) return;
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return;
+
+    ctx = ctx || new AudioCtx();
+
+    // Ensure running (gesture required)
+    if (ctx.state !== "running"){
+      await ctx.resume().catch(()=>{});
     }
 
-    // --- Answer: start both ambience + voice in ONE tap ---
-    let started = false;
+    ambienceNodes = createAmbience(ctx);
+    ambienceOn = true;
+  }
 
-    async function answer(){
-      if (started) return;
-      started = true;
+  // =========================
+  // Start voice + ambience together on ANSWER
+  // =========================
+  async function answer(){
+    // Hide overlay immediately so it feels responsive
+    overlay.style.display = "none";
 
-      try{
-        // Ensure WebAudio is allowed
-        startAmbience();
+    log.innerHTML =
+      "SYSLOG: handshake accepted<br/>" +
+      "NODE: EXT-LINE • ROUTE: DIRECT<br/>" +
+      "STATUS: LIVE";
 
-        // Start voice
-        await voice.play();
+    // Start ambience (loud)
+    try { await startAmbience(); } catch(e){}
 
-        overlay.style.display = "none";
-      }catch(e){
-        // If voice fails, allow retry
-        started = false;
-      }
+    // Start voice call
+    try{
+      voice.src = VOICE_FILE; // ensure correct path
+      voice.volume = VOICE_GAIN;
+      voice.currentTime = 0;
+      await voice.play();
+    }catch(e){
+      // If play fails for any reason, show overlay again
+      overlay.style.display = "flex";
+      log.innerHTML =
+        "SYSLOG: audio blocked<br/>" +
+        "NOTE: tap ANSWER to enable voice";
+      return;
     }
+  }
 
-    answerBtn.addEventListener("click", answer);
-  </script>
+  answerBtn.addEventListener("click", answer);
+
+  // Safety: if user taps anywhere on the overlay, also answer
+  overlay.addEventListener("click", (e)=>{
+    if (e.target === overlay) answer();
+  });
+
+  // If the voice ends, keep ambience running (creepy “after” feeling)
+  voice.addEventListener("ended", ()=>{
+    log.innerHTML =
+      "SYSLOG: caller disconnected<br/>" +
+      "NODE: EXT-LINE • STATUS: CLOSED";
+  });
+</script>
 </body>
 </html>
