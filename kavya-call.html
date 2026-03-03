@@ -63,8 +63,8 @@
       font-size:12px;
       line-height:1.5;
     }
+    .hint{ margin-top:10px; color:rgba(255,255,255,.55); font-size:12px; }
 
-    /* Answer overlay (single tap starts BOTH audios) */
     .overlay{
       position:fixed; inset:0;
       background: rgba(0,0,0,.74);
@@ -107,9 +107,6 @@
       color:#fff;
       background: linear-gradient(180deg, rgba(209,27,45,.95), rgba(130,18,28,.95));
     }
-    .small{ margin-top:10px; color:rgba(255,255,255,.55); font-size:12px; }
-
-    .hint{ margin-top:10px; color:rgba(255,255,255,.55); font-size:12px; }
   </style>
 </head>
 <body>
@@ -128,16 +125,20 @@
         NODE: EXT-LINE • ROUTE: DIRECT
       </div>
 
-      <div class="hint">Audio starts after ANSWER (required on iPhone browsers).</div>
+      <div class="hint">Audio starts after ANSWER.</div>
 
       <!-- Voice call -->
       <audio id="voice" preload="auto" playsinline>
         <source src="./call-kavya.mp3" type="audio/mpeg">
       </audio>
+
+      <!-- Ambience bed (preferred, more reliable on iPhone) -->
+      <audio id="ambience" preload="auto" playsinline loop>
+        <source src="./kavya-ambience.mp3" type="audio/mpeg">
+      </audio>
     </div>
   </div>
 
-  <!-- Answer overlay -->
   <div class="overlay" id="overlay">
     <div class="incoming">
       <div class="incomingTop">
@@ -145,9 +146,8 @@
         <div class="badge"><span class="dot"></span> LIVE</div>
       </div>
       <div class="incomingTitle">Tap to answer</div>
-      <p class="incomingSub">This device requires a manual handshake to play voice audio.</p>
+      <p class="incomingSub">Manual handshake required to play audio.</p>
       <button class="btn" id="answerBtn">ANSWER</button>
-      <div class="small"> </div>
     </div>
   </div>
 
@@ -155,111 +155,87 @@
   // =========================
   // SETTINGS
   // =========================
-  const VOICE_FILE = "./call-kavya.mp3";
+  const VOICE_GAIN = 1.0;
+  const AMBIENCE_GAIN = 0.55; // louder bed (adjust 0.35–0.75)
 
-  // Make the creepy sound LOUDER than before, but still under the voice.
-  // If you want it even louder, raise AMBIENCE_GAIN to 0.35 max.
-  const AMBIENCE_GAIN = 0.26;   // <- louder than before
-  const VOICE_GAIN    = 1.00;   // keep voice normal
-
-  const overlay = document.getElementById("overlay");
+  const overlay  = document.getElementById("overlay");
   const answerBtn = document.getElementById("answerBtn");
   const log = document.getElementById("log");
+
   const voice = document.getElementById("voice");
+  const ambience = document.getElementById("ambience");
 
   // =========================
-  // Creepy ambience (WebAudio)
+  // WebAudio fallback ambience (in case ambience mp3 fails)
   // =========================
   let ctx = null;
-  let ambienceOn = false;
+  let webAmbienceOn = false;
+  let webNodes = null;
 
-  function createAmbience(audioCtx){
-    // Master gain for ambience volume
-    const master = audioCtx.createGain();
-    master.gain.value = AMBIENCE_GAIN;
-    master.connect(audioCtx.destination);
+  function startWebAmbience(){
+    if (webAmbienceOn) return;
 
-    // 1) Low drone (two detuned sines)
-    const droneGain = audioCtx.createGain();
-    droneGain.gain.value = 0.42;
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return;
+
+    ctx = ctx || new AudioCtx();
+
+    const master = ctx.createGain();
+    master.gain.value = 0.18; // fallback level (mp3 bed is primary)
+    master.connect(ctx.destination);
+
+    // low drone
+    const droneGain = ctx.createGain();
+    droneGain.gain.value = 0.55;
     droneGain.connect(master);
 
-    const o1 = audioCtx.createOscillator();
-    const o2 = audioCtx.createOscillator();
-    o1.type = "sine";
-    o2.type = "sine";
-    o1.frequency.value = 54;     // low rumble pitch
-    o2.frequency.value = 57;     // slight detune for “unease”
+    const o1 = ctx.createOscillator();
+    const o2 = ctx.createOscillator();
+    o1.type = "sine"; o2.type = "sine";
+    o1.frequency.value = 52;
+    o2.frequency.value = 56;
     o1.connect(droneGain);
     o2.connect(droneGain);
 
-    // 2) Air hiss (filtered noise)
-    const noiseBuf = audioCtx.createBuffer(1, audioCtx.sampleRate * 2, audioCtx.sampleRate);
+    // noise hiss
+    const noiseBuf = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate);
     const data = noiseBuf.getChannelData(0);
-    for (let i=0; i<data.length; i++){
-      data[i] = (Math.random()*2 - 1) * 0.25;
-    }
-    const noise = audioCtx.createBufferSource();
+    for (let i=0; i<data.length; i++) data[i] = (Math.random()*2 - 1) * 0.22;
+
+    const noise = ctx.createBufferSource();
     noise.buffer = noiseBuf;
     noise.loop = true;
 
-    const hp = audioCtx.createBiquadFilter();
+    const hp = ctx.createBiquadFilter();
     hp.type = "highpass";
-    hp.frequency.value = 280;
+    hp.frequency.value = 260;
 
-    const hissGain = audioCtx.createGain();
-    hissGain.gain.value = 0.20;
+    const hissGain = ctx.createGain();
+    hissGain.gain.value = 0.24;
 
     noise.connect(hp);
     hp.connect(hissGain);
     hissGain.connect(master);
 
-    // 3) Slow pulse (makes it feel “alive”)
-    const lfo = audioCtx.createOscillator();
+    // slow pulse
+    const lfo = ctx.createOscillator();
     lfo.type = "sine";
-    lfo.frequency.value = 0.08; // very slow
-    const lfoGain = audioCtx.createGain();
-    lfoGain.gain.value = 0.18;  // amount of pulsing
+    lfo.frequency.value = 0.09;
+    const lfoGain = ctx.createGain();
+    lfoGain.gain.value = 0.12;
     lfo.connect(lfoGain);
     lfoGain.connect(master.gain);
-
-    // Start everything
-    const now = audioCtx.currentTime;
-    // Fade in a bit
-    master.gain.setValueAtTime(0.0001, now);
-    master.gain.exponentialRampToValueAtTime(AMBIENCE_GAIN, now + 0.35);
 
     o1.start();
     o2.start();
     noise.start();
     lfo.start();
 
-    return { master, o1, o2, noise, lfo };
+    webNodes = { master, o1, o2, noise, lfo };
+    webAmbienceOn = true;
   }
 
-  let ambienceNodes = null;
-
-  async function startAmbience(){
-    if (ambienceOn) return;
-    const AudioCtx = window.AudioContext || window.webkitAudioContext;
-    if (!AudioCtx) return;
-
-    ctx = ctx || new AudioCtx();
-
-    // Ensure running (gesture required)
-    if (ctx.state !== "running"){
-      await ctx.resume().catch(()=>{});
-    }
-
-    ambienceNodes = createAmbience(ctx);
-    ambienceOn = true;
-  }
-
-  // =========================
-  // Start voice + ambience together on ANSWER
-  // =========================
   async function answer(){
-    // Hide overlay immediately so it feels responsive
     overlay.style.display = "none";
 
     log.innerHTML =
@@ -267,38 +243,32 @@
       "NODE: EXT-LINE • ROUTE: DIRECT<br/>" +
       "STATUS: LIVE";
 
-    // Start ambience (loud)
-    try { await startAmbience(); } catch(e){}
-
-    // Start voice call
+    // Start both audios in the SAME click gesture (most reliable)
     try{
-      voice.src = VOICE_FILE; // ensure correct path
+      ambience.volume = AMBIENCE_GAIN;
+      // try to play ambience bed
+      await ambience.play();
+    }catch(e){
+      // fallback web audio ambience
+      try{
+        startWebAmbience();
+        if (ctx && ctx.state !== "running") await ctx.resume().catch(()=>{});
+      }catch(_){}
+    }
+
+    try{
       voice.volume = VOICE_GAIN;
       voice.currentTime = 0;
       await voice.play();
     }catch(e){
-      // If play fails for any reason, show overlay again
+      // If voice fails, show overlay again
       overlay.style.display = "flex";
-      log.innerHTML =
-        "SYSLOG: audio blocked<br/>" +
-        "NOTE: tap ANSWER to enable voice";
+      log.innerHTML = "SYSLOG: audio blocked<br/>NOTE: tap ANSWER to enable voice";
       return;
     }
   }
 
   answerBtn.addEventListener("click", answer);
-
-  // Safety: if user taps anywhere on the overlay, also answer
-  overlay.addEventListener("click", (e)=>{
-    if (e.target === overlay) answer();
-  });
-
-  // If the voice ends, keep ambience running (creepy “after” feeling)
-  voice.addEventListener("ended", ()=>{
-    log.innerHTML =
-      "SYSLOG: caller disconnected<br/>" +
-      "NODE: EXT-LINE • STATUS: CLOSED";
-  });
 </script>
 </body>
 </html>
